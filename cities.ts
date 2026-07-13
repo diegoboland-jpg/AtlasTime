@@ -13,6 +13,8 @@ export const cityOptions: CityOption[] = [
   { label: "Buenos Aires, Argentina", city: "Buenos Aires", country: "Argentina", timeZone: "America/Argentina/Buenos_Aires" },
   { label: "Barcelona, Spain", city: "Barcelona", country: "Spain", timeZone: "Europe/Madrid" },
   { label: "Madrid, Spain", city: "Madrid", country: "Spain", timeZone: "Europe/Madrid" },
+  { label: "Porto, Portugal", city: "Porto", country: "Portugal", timeZone: "Europe/Lisbon" },
+  { label: "Lisbon, Portugal", city: "Lisbon", country: "Portugal", timeZone: "Europe/Lisbon" },
   { label: "London, United Kingdom", city: "London", country: "United Kingdom", timeZone: "Europe/London" },
   { label: "Paris, France", city: "Paris", country: "France", timeZone: "Europe/Paris" },
   { label: "Berlin, Germany", city: "Berlin", country: "Germany", timeZone: "Europe/Berlin" },
@@ -41,13 +43,6 @@ export const cityOptions: CityOption[] = [
   { label: "Auckland, New Zealand", city: "Auckland", country: "New Zealand", timeZone: "Pacific/Auckland" }
 ];
 
-export function findCityOption(value: string): CityOption | undefined {
-  const normalized = value.trim().toLocaleLowerCase();
-
-  return cityOptions.find((option) => {
-    return (
-      option.label.toLocaleLowerCase() === normalized ||
-      option.city.toLocaleLowerCase() === normalized
-    );
-  });
+export function getCityByLabel(label: string): CityOption | undefined {
+  return cityOptions.find((option) => option.label === label);
 }

@@ -11,7 +11,7 @@ import {
   Users,
   Video,
 } from "lucide-react";
-import { cityOptions, findCityOption } from "./cities";
+import { cityOptions, getCityByLabel } from "./cities";
 import { starterPeople } from "./data";
 import {
   bestHour,
@@ -20,7 +20,6 @@ import {
   hourInZone,
   localLabel,
   scoreHours,
-  timeZones,
 } from "./time";
 import type { Person } from "./types";
 
@@ -45,10 +44,7 @@ export default function App() {
   const [dateValue, setDateValue] = useState(todayInput);
   const [now, setNow] = useState(new Date());
   const [name, setName] = useState("");
-  const [city, setCity] = useState("");
-  const [timeZone, setTimeZone] = useState(
-    Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Sao_Paulo",
-  );
+  const [selectedCityLabel, setSelectedCityLabel] = useState("");
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -70,40 +66,27 @@ export default function App() {
     [people, dateValue],
   );
 
-  function handleCityChange(value: string) {
-    setCity(value);
-
-    const match = findCityOption(value);
-    if (match) {
-      setCity(match.city);
-      setTimeZone(match.timeZone);
-    }
-  }
+  const selectedCity = getCityByLabel(selectedCityLabel);
 
   function addPerson(event: FormEvent) {
     event.preventDefault();
-    if (!name.trim() || !timeZone) return;
 
-    const matchedCity = findCityOption(city);
+    if (!name.trim() || !selectedCity) return;
 
     setPeople((current) => [
       ...current,
       {
         id: crypto.randomUUID(),
         name: name.trim(),
-        city: matchedCity?.city ?? city.trim(),
-        timeZone: matchedCity?.timeZone ?? timeZone,
+        city: selectedCity.city,
+        timeZone: selectedCity.timeZone,
         workStart: 9,
         workEnd: 18,
       },
     ]);
 
     setName("");
-    setCity("");
-    setTimeZone(
-      Intl.DateTimeFormat().resolvedOptions().timeZone ||
-        "America/Sao_Paulo",
-    );
+    setSelectedCityLabel("");
     setShowForm(false);
   }
 
@@ -126,7 +109,7 @@ export default function App() {
           </span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">MVP 0.2</span>
+        <span className="mvp-badge">MVP 0.2.1</span>
       </header>
 
       <main>
@@ -191,44 +174,39 @@ export default function App() {
 
               <label>
                 City
-                <input
-                  list="atlas-city-options"
-                  value={city}
+                <select
+                  value={selectedCityLabel}
                   onChange={(event) =>
-                    handleCityChange(event.target.value)
+                    setSelectedCityLabel(event.target.value)
                   }
-                  onBlur={(event) =>
-                    handleCityChange(event.target.value)
-                  }
-                  placeholder="Start typing a city"
-                  autoComplete="off"
-                />
-                <datalist id="atlas-city-options">
+                  required
+                >
+                  <option value="">Select a city</option>
                   {cityOptions.map((option) => (
                     <option key={option.label} value={option.label}>
-                      {option.timeZone.replaceAll("_", " ")}
-                    </option>
-                  ))}
-                </datalist>
-              </label>
-
-              <label className="wide-field">
-                Time zone
-                <select
-                  value={timeZone}
-                  onChange={(event) => setTimeZone(event.target.value)}
-                >
-                  {timeZones.map((zone) => (
-                    <option key={zone} value={zone}>
-                      {zone.replaceAll("_", " ")}
+                      {option.label}
                     </option>
                   ))}
                 </select>
               </label>
 
+              <label className="wide-field">
+                Time zone
+                <input
+                  value={
+                    selectedCity
+                      ? selectedCity.timeZone.replaceAll("_", " ")
+                      : "Select a city first"
+                  }
+                  readOnly
+                  aria-readonly="true"
+                />
+              </label>
+
               <button
                 className="primary-button form-submit"
                 type="submit"
+                disabled={!name.trim() || !selectedCity}
               >
                 Save person
               </button>
