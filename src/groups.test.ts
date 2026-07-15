@@ -27,13 +27,13 @@ describe("saved groups", () => {
 
     expect(workspace.groups).toHaveLength(1);
     expect(workspace.groups[0].people).toEqual([person]);
-    expect(workspace.groups[0].planner).toEqual({ date: "2026-08-10", hour: 16 });
+    expect(workspace.groups[0].planner).toEqual({ date: "2026-08-10", hour: 16, title: "", durationMinutes: 60 });
   });
 
   it("persists and restores the active group", () => {
     const groups: SavedGroup[] = [
-      { id: "one", name: "One", people: [], planner: { date: "2026-07-15", hour: 12 }, updatedAt: "2026-07-15T00:00:00Z" },
-      { id: "two", name: "Two", people: [person], planner: { date: "2026-07-16", hour: 14 }, updatedAt: "2026-07-15T00:00:00Z" },
+      { id: "one", name: "One", people: [], planner: { date: "2026-07-15", hour: 12, title: "", durationMinutes: 60 }, updatedAt: "2026-07-15T00:00:00Z" },
+      { id: "two", name: "Two", people: [person], planner: { date: "2026-07-16", hour: 14, title: "Planning", durationMinutes: 45 }, updatedAt: "2026-07-15T00:00:00Z" },
     ];
 
     saveGroups(groups, "two");
@@ -48,7 +48,7 @@ describe("share links", () => {
       id: "group",
       name: "Equipe São Paulo",
       people: [person],
-      planner: { date: "2026-09-01", hour: 15 },
+      planner: { date: "2026-09-01", hour: 15, title: "Project sync", durationMinutes: 90 },
       updatedAt: "2026-07-15T00:00:00Z",
     };
     localStorage.setItem("sentinel", "unchanged");

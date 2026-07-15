@@ -18,6 +18,8 @@ export type HourScore = {
 export type PlannerState = {
   date: string;
   hour: number;
+  title: string;
+  durationMinutes: number;
 };
 
 export type SavedGroup = {

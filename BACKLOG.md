@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v0.9: meeting handoff and calendar-file export
+
+- [x] Save a meeting title and duration with each group.
+- [x] Migrate existing groups and shared links to safe title and duration defaults.
+- [x] Generate a copyable summary with UTC and every participant's local-time range.
+- [x] Download a standards-based `.ics` calendar file without account authorization.
+- [x] Escape calendar text and calculate event end times across UTC date boundaries.
+- [x] Add automated summary, calendar-file, persistence, and migration coverage.
+- [ ] Add optional meeting notes and location fields after handoff usability feedback.
+
 ## v0.8: reliability and automated tests
 
 - [x] Add a repeatable automated test command with browser-like storage support.
@@ -56,9 +66,9 @@
 - Calendar integrations only after the planner workflow is validated.
 - Authentication, synchronized data, invitations, and team workspaces only after local-first validation.
 
-## Explicitly out of scope through v0.8
+## Explicitly out of scope through v0.9
 
 - Backend services or cloud persistence.
 - Authentication and accounts.
-- Calendar authorization or automatic meeting creation.
+- Calendar authorization or automatic meeting creation; v0.9 only downloads a local `.ics` file.
 - Contact imports and messaging-provider APIs.
