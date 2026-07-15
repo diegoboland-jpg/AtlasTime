@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v0.8: reliability and automated tests
+
+- [x] Add a repeatable automated test command with browser-like storage support.
+- [x] Test daylight-saving transitions and 30/45-minute timezone offsets.
+- [x] Test meeting scoring, empty-group behavior, storage migration, and persistence.
+- [x] Test Unicode share-link round trips and malformed payload rejection.
+- [x] Test exact-query caching and offline error behavior.
+- [x] Fall back to matching places saved during the previous 30 days when the network fails.
+- [ ] Add component-level keyboard and accessibility regression tests.
+
 ## v0.7: accessibility and mobile usability
 
 - [x] Add a keyboard skip link and consistent high-visibility focus states.
@@ -20,7 +30,7 @@
 - [x] Create portable share links without a backend.
 - [x] Warn that share links contain names, locations, time zones, and working hours.
 - [x] Require an explicit import so shared links never overwrite local data automatically.
-- [ ] Add automated import/export and storage-migration tests.
+- [x] Add automated import/export and storage-migration tests.
 
 ## v0.5: global place discovery
 
@@ -30,8 +40,8 @@
 - [x] Cache successful city and timezone results locally with a seven-day TTL.
 - [x] Distinguish duplicate city names with administrative region and country labels.
 - [x] Add provider attribution and configurable commercial endpoint support.
-- [ ] Add automated tests for daylight-saving transitions and non-hour-offset time zones.
-- [ ] Add an offline fallback for recently used places beyond cached search queries.
+- [x] Add automated tests for daylight-saving transitions and non-hour-offset time zones.
+- [x] Add an offline fallback for recently used places beyond cached search queries.
 
 ### Provider decision
 
@@ -46,7 +56,7 @@
 - Calendar integrations only after the planner workflow is validated.
 - Authentication, synchronized data, invitations, and team workspaces only after local-first validation.
 
-## Explicitly out of scope through v0.7
+## Explicitly out of scope through v0.8
 
 - Backend services or cloud persistence.
 - Authentication and accounts.

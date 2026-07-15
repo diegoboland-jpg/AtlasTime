@@ -150,6 +150,9 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
               </p>
             )}
             {status === "success" && results.length === 0 && <p>No matching cities found.</p>}
+            {status === "success" && results.some((city) => city.source === "offline") && (
+              <p className="offline-note">Offline: showing recent saved places.</p>
+            )}
             {results.map((city, index) => (
               <button
                 type="button"
