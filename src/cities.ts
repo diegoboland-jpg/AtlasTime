@@ -1,8 +1,11 @@
 export type CityOption = {
+  id?: string;
   label: string;
   city: string;
   country: string;
   timeZone: string;
+  latitude?: number;
+  longitude?: number;
 };
 
 export const cityOptions: CityOption[] = [

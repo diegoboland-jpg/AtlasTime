@@ -70,7 +70,7 @@ export default function App() {
           <span className="brand-mark"><Globe2 size={20} /></span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">v0.4 interactive planner</span>
+        <span className="mvp-badge">v0.5 global city discovery</span>
       </header>
 
       <main>
@@ -150,7 +150,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.4</span><span>People and planner choices stay in this browser.</span></footer>
+      <footer><span>AtlasTime v0.5</span><span>People and planner choices stay in this browser.</span></footer>
     </div>
   );
 }
