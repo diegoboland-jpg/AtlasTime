@@ -1,55 +1,30 @@
 import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Globe2, MessageCircle, Phone, Plus, Users, Video } from "lucide-react";
 import { AddPersonForm } from "./components/AddPersonForm";
+import { GroupManager } from "./components/GroupManager";
 import { PersonCard } from "./components/PersonCard";
+import { ShareImportBanner } from "./components/ShareImportBanner";
 import { TimePlanner } from "./components/TimePlanner";
-import { starterPeople } from "./data";
+import { clearShareHash, createShareLink, defaultPlanner, loadGroups, readSharedGroup, saveGroups } from "./groups";
 import { bestHour, dateAtUtcHour, formatInZone, scoreHours } from "./time";
-import type { Person } from "./types";
-
-const PEOPLE_STORAGE_KEY = "atlastime.people.v1";
-const PLANNER_STORAGE_KEY = "atlastime.planner.v1";
-
-function todayInput() {
-  const today = new Date();
-  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-}
+import type { Person, SavedGroup } from "./types";
 
 function utcDateInput(date: Date) {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
-function loadPeople(): Person[] {
-  try {
-    const raw = localStorage.getItem(PEOPLE_STORAGE_KEY);
-    return raw ? JSON.parse(raw) as Person[] : starterPeople;
-  } catch {
-    return starterPeople;
-  }
-}
-
-function loadPlanner() {
-  try {
-    const raw = localStorage.getItem(PLANNER_STORAGE_KEY);
-    if (!raw) return { date: todayInput(), hour: 12 };
-    const parsed = JSON.parse(raw) as { date?: string; hour?: number };
-    return {
-      date: parsed.date || todayInput(),
-      hour: Number.isInteger(parsed.hour) && parsed.hour! >= 0 && parsed.hour! <= 23 ? parsed.hour! : 12,
-    };
-  } catch {
-    return { date: todayInput(), hour: 12 };
-  }
-}
-
 export default function App() {
-  const [people, setPeople] = useState<Person[]>(loadPeople);
-  const [planner, setPlanner] = useState(loadPlanner);
+  const [workspace, setWorkspace] = useState(loadGroups);
+  const [sharedPayload, setSharedPayload] = useState(readSharedGroup);
   const [now, setNow] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
 
-  useEffect(() => localStorage.setItem(PEOPLE_STORAGE_KEY, JSON.stringify(people)), [people]);
-  useEffect(() => localStorage.setItem(PLANNER_STORAGE_KEY, JSON.stringify(planner)), [planner]);
+  const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
+  const people = activeGroup.people;
+  const planner = activeGroup.planner;
+
+  useEffect(() => saveGroups(workspace.groups, workspace.activeGroupId), [workspace]);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 15_000);
     return () => window.clearInterval(timer);
@@ -59,8 +34,65 @@ export default function App() {
   const recommendation = useMemo(() => bestHour(people, planner.date), [people, planner.date]);
   const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
 
+  function updateActiveGroup(update: (group: SavedGroup) => SavedGroup) {
+    setWorkspace((current) => ({
+      ...current,
+      groups: current.groups.map((group) => group.id === current.activeGroupId
+        ? { ...update(group), updatedAt: new Date().toISOString() }
+        : group),
+    }));
+  }
+
   function updatePerson(updated: Person) {
-    setPeople((current) => current.map((person) => person.id === updated.id ? updated : person));
+    updateActiveGroup((group) => ({ ...group, people: group.people.map((person) => person.id === updated.id ? updated : person) }));
+  }
+
+  function createGroup() {
+    const requested = window.prompt("Name the new group", "New group")?.trim();
+    if (!requested) return;
+    const group: SavedGroup = { id: crypto.randomUUID(), name: requested, people: [], planner: defaultPlanner(), updatedAt: new Date().toISOString() };
+    setWorkspace((current) => ({ groups: [...current.groups, group], activeGroupId: group.id }));
+    setShowForm(false);
+  }
+
+  function renameGroup() {
+    const requested = window.prompt("Rename this group", activeGroup.name)?.trim();
+    if (requested) updateActiveGroup((group) => ({ ...group, name: requested }));
+  }
+
+  function deleteGroup() {
+    if (workspace.groups.length === 1 || !window.confirm(`Delete “${activeGroup.name}” from this browser?`)) return;
+    setWorkspace((current) => {
+      const groups = current.groups.filter((group) => group.id !== current.activeGroupId);
+      return { groups, activeGroupId: groups[0].id };
+    });
+  }
+
+  async function shareGroup() {
+    const approved = window.confirm("This link contains the group name, people or team names, locations, time zones, and working hours. Anyone with the link can read that information. Create it?");
+    if (!approved) return;
+    const link = createShareLink(activeGroup);
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopyStatus("Copied!");
+      window.setTimeout(() => setCopyStatus(""), 2200);
+    } catch {
+      window.prompt("Copy this AtlasTime link", link);
+    }
+  }
+
+  function importSharedGroup() {
+    if (!sharedPayload) return;
+    const group: SavedGroup = {
+      id: crypto.randomUUID(),
+      name: sharedPayload.name,
+      people: sharedPayload.people.map((person) => ({ ...person, id: crypto.randomUUID() })),
+      planner: sharedPayload.planner,
+      updatedAt: new Date().toISOString(),
+    };
+    setWorkspace((current) => ({ groups: [...current.groups, group], activeGroupId: group.id }));
+    setSharedPayload(null);
+    clearShareHash();
   }
 
   return (
@@ -70,10 +102,12 @@ export default function App() {
           <span className="brand-mark"><Globe2 size={20} /></span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">v0.5 global city discovery</span>
+        <span className="mvp-badge">v0.6 saved groups</span>
       </header>
 
       <main>
+        {sharedPayload && <ShareImportBanner payload={sharedPayload} onImport={importSharedGroup} onDismiss={() => { setSharedPayload(null); clearShareHash(); }} />}
+
         <section className="hero">
           <div>
             <p className="eyebrow">TIME ZONES, WITHOUT THE MATH</p>
@@ -86,6 +120,17 @@ export default function App() {
             <small>{Intl.DateTimeFormat().resolvedOptions().timeZone.replaceAll("_", " ")}</small>
           </div>
         </section>
+
+        <GroupManager
+          groups={workspace.groups}
+          activeGroupId={workspace.activeGroupId}
+          copyStatus={copyStatus}
+          onSelect={(activeGroupId) => { setWorkspace((current) => ({ ...current, activeGroupId })); setShowForm(false); }}
+          onCreate={createGroup}
+          onRename={renameGroup}
+          onDelete={deleteGroup}
+          onShare={shareGroup}
+        />
 
         <section className="section">
           <div className="section-heading">
@@ -100,7 +145,7 @@ export default function App() {
 
           {showForm && (
             <AddPersonForm
-              onAdd={(person) => { setPeople((current) => [...current, person]); setShowForm(false); }}
+              onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
               onCancel={() => setShowForm(false)}
             />
           )}
@@ -113,7 +158,7 @@ export default function App() {
                 now={now}
                 selectedInstant={selectedInstant}
                 onChange={updatePerson}
-                onRemove={(id) => setPeople((current) => current.filter((item) => item.id !== id))}
+                onRemove={(id) => updateActiveGroup((group) => ({ ...group, people: group.people.filter((item) => item.id !== id) }))}
               />
             ))}
           </div>
@@ -125,12 +170,12 @@ export default function App() {
           selectedHour={planner.hour}
           recommendation={recommendation}
           hours={hours}
-          onDateChange={(date) => setPlanner((current) => ({ ...current, date }))}
-          onHourChange={(hour) => setPlanner((current) => ({ ...current, hour }))}
+          onDateChange={(date) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date } }))}
+          onHourChange={(hour) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, hour } }))}
           onNow={() => {
             const current = new Date();
             setNow(current);
-            setPlanner({ date: utcDateInput(current), hour: current.getUTCHours() });
+            updateActiveGroup((group) => ({ ...group, planner: { date: utcDateInput(current), hour: current.getUTCHours() } }));
           }}
         />
 
@@ -150,7 +195,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.5</span><span>People and planner choices stay in this browser.</span></footer>
+      <footer><span>AtlasTime v0.6</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }
