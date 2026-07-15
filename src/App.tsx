@@ -97,15 +97,16 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">Skip to planner content</a>
       <header className="topbar">
-        <a className="brand" href="#" aria-label="AtlasTime home">
+        <a className="brand" href="#main-content" aria-label="AtlasTime home">
           <span className="brand-mark"><Globe2 size={20} /></span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">v0.6 saved groups</span>
+        <span className="mvp-badge">v0.7 accessible planning</span>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         {sharedPayload && <ShareImportBanner payload={sharedPayload} onImport={importSharedGroup} onDismiss={() => { setSharedPayload(null); clearShareHash(); }} />}
 
         <section className="hero">
@@ -114,7 +115,7 @@ export default function App() {
             <h1>Find a humane time<br />for everyone.</h1>
             <p className="hero-copy">Explore every hour, compare live local times, and choose a fair meeting window.</p>
           </div>
-          <div className="hero-clock">
+          <div className="hero-clock" aria-label={`Your local time is ${formatInZone(now, Intl.DateTimeFormat().resolvedOptions().timeZone)}`}>
             <span>Your local time</span>
             <strong>{formatInZone(now, Intl.DateTimeFormat().resolvedOptions().timeZone)}</strong>
             <small>{Intl.DateTimeFormat().resolvedOptions().timeZone.replaceAll("_", " ")}</small>
@@ -138,19 +139,21 @@ export default function App() {
               <p className="section-kicker"><Users size={16} /> PEOPLE</p>
               <h2>Who or what needs to connect?</h2>
             </div>
-            <button className="primary-button" onClick={() => setShowForm((value) => !value)}>
+            <button className="primary-button" onClick={() => setShowForm((value) => !value)} aria-expanded={showForm} aria-controls="add-entry-form">
               <Plus size={18} /> Add person, location, or team
             </button>
           </div>
 
           {showForm && (
-            <AddPersonForm
-              onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
-              onCancel={() => setShowForm(false)}
-            />
+            <div id="add-entry-form">
+              <AddPersonForm
+                onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
+                onCancel={() => setShowForm(false)}
+              />
+            </div>
           )}
 
-          <div className="people-grid">
+          <div className="people-grid" aria-label={`Entries in ${activeGroup.name}`}>
             {people.map((person) => (
               <PersonCard
                 key={person.id}
@@ -161,6 +164,13 @@ export default function App() {
                 onRemove={(id) => updateActiveGroup((group) => ({ ...group, people: group.people.filter((item) => item.id !== id) }))}
               />
             ))}
+            {people.length === 0 && (
+              <div className="empty-state">
+                <Users size={28} aria-hidden="true" />
+                <h3>This group is ready.</h3>
+                <p>Add a person, location, or team to compare local times.</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -195,7 +205,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.6</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.7</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

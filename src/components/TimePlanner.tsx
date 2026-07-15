@@ -26,11 +26,11 @@ export function TimePlanner({
   const selectedScore = hours[selectedHour];
 
   return (
-    <section className="section planner">
+    <section className="section planner" aria-labelledby="planner-heading">
       <div className="section-heading">
         <div>
           <p className="section-kicker"><CalendarDays size={16} /> PLANNER</p>
-          <h2>Choose a humane meeting time</h2>
+          <h2 id="planner-heading">Choose a humane meeting time</h2>
         </div>
         <label className="date-field">
           Date
@@ -50,7 +50,7 @@ export function TimePlanner({
             <strong>{String(recommendation.utcHour).padStart(2, "0")}:00 UTC</strong>
             <small>
               {recommendation.available} of {recommendation.total} people in working hours
-              {recommendation.penalty > 0 ? ` · discomfort penalty ${recommendation.penalty}` : " · no discomfort penalty"}.
+              {recommendation.penalty > 0 ? ` - discomfort penalty ${recommendation.penalty}` : " - no discomfort penalty"}.
             </small>
           </span>
           <span className="local-times">
@@ -78,10 +78,11 @@ export function TimePlanner({
           value={selectedHour}
           onChange={(event) => onHourChange(Number(event.target.value))}
           aria-label="Selected UTC meeting hour"
+          aria-valuetext={`${String(selectedHour).padStart(2, "0")}:00 UTC, ${selectedScore?.available ?? 0} of ${selectedScore?.total ?? 0} available`}
         />
         <div className="slider-actions">
           <p>
-            {selectedScore?.available ?? 0}/{selectedScore?.total ?? 0} available · score {selectedScore?.score ?? 0}
+            {selectedScore?.available ?? 0}/{selectedScore?.total ?? 0} available - score {selectedScore?.score ?? 0}
           </p>
           <button type="button" onClick={onNow} title="Return to the current UTC date and hour">
             <RotateCcw size={14} /> Now
@@ -89,7 +90,11 @@ export function TimePlanner({
         </div>
       </div>
 
-      <div className="timeline-wrap">
+      <p className="sr-only" aria-live="polite">
+        Selected meeting time {String(selectedHour).padStart(2, "0")}:00 UTC. {selectedScore?.available ?? 0} of {selectedScore?.total ?? 0} entries are within working hours.
+      </p>
+
+      <div className="timeline-wrap" role="region" aria-label="Scrollable 24-hour local-time comparison" tabIndex={0}>
         <div className="timeline-labels">
           <span>UTC</span>
           {hours.map((hour) => (
@@ -121,6 +126,7 @@ export function TimePlanner({
                   className={`hour-cell ${working ? "working" : ""} ${selectedHour === hour.utcHour ? "selected" : ""}`}
                   key={hour.utcHour}
                   title={`${person.name}: ${formatInZone(instant, person.timeZone)}`}
+                  aria-label={`${person.name}: ${formatInZone(instant, person.timeZone)}, ${working ? "within" : "outside"} working hours. Select ${hour.utcHour}:00 UTC`}
                   onClick={() => onHourChange(hour.utcHour)}
                 >
                   {String(localHour).padStart(2, "0")}

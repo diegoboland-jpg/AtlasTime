@@ -30,8 +30,9 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
   }
 
   return (
-    <article className="person-card">
+    <article className="person-card" aria-labelledby={`person-${person.id}-name`}>
       <button
+        type="button"
         className="icon-button remove"
         onClick={() => onRemove(person.id)}
         aria-label={`Remove ${person.name}`}
@@ -39,9 +40,9 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
         <Trash2 size={16} />
       </button>
 
-      <div className="avatar">{person.name.slice(0, 1).toUpperCase()}</div>
+      <div className="avatar" aria-hidden="true">{person.name.slice(0, 1).toUpperCase()}</div>
       <div className="person-main">
-        <h3>{person.name}</h3>
+        <h3 id={`person-${person.id}-name`}>{person.name}</h3>
         <p>{person.city || person.timeZone.replaceAll("_", " ")}</p>
         <span className={working ? "status online" : "status"}>
           {working ? "Working hours" : "Outside work hours"}
@@ -60,7 +61,7 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
         </span>
       </div>
 
-      <div className="selected-person-time" aria-live="polite">
+      <div className="selected-person-time">
         <span>Selected</span>
         <strong>{formatInZone(selectedInstant, person.timeZone)}</strong>
         <small>

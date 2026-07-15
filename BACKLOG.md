@@ -1,5 +1,16 @@
 # AtlasTime backlog
 
+## v0.7: accessibility and mobile usability
+
+- [x] Add a keyboard skip link and consistent high-visibility focus states.
+- [x] Improve city-search combobox semantics and screen-reader status announcements.
+- [x] Add descriptive names and value text to slider and timeline controls.
+- [x] Keep timeline identity visible while scrolling horizontally.
+- [x] Increase touch targets and improve mobile group, form, hero, and footer layouts.
+- [x] Support reduced-motion and forced-color preferences.
+- [x] Add a clear empty state for new groups.
+- [ ] Complete hands-on testing with VoiceOver, NVDA, and TalkBack.
+
 ## v0.6: saved groups and shareable schedules
 
 - [x] Save multiple named groups locally in the browser.
@@ -31,11 +42,11 @@
 
 ## Later product work
 
-- Accessibility and mobile usability testing.
+- Full assistive-technology testing on physical devices.
 - Calendar integrations only after the planner workflow is validated.
 - Authentication, synchronized data, invitations, and team workspaces only after local-first validation.
 
-## Explicitly out of scope through v0.6
+## Explicitly out of scope through v0.7
 
 - Backend services or cloud persistence.
 - Authentication and accounts.

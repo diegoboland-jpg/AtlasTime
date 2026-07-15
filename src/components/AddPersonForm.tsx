@@ -1,4 +1,4 @@
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { MapPin, Search } from "lucide-react";
 import type { CityOption } from "../cities";
 import { searchGlobalCities } from "../services/geocoding";
@@ -21,6 +21,11 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
   const [focused, setFocused] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
   const blurTimer = useRef<number | undefined>(undefined);
+  const nameId = useId();
+  const cityId = useId();
+  const resultsId = useId();
+  const statusId = useId();
+  const timeZoneId = useId();
 
   useEffect(() => {
     if (selectedCity?.label === query || query.trim().length < 2) {
@@ -60,6 +65,11 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
   }
 
   function handleKeys(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Escape") {
+      setResults([]);
+      setFocused(false);
+      return;
+    }
     if (!results.length) return;
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -70,9 +80,6 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
     } else if (event.key === "Enter") {
       event.preventDefault();
       chooseCity(results[activeIndex]);
-    } else if (event.key === "Escape") {
-      setResults([]);
-      setFocused(false);
     }
   }
 
@@ -93,25 +100,31 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
 
   return (
     <form className="add-form" onSubmit={submit}>
-      <label>
+      <label htmlFor={nameId}>
         Person, location, or team
         <input
+          id={nameId}
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="e.g. Olesya, Madrid office, or Design team"
           autoFocus
+          required
         />
       </label>
 
-      <label className="city-search-field">
+      <label className="city-search-field" htmlFor={cityId}>
         Global city search
         <span className="search-input-wrap">
           <Search size={16} />
           <input
+            id={cityId}
             role="combobox"
             aria-autocomplete="list"
             aria-expanded={showMenu}
-            aria-controls="city-search-results"
+            aria-controls={resultsId}
+            aria-activedescendant={showMenu && results.length ? `${resultsId}-option-${activeIndex}` : undefined}
+            aria-describedby={`${statusId} ${timeZoneId}-provider`}
+            aria-busy={status === "loading"}
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
@@ -129,7 +142,7 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
         </span>
 
         {showMenu && (
-          <div className="city-results" id="city-search-results" role="listbox">
+          <div className="city-results" id={resultsId} role="listbox" aria-label="Matching cities">
             {status === "loading" && <p>Searching cities…</p>}
             {status === "error" && (
               <p className="search-error">
@@ -141,6 +154,7 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
               <button
                 type="button"
                 role="option"
+                id={`${resultsId}-option-${index}`}
                 aria-selected={index === activeIndex}
                 className={index === activeIndex ? "active" : ""}
                 key={city.id ?? `${city.label}:${city.timeZone}`}
@@ -154,14 +168,21 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
             ))}
           </div>
         )}
-        <small className="provider-note">
+        <p className="sr-only" id={statusId} role="status" aria-live="polite">
+          {status === "loading" && "Searching cities."}
+          {status === "error" && "City search is unavailable."}
+          {status === "success" && `${results.length} city results available.`}
+          {selectedCity && `${selectedCity.label} selected.`}
+        </p>
+        <small className="provider-note" id={`${timeZoneId}-provider`}>
           Global place and timezone data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>.
         </small>
       </label>
 
-      <label className="wide-field">
+      <label className="wide-field" htmlFor={timeZoneId}>
         Time zone
         <input
+          id={timeZoneId}
           value={selectedCity?.timeZone.replaceAll("_", " ") ?? "Choose a city from the search results"}
           readOnly
           aria-readonly="true"
