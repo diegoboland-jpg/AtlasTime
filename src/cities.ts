@@ -6,6 +6,7 @@ export type CityOption = {
   timeZone: string;
   latitude?: number;
   longitude?: number;
+  source?: "network" | "cache" | "offline";
 };
 
 export const cityOptions: CityOption[] = [
