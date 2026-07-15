@@ -7,6 +7,7 @@ const LEGACY_PEOPLE_STORAGE_KEY = "atlastime.people.v1";
 const LEGACY_PLANNER_STORAGE_KEY = "atlastime.planner.v1";
 const SHARE_PREFIX = "#share=";
 const MAX_SHARED_PEOPLE = 30;
+const ALLOWED_DURATIONS = [30, 45, 60, 90, 120];
 
 function localDateInput() {
   const today = new Date();
@@ -14,7 +15,7 @@ function localDateInput() {
 }
 
 export function defaultPlanner(): PlannerState {
-  return { date: localDateInput(), hour: 12 };
+  return { date: localDateInput(), hour: 12, title: "", durationMinutes: 60 };
 }
 
 function safePlanner(value: unknown): PlannerState {
@@ -26,6 +27,10 @@ function safePlanner(value: unknown): PlannerState {
     hour: Number.isInteger(candidate?.hour) && candidate!.hour! >= 0 && candidate!.hour! <= 23
       ? candidate!.hour!
       : 12,
+    title: typeof candidate?.title === "string" ? candidate.title.trim().slice(0, 120) : "",
+    durationMinutes: typeof candidate?.durationMinutes === "number" && ALLOWED_DURATIONS.includes(candidate.durationMinutes)
+      ? candidate.durationMinutes
+      : 60,
   };
 }
 

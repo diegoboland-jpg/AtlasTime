@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Globe2, MessageCircle, Phone, Plus, Users, Video } from "lucide-react";
 import { AddPersonForm } from "./components/AddPersonForm";
 import { GroupManager } from "./components/GroupManager";
+import { MeetingHandoff } from "./components/MeetingHandoff";
 import { PersonCard } from "./components/PersonCard";
 import { ShareImportBanner } from "./components/ShareImportBanner";
 import { TimePlanner } from "./components/TimePlanner";
@@ -103,7 +104,7 @@ export default function App() {
           <span className="brand-mark"><Globe2 size={20} /></span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">v0.8 reliability tested</span>
+        <span className="mvp-badge">v0.9 meeting handoff</span>
       </header>
 
       <main id="main-content" tabIndex={-1}>
@@ -185,8 +186,16 @@ export default function App() {
           onNow={() => {
             const current = new Date();
             setNow(current);
-            updateActiveGroup((group) => ({ ...group, planner: { date: utcDateInput(current), hour: current.getUTCHours() } }));
+            updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date: utcDateInput(current), hour: current.getUTCHours() } }));
           }}
+        />
+
+        <MeetingHandoff
+          people={people}
+          planner={planner}
+          selectedInstant={selectedInstant}
+          onTitleChange={(title) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, title } }))}
+          onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
         />
 
         <section className="section launch-section">
@@ -205,7 +214,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.8</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.9</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }
