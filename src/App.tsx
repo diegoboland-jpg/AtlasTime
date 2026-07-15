@@ -104,7 +104,7 @@ export default function App() {
           <span className="brand-mark"><Globe2 size={20} /></span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">v0.9 meeting handoff</span>
+        <span className="mvp-badge">v0.10 mobile readiness</span>
       </header>
 
       <main id="main-content" tabIndex={-1}>
@@ -214,7 +214,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.9</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.10</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

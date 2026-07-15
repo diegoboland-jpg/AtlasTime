@@ -31,15 +31,6 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
 
   return (
     <article className="person-card" aria-labelledby={`person-${person.id}-name`}>
-      <button
-        type="button"
-        className="icon-button remove"
-        onClick={() => onRemove(person.id)}
-        aria-label={`Remove ${person.name}`}
-      >
-        <Trash2 size={16} />
-      </button>
-
       <div className="avatar" aria-hidden="true">{person.name.slice(0, 1).toUpperCase()}</div>
       <div className="person-main">
         <h3 id={`person-${person.id}-name`}>{person.name}</h3>
@@ -60,6 +51,17 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
           })}
         </span>
       </div>
+
+      <button
+        type="button"
+        className="icon-button remove"
+        data-card-action="delete"
+        onClick={() => onRemove(person.id)}
+        aria-label={`Remove ${person.name}`}
+        title={`Remove ${person.name}`}
+      >
+        <Trash2 size={16} />
+      </button>
 
       <div className="selected-person-time">
         <span>Selected</span>
