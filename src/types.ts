@@ -11,4 +11,6 @@ export type HourScore = {
   utcHour: number;
   available: number;
   total: number;
+  penalty: number;
+  score: number;
 };

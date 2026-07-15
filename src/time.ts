@@ -48,11 +48,30 @@ export function dateAtUtcHour(dateValue: string, utcHour: number): Date {
 export function scoreHours(people: Person[], dateValue: string): HourScore[] {
   return Array.from({ length: 24 }, (_, utcHour) => {
     const instant = dateAtUtcHour(dateValue, utcHour);
-    const available = people.filter((person) => {
+    let available = 0;
+    const penalty = people.reduce((totalPenalty, person) => {
       const localHour = hourInZone(instant, person.timeZone);
-      return localHour >= person.workStart && localHour < person.workEnd;
-    }).length;
-    return { utcHour, available, total: people.length };
+      const working = localHour >= person.workStart && localHour < person.workEnd;
+
+      if (working) {
+        available += 1;
+        return totalPenalty;
+      }
+
+      const distance = localHour < person.workStart
+        ? person.workStart - localHour
+        : localHour - person.workEnd + 1;
+      const extremePenalty = localHour < 7 || localHour >= 21 ? 5 : 0;
+      return totalPenalty + 2 + distance + extremePenalty;
+    }, 0);
+
+    return {
+      utcHour,
+      available,
+      total: people.length,
+      penalty,
+      score: available * 12 - penalty,
+    };
   });
 }
 
@@ -60,7 +79,9 @@ export function bestHour(people: Person[], dateValue: string): HourScore | null 
   if (!people.length) return null;
   return scoreHours(people, dateValue).sort(
     (a, b) =>
+      b.score - a.score ||
       b.available - a.available ||
+      a.penalty - b.penalty ||
       Math.abs(a.utcHour - 15) - Math.abs(b.utcHour - 15),
   )[0];
 }
