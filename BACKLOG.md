@@ -1,5 +1,17 @@
 # AtlasTime backlog
 
+## v0.10: mobile-device readiness and UI cleanup
+
+- [x] Move the person-card delete action into a dedicated non-overlapping grid slot.
+- [x] Move the primary 24-hour slider directly below the people cards and above planner analysis.
+- [x] Keep the action accessible and touch-friendly on desktop and mobile.
+- [x] Add regression coverage for control order and non-overlay layout rules.
+- [x] Add a one-command local-network preview for real-phone testing.
+- [x] Document Windows, Wi-Fi, firewall, and phone-browser setup.
+- [x] Add a practical portrait, landscape, long-content, sharing, and export checklist.
+- [ ] Complete hands-on testing on at least one iPhone and one Android phone.
+- [ ] Build an installable PWA after real-device feedback is addressed.
+
 ## v0.9: meeting handoff and calendar-file export
 
 - [x] Save a meeting title and duration with each group.
@@ -66,7 +78,7 @@
 - Calendar integrations only after the planner workflow is validated.
 - Authentication, synchronized data, invitations, and team workspaces only after local-first validation.
 
-## Explicitly out of scope through v0.9
+## Explicitly out of scope through v0.10
 
 - Backend services or cloud persistence.
 - Authentication and accounts.
