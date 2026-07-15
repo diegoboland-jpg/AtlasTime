@@ -3,6 +3,7 @@
 ## v0.10: mobile-device readiness and UI cleanup
 
 - [x] Move the person-card delete action into a dedicated non-overlapping grid slot.
+- [x] Move the primary 24-hour slider directly below the people cards and above planner analysis.
 - [x] Keep the action accessible and touch-friendly on desktop and mobile.
 - [x] Add regression coverage for control order and non-overlay layout rules.
 - [x] Add a one-command local-network preview for real-phone testing.

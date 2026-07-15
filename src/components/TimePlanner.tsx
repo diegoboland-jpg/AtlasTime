@@ -1,4 +1,4 @@
-import { CalendarDays, Clock3, RotateCcw } from "lucide-react";
+import { CalendarDays, Clock3 } from "lucide-react";
 import { dateAtUtcHour, formatInZone, hourInZone, localLabel } from "../time";
 import type { HourScore, Person } from "../types";
 
@@ -10,7 +10,6 @@ type TimePlannerProps = {
   hours: HourScore[];
   onDateChange: (date: string) => void;
   onHourChange: (hour: number) => void;
-  onNow: () => void;
 };
 
 export function TimePlanner({
@@ -21,10 +20,7 @@ export function TimePlanner({
   hours,
   onDateChange,
   onHourChange,
-  onNow,
 }: TimePlannerProps) {
-  const selectedScore = hours[selectedHour];
-
   return (
     <section className="section planner" aria-labelledby="planner-heading">
       <div className="section-heading">
@@ -63,36 +59,6 @@ export function TimePlanner({
           </span>
         </button>
       )}
-
-      <div className="slider-panel">
-        <div>
-          <span>Selected meeting hour</span>
-          <strong>{String(selectedHour).padStart(2, "0")}:00 UTC</strong>
-        </div>
-        <input
-          className="time-slider"
-          type="range"
-          min="0"
-          max="23"
-          step="1"
-          value={selectedHour}
-          onChange={(event) => onHourChange(Number(event.target.value))}
-          aria-label="Selected UTC meeting hour"
-          aria-valuetext={`${String(selectedHour).padStart(2, "0")}:00 UTC, ${selectedScore?.available ?? 0} of ${selectedScore?.total ?? 0} available`}
-        />
-        <div className="slider-actions">
-          <p>
-            {selectedScore?.available ?? 0}/{selectedScore?.total ?? 0} available - score {selectedScore?.score ?? 0}
-          </p>
-          <button type="button" onClick={onNow} title="Return to the current UTC date and hour">
-            <RotateCcw size={14} /> Now
-          </button>
-        </div>
-      </div>
-
-      <p className="sr-only" aria-live="polite">
-        Selected meeting time {String(selectedHour).padStart(2, "0")}:00 UTC. {selectedScore?.available ?? 0} of {selectedScore?.total ?? 0} entries are within working hours.
-      </p>
 
       <div className="timeline-wrap" role="region" aria-label="Scrollable 24-hour local-time comparison" tabIndex={0}>
         <div className="timeline-labels">
