@@ -1,15 +1,22 @@
 # AtlasTime backlog
 
-## Next: global place discovery
+## v0.5: global place discovery
 
-- Replace the bundled city list with global city search.
-- Add debounced typeahead, keyboard navigation, and loading, empty, and error states.
-- Evaluate a geocoding provider that returns stable city, country, latitude, and longitude data.
-- Resolve IANA time zones from coordinates through a dedicated timezone lookup service.
-- Cache successful city and timezone results locally to reduce repeated lookups.
-- Handle duplicate city names, aliases, accented names, and translated labels.
-- Document provider rate limits, attribution requirements, privacy considerations, and offline behavior.
-- Test daylight-saving transitions and time zones with non-hour offsets.
+- [x] Replace the bundled city selector with global city search.
+- [x] Add debounced typeahead, keyboard navigation, and loading, empty, and error states.
+- [x] Return stable place IDs, city, country, latitude, longitude, and IANA timezone data.
+- [x] Cache successful city and timezone results locally with a seven-day TTL.
+- [x] Distinguish duplicate city names with administrative region and country labels.
+- [x] Add provider attribution and configurable commercial endpoint support.
+- [ ] Add automated tests for daylight-saving transitions and non-hour-offset time zones.
+- [ ] Add an offline fallback for recently used places beyond cached search queries.
+
+### Provider decision
+
+- Prototype: Open-Meteo Geocoding API, which returns global translated place results and IANA timezones.
+- Free public endpoint: evaluation and non-commercial use, subject to rate limits and attribution.
+- Commercial path: configure `VITE_GEOCODING_API_URL` and `VITE_GEOCODING_API_KEY` for Open-Meteo's customer endpoint, or replace the provider module.
+- Privacy: search text is sent to the configured geocoding provider; saved people and planner state remain local.
 
 ## Later product work
 
@@ -18,7 +25,7 @@
 - Calendar integrations only after the planner workflow is validated.
 - Authentication, synchronized data, invitations, and team workspaces only after local-first validation.
 
-## Explicitly out of scope for v0.4
+## Explicitly out of scope through v0.5
 
 - Backend services or cloud persistence.
 - Authentication and accounts.
