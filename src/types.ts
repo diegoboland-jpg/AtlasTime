@@ -14,3 +14,23 @@ export type HourScore = {
   penalty: number;
   score: number;
 };
+
+export type PlannerState = {
+  date: string;
+  hour: number;
+};
+
+export type SavedGroup = {
+  id: string;
+  name: string;
+  people: Person[];
+  planner: PlannerState;
+  updatedAt: string;
+};
+
+export type SharedGroupPayload = {
+  version: 1;
+  name: string;
+  people: Person[];
+  planner: PlannerState;
+};
