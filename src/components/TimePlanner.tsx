@@ -1,4 +1,4 @@
-import { CalendarDays, Clock3 } from "lucide-react";
+import { CalendarDays, Clock3, RotateCcw } from "lucide-react";
 import { dateAtUtcHour, formatInZone, hourInZone, localLabel } from "../time";
 import type { HourScore, Person } from "../types";
 
@@ -10,6 +10,7 @@ type TimePlannerProps = {
   hours: HourScore[];
   onDateChange: (date: string) => void;
   onHourChange: (hour: number) => void;
+  onNow: () => void;
 };
 
 export function TimePlanner({
@@ -20,6 +21,7 @@ export function TimePlanner({
   hours,
   onDateChange,
   onHourChange,
+  onNow,
 }: TimePlannerProps) {
   const selectedScore = hours[selectedHour];
 
@@ -77,9 +79,14 @@ export function TimePlanner({
           onChange={(event) => onHourChange(Number(event.target.value))}
           aria-label="Selected UTC meeting hour"
         />
-        <p>
-          {selectedScore?.available ?? 0}/{selectedScore?.total ?? 0} available · score {selectedScore?.score ?? 0}
-        </p>
+        <div className="slider-actions">
+          <p>
+            {selectedScore?.available ?? 0}/{selectedScore?.total ?? 0} available · score {selectedScore?.score ?? 0}
+          </p>
+          <button type="button" onClick={onNow} title="Return to the current UTC date and hour">
+            <RotateCcw size={14} /> Now
+          </button>
+        </div>
       </div>
 
       <div className="timeline-wrap">

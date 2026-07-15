@@ -15,6 +15,10 @@ function todayInput() {
   return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 }
 
+function utcDateInput(date: Date) {
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+}
+
 function loadPeople(): Person[] {
   try {
     const raw = localStorage.getItem(PEOPLE_STORAGE_KEY);
@@ -87,10 +91,10 @@ export default function App() {
           <div className="section-heading">
             <div>
               <p className="section-kicker"><Users size={16} /> PEOPLE</p>
-              <h2>Who needs to connect?</h2>
+              <h2>Who or what needs to connect?</h2>
             </div>
             <button className="primary-button" onClick={() => setShowForm((value) => !value)}>
-              <Plus size={18} /> Add person
+              <Plus size={18} /> Add person, location, or team
             </button>
           </div>
 
@@ -107,6 +111,7 @@ export default function App() {
                 key={person.id}
                 person={person}
                 now={now}
+                selectedInstant={selectedInstant}
                 onChange={updatePerson}
                 onRemove={(id) => setPeople((current) => current.filter((item) => item.id !== id))}
               />
@@ -122,6 +127,11 @@ export default function App() {
           hours={hours}
           onDateChange={(date) => setPlanner((current) => ({ ...current, date }))}
           onHourChange={(hour) => setPlanner((current) => ({ ...current, hour }))}
+          onNow={() => {
+            const current = new Date();
+            setNow(current);
+            setPlanner({ date: utcDateInput(current), hour: current.getUTCHours() });
+          }}
         />
 
         <section className="section launch-section">

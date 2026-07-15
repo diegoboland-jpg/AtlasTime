@@ -5,13 +5,14 @@ import type { Person } from "../types";
 type PersonCardProps = {
   person: Person;
   now: Date;
+  selectedInstant: Date;
   onChange: (person: Person) => void;
   onRemove: (id: string) => void;
 };
 
 const hourOptions = Array.from({ length: 24 }, (_, hour) => hour);
 
-export function PersonCard({ person, now, onChange, onRemove }: PersonCardProps) {
+export function PersonCard({ person, now, selectedInstant, onChange, onRemove }: PersonCardProps) {
   const localHour = hourInZone(now, person.timeZone);
   const working = localHour >= person.workStart && localHour < person.workEnd;
 
@@ -48,6 +49,7 @@ export function PersonCard({ person, now, onChange, onRemove }: PersonCardProps)
       </div>
 
       <div className="person-time">
+        <small>Now</small>
         <strong>{formatInZone(now, person.timeZone)}</strong>
         <span>
           {formatInZone(now, person.timeZone, {
@@ -56,6 +58,18 @@ export function PersonCard({ person, now, onChange, onRemove }: PersonCardProps)
             month: "short",
           })}
         </span>
+      </div>
+
+      <div className="selected-person-time" aria-live="polite">
+        <span>Selected</span>
+        <strong>{formatInZone(selectedInstant, person.timeZone)}</strong>
+        <small>
+          {formatInZone(selectedInstant, person.timeZone, {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+          })}
+        </small>
       </div>
 
       <div className="work-hours" aria-label={`${person.name} working hours`}>

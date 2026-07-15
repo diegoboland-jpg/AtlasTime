@@ -32,11 +32,11 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
   return (
     <form className="add-form" onSubmit={submit}>
       <label>
-        Name
+        Person, location, or team
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="e.g. Olesya"
+          placeholder="e.g. Olesya, Madrid office, or Design team"
           autoFocus
         />
       </label>
@@ -71,7 +71,7 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
           Cancel
         </button>
         <button className="primary-button" type="submit" disabled={!name.trim() || !selectedCity}>
-          Save person
+          Save entry
         </button>
       </div>
     </form>
