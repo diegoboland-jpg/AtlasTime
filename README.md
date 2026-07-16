@@ -40,11 +40,11 @@ npm run preview
 
 1. Install GitHub Desktop.
 2. Sign in to the GitHub account `diegoboland-jpg`.
-3. Choose **File → Add local repository**.
+3. Choose **File â†’ Add local repository**.
 4. Select the extracted `AtlasTime` folder.
 5. If prompted, choose **Create a repository** for this folder.
 6. Commit the files with message `Initial AtlasTime MVP`.
-7. In **Repository → Repository settings → Remote**, set:
+7. In **Repository â†’ Repository settings â†’ Remote**, set:
    `https://github.com/diegoboland-jpg/AtlasTime.git`
 8. Click **Push origin**.
 
@@ -52,7 +52,7 @@ Because the remote repository is empty, GitHub Desktop may instead show **Publis
 
 ## Product roadmap
 
-### Phase 1 — Current MVP
+### Phase 1 â€” Current MVP
 - Time-zone roster
 - Current local times
 - Work-hour overlap
@@ -60,21 +60,21 @@ Because the remote repository is empty, GitHub Desktop may instead show **Publis
 - Calling-app shortcuts
 - Browser persistence
 
-### Phase 2 — Validation
+### Phase 2 â€” Validation
 - Editable work hours per person
 - Multiple saved groups
 - Shareable scheduling link
-- Better mobile layout
+- Compact mobile overview with local time, participant/location times, and the slider in one screen
 - Accessibility and usability testing
 
-### Phase 3 — Integrations
+### Phase 3 â€” Integrations
 - Phone contacts, only with explicit permission
 - Google and Microsoft calendars
 - Zoom meeting creation
 - WhatsApp, Viber and Telegram deep-link improvements
 - Native mobile application if web validation is positive
 
-### Phase 4 — Collaboration
+### Phase 4 â€” Collaboration
 - Accounts and synchronized data
 - Team workspaces
 - Invitations and voting
@@ -87,3 +87,4 @@ The current MVP stores contacts only in the user's browser using `localStorage`.
 ## License
 
 No license has been selected yet. All rights are reserved by the repository owner until a license is added.
+
