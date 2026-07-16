@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v0.11: installable PWA preview
+
+- [x] Add a web app manifest, standalone display mode, theme metadata, and scalable app icon.
+- [x] Add a same-origin offline shell without caching third-party city-search requests.
+- [x] Add install guidance for Chromium browsers and iPhone Safari.
+- [x] Add a production network-preview command and physical-device checklist.
+- [ ] Validate installation, relaunch, updates, and offline reopening on an iPhone.
+- [ ] Validate installation, relaunch, updates, and offline reopening on an Android phone.
+- [ ] Add dedicated PNG icons and store-ready assets after the visual identity is approved.
+
 ## v0.10: mobile-device readiness and UI cleanup
 
 - [x] Move the person-card delete action into a dedicated non-overlapping grid slot.
@@ -10,7 +20,7 @@
 - [x] Document Windows, Wi-Fi, firewall, and phone-browser setup.
 - [x] Add a practical portrait, landscape, long-content, sharing, and export checklist.
 - [ ] Complete hands-on testing on at least one iPhone and one Android phone.
-- [ ] Build an installable PWA after real-device feedback is addressed.
+- [x] Build an installable PWA preview for real-device validation.
 
 ## v0.9: meeting handoff and calendar-file export
 
@@ -78,7 +88,7 @@
 - Calendar integrations only after the planner workflow is validated.
 - Authentication, synchronized data, invitations, and team workspaces only after local-first validation.
 
-## Explicitly out of scope through v0.10
+## Explicitly out of scope through v0.11
 
 - Backend services or cloud persistence.
 - Authentication and accounts.

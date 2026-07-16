@@ -35,6 +35,22 @@ main:focus { outline: none; }
   background: #246bfd; border-radius: 11px; box-shadow: 0 8px 20px rgba(36,107,253,.25);
 }
 .mvp-badge { font-size: 12px; font-weight: 700; color: #246bfd; background: #e8efff; padding: 7px 11px; border-radius: 999px; }
+.topbar-actions { display: flex; align-items: center; gap: 9px; position: relative; }
+.install-control { position: relative; }
+.install-button, .installed-badge {
+  min-height: 36px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px;
+  border: 1px solid #ccd8ee; border-radius: 999px; background: white; color: #31558b; font-size: 12px; font-weight: 800;
+}
+.install-button { cursor: pointer; }
+.install-button:hover { border-color: #8fb0ff; color: #174fae; }
+.installed-badge { color: #16845b; border-color: #b9dfcf; }
+.install-tip {
+  position: absolute; z-index: 20; top: calc(100% + 10px); right: 0; width: min(310px, calc(100vw - 32px));
+  display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px; border: 1px solid #cfddff;
+  border-radius: 12px; background: white; box-shadow: 0 14px 36px rgba(20,33,61,.16); color: #45536c;
+  font-size: 12px; line-height: 1.45;
+}
+.install-tip button { border: 0; padding: 2px; background: transparent; color: #63708a; cursor: pointer; }
 
 main { max-width: 1200px; margin: auto; padding: 0 28px 56px; }
 .hero {
@@ -247,235 +263,85 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
   border: 1px solid #dce4f0; border-radius: 14px; background: #f7f9fc; color: #33415a;
   font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere;
 }
-.handoff-actions { grid-column: 1 / -1; display: flex; justig~ºÒÚ$z{-®éÜj×import { MeetingHandoff } from "./components/MeetingHandoff";
-import { PersonCard } from "./components/PersonCard";
-import { ShareImportBanner } from "./components/ShareImportBanner";
-import { TimePlanner } from "./components/TimePlanner";
-import { TimeSlider } from "./components/TimeSlider";
-import { clearShareHash, createShareLink, defaultPlanner, loadGroups, readSharedGroup, saveGroups } from "./groups";
-import { bestHour, dateAtUtcHour, formatInZone, scoreHours } from "./time";
-import type { Person, SavedGroup } from "./types";
+.handoff-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+.handoff-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
 
-function utcDateInput(date: Date) {
-  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+.launch-section {
+  display: grid; grid-template-columns: 1fr 1.3fr; gap: 48px; align-items: center;
+  margin-top: 56px; padding: 44px; border-radius: 24px; background: #fff; border: 1px solid #e4e9f2;
+}
+.launch-section p { color: #6d7890; line-height: 1.55; }
+.launch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.launch-grid a {
+  min-height: 62px; display: flex; align-items: center; gap: 11px; padding: 15px 17px;
+  border: 1px solid #dfe5ef; border-radius: 14px; font-weight: 750;
+}
+.launch-grid a svg:last-child { margin-left: auto; color: #9aa5b8; }
+.launch-grid a:hover { border-color: #246bfd; color: #246bfd; }
+.selected-summary { grid-column: 1 / -1; margin: 0; font-size: 12px; }
+
+footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex; justify-content: space-between; color: #8a96aa; font-size: 12px; }
+
+@media (max-width: 900px) {
+  .hero { padding: 48px 36px; }
+  .people-grid { grid-template-columns: 1fr; }
+  .add-form { grid-template-columns: 1fr 1fr; }
+  .wide-field { grid-column: 1 / -1; }
+  .recommendation { grid-template-columns: auto 1fr; }
+  .local-times { grid-column: 1 / -1; flex-wrap: wrap; }
+  .slider-panel { grid-template-columns: 150px 1fr; }
+  .slider-actions { grid-column: 1 / -1; justify-items: start; }
+  .launch-section { grid-template-columns: 1fr; }
+  .handoff-panel { grid-template-columns: 1fr; }
+  .handoff-actions { grid-column: auto; }
+  .group-manager { grid-template-columns: 1fr 1fr; }
+  .group-actions { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (max-width: 640px) {
+  .topbar, main { padding-left: 16px; padding-right: 16px; }
+  .hero { padding: 38px 24px; min-height: 0; flex-direction: column; align-items: stretch; }
+  .hero h1 { font-size: 42px; }
+  .hero-clock { min-width: 0; }
+  .section { padding-top: 46px; }
+  .section-heading { align-items: flex-start; flex-direction: column; }
+  .section-heading > .primary-button { width: 100%; justify-content: center; }
+  .add-form { grid-template-columns: 1fr; }
+  .wide-field { grid-column: auto; }
+  .person-card { grid-template-columns: auto minmax(0, 1fr) 44px; align-items: start; }
+  .avatar { grid-column: 1; grid-row: 1; }
+  .person-main { grid-column: 2; grid-row: 1; }
+  .remove { grid-column: 3; grid-row: 1; }
+  .person-time { grid-column: 2 / 4; grid-row: 2; text-align: left; }
+  .recommendation { grid-template-columns: 1fr; }
+  .local-times { display: grid; grid-template-columns: 1fr 1fr; }
+  .slider-panel { grid-template-columns: 1fr; gap: 12px; }
+  .slider-actions { grid-column: auto; justify-items: start; }
+  .launch-section { margin-top: 44px; padding: 28px 20px; }
+  .launch-grid { grid-template-columns: 1fr; }
+  .share-import { align-items: stretch; flex-direction: column; }
+  .group-manager { grid-template-columns: 1fr; gap: 16px; }
+  .group-actions { grid-column: auto; }
+  .group-actions button { flex: 1 1 calc(50% - 8px); justify-content: center; min-height: 44px; }
+  .mvp-badge { display: none; }
+  .topbar { height: auto; min-height: 72px; padding-top: 10px; padding-bottom: 10px; }
+  .topbar-actions { gap: 6px; }
+  .install-button { padding-inline: 10px; }
+  .timeline-wrap { margin-left: -8px; margin-right: -8px; padding: 14px 8px; border-radius: 14px; }
+  footer { flex-direction: column; gap: 8px; }
+  .handoff-panel { padding: 18px; }
+  .handoff-actions { flex-direction: column; }
+  .handoff-actions button { width: 100%; }
 }
 
-export default function App() {
-  const [workspace, setWorkspace] = useState(loadGroups);
-  const [sharedPayload, setSharedPayload] = useState(readSharedGroup);
-  const [now, setNow] = useState(new Date());
-  const [showForm, setShowForm] = useState(false);
-  const [copyStatus, setCopyStatus] = useState("");
+@media (hover: none) {
+  .remove { opacity: 1; }
+  .hour-cell { min-height: 40px; }
+}
 
-  const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
-  const people = activeGroup.people;
-  const planner = activeGroup.planner;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
 
-  useEffect(() => saveGroups(workspace.groups, workspace.activeGroupId), [workspace]);
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 15_000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  const hours = useMemo(() => scoreHours(people, planner.date), [people, planner.date]);
-  const recommendation = useMemo(() => bestHour(people, planner.date), [people, planner.date]);
-  const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
-
-  function updateActiveGroup(update: (group: SavedGroup) => SavedGroup) {
-    setWorkspace((current) => ({
-      ...current,
-      groups: current.groups.map((group) => group.id === current.activeGroupId
-        ? { ...update(group), updatedAt: new Date().toISOString() }
-        : group),
-    }));
-  }
-
-  function updatePerson(updated: Person) {
-    updateActiveGroup((group) => ({ ...group, people: group.people.map((person) => person.id === updated.id ? updated : person) }));
-  }
-
-  function selectHour(hour: number) {
-    updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, hour } }));
-  }
-
-  function selectNow() {
-    const current = new Date();
-    setNow(current);
-    updateActiveGroup((group) => ({
-      ...group,
-      planner: { ...group.planner, date: utcDateInput(current), hour: current.getUTCHours() },
-    }));
-  }
-
-  function createGroup() {
-    const requested = window.prompt("Name the new group", "New group")?.trim();
-    if (!requested) return;
-    const group: SavedGroup = { id: crypto.randomUUID(), name: requested, people: [], planner: defaultPlanner(), updatedAt: new Date().toISOString() };
-    setWorkspace((current) => ({ groups: [...current.groups, group], activeGroupId: group.id }));
-    setShowForm(false);
-  }
-
-  function renameGroup() {
-    const requested = window.prompt("Rename this group", activeGroup.name)?.trim();
-    if (requested) updateActiveGroup((group) => ({ ...group, name: requested }));
-  }
-
-  function deleteGroup() {
-    if (workspace.groups.length === 1 || !window.confirm(`Delete â€œ${activeGroup.name}â€ from this browser?`)) return;
-    setWorkspace((current) => {
-      const groups = current.groups.filter((group) => group.id !== current.activeGroupId);
-      return { groups, activeGroupId: groups[0].id };
-    });
-  }
-
-  async function shareGroup() {
-    const approved = window.confirm("This link contains the group name, people or team names, locations, time zones, and working hours. Anyone with the link can read that information. Create it?");
-    if (!approved) return;
-    const link = createShareLink(activeGroup);
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopyStatus("Copied!");
-      window.setTimeout(() => setCopyStatus(""), 2200);
-    } catch {
-      window.prompt("Copy this AtlasTime link", link);
-    }
-  }
-
-  function importSharedGroup() {
-    if (!sharedPayload) return;
-    const group: SavedGroup = {
-      id: crypto.randomUUID(),
-      name: sharedPayload.name,
-      people: sharedPayload.people.map((person) => ({ ...person, id: crypto.randomUUID() })),
-      planner: sharedPayload.planner,
-      updatedAt: new Date().toISOString(),
-    };
-    setWorkspace((current) => ({ groups: [...current.groups, group], activeGroupId: group.id }));
-    setSharedPayload(null);
-    clearShareHash();
-  }
-
-  return (
-    <div className="app-shell">
-      <a className="skip-link" href="#main-content">Skip to planner content</a>
-      <header className="topbar">
-        <a className="brand" href="#main-content" aria-label="AtlasTime home">
-          <span className="brand-mark"><Globe2 size={20} /></span>
-          <span>AtlasTime</span>
-        </a>
-        <span className="mvp-badge">v0.10 mobile readiness</span>
-      </header>
-
-      <main id="main-content" tabIndex={-1}>
-        {sharedPayload && <ShareImportBanner payload={sharedPayload} onImport={importSharedGroup} onDismiss={() => { setSharedPayload(null); clearShareHash(); }} />}
-
-        <section className="hero">
-          <div>
-            <p className="eyebrow">TIME ZONES, WITHOUT THE MATH</p>
-            <h1>Find a humane time<br />for everyone.</h1>
-            <p className="hero-copy">Explore every hour, compare live local times, and choose a fair meeting window.</p>
-          </div>
-          <div className="hero-clock" aria-label={`Your local time is ${formatInZone(now, Intl.DateTimeFormat().resolvedOptions().timeZone)}`}>
-            <span>Your local time</span>
-            <strong>{formatInZone(now, Intl.DateTimeFormat().resolvedOptions().timeZone)}</strong>
-            <small>{Intl.DateTimeFormat().resolvedOptions().timeZone.replaceAll("_", " ")}</small>
-          </div>
-        </section>
-
-        <GroupManager
-          groups={workspace.groups}
-          activeGroupId={workspace.activeGroupId}
-          copyStatus={copyStatus}
-          onSelect={(activeGroupId) => { setWorkspace((current) => ({ ...current, activeGroupId })); setShowForm(false); }}
-          onCreate={createGroup}
-          onRename={renameGroup}
-          onDelete={deleteGroup}
-          onShare={shareGroup}
-        />
-
-        <section className="section">
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker"><Users size={16} /> PEOPLE</p>
-              <h2>Who or what needs to connect?</h2>
-            </div>
-            <button className="primary-button" onClick={() => setShowForm((value) => !value)} aria-expanded={showForm} aria-controls="add-entry-form">
-              <Plus size={18} /> Add person, location, or team
-            </button>
-          </div>
-
-          {showForm && (
-            <div id="add-entry-form">
-              <AddPersonForm
-                onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
-                onCancel={() => setShowForm(false)}
-              />
-            </div>
-          )}
-
-          <div className="people-grid" aria-label={`Entries in ${activeGroup.name}`}>
-            {people.map((person) => (
-              <PersonCard
-                key={person.id}
-                person={person}
-                now={now}
-                selectedInstant={selectedInstant}
-                onChange={updatePerson}
-                onRemove={(id) => updateActiveGroup((group) => ({ ...group, people: group.people.filter((item) => item.id !== id) }))}
-              />
-            ))}
-            {people.length === 0 && (
-              <div className="empty-state">
-                <Users size={28} aria-hidden="true" />
-                <h3>This group is ready.</h3>
-                <p>Add a person, location, or team to compare local times.</p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        <TimeSlider
-          selectedHour={planner.hour}
-          selectedScore={hours[planner.hour]}
-          onHourChange={selectHour}
-          onNow={selectNow}
-        />
-
-        <TimePlanner
-          people={people}
-          dateValue={planner.date}
-          selectedHour={planner.hour}
-          recommendation={recommendation}
-          hours={hours}
-          onDateChange={(date) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date } }))}
-          onHourChange={selectHour}
-        />
-
-        <MeetingHandoff
-          people={people}
-          planner={planner}
-          selectedInstant={selectedInstant}
-          onTitleChange={(title) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, title } }))}
-          onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
-        />
-
-        <section className="section launch-section">
-          <div>
-            <p className="section-kicker"><Phone size={16} /> CONNECT</p>
-            <h2>Move from planning to calling.</h2>
-            <p>These shortcuts only open each provider. AtlasTime does not create meetings or connect calendars yet.</p>
-          </div>
-          <div className="launch-grid">
-            <a href="https://wa.me/" target="_blank" rel="noreferrer"><MessageCircle /> WhatsApp <ExternalLink size={15} /></a>
-            <a href="https://zoom.us/start/videomeeting" target="_blank" rel="noreferrer"><Video /> Zoom <ExternalLink size={15} /></a>
-            <a href="https://t.me/" target="_blank" rel="noreferrer"><MessageCircle /> Telegram <ExternalLink size={15} /></a>
-            <a href="viber://chat"><Phone /> Viber <ExternalLink size={15} /></a>
-          </div>
-          <p className="selected-summary">Selected instant: <strong>{selectedInstant.toUTCString()}</strong></p>
-        </section>
-      </main>
-
-      <footer><span>AtlasTime v0.10</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
-    </div>
-  );
+@media (forced-colors: active) {
+  .hour-cell.working, .hour-cell.selected, .recommendation, .selected-person-time { border: 1px solid CanvasText; }
 }

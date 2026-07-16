@@ -1,6 +1,6 @@
 # AtlasTime mobile-device testing
 
-AtlasTime is a responsive web application today. It can be tested on a real phone without installing a native app.
+AtlasTime v0.11 is an installable progressive web app preview. It can still be used as a normal responsive website.
 
 ## Start a phone-accessible preview on Windows
 
@@ -17,6 +17,15 @@ AtlasTime is a responsive web application today. It can be tested on a real phon
 6. Open that exact Network address in the phone browser.
 7. If Windows Firewall asks, allow Node.js on **Private networks** only.
 
+The development server validates layout and interaction, but browsers require a production build to exercise the service worker and installation flow. For that test, run:
+
+```bat
+npm.cmd run build
+npm.cmd run preview:mobile
+```
+
+Open the printed Network address. Android Chrome can show an **Install** prompt. On iPhone Safari, use **Share → Add to Home Screen**. A trusted HTTPS deployment is required if the phone browser refuses installation from a local-network HTTP address.
+
 If Vite does not print a reachable Network address, run `ipconfig`, find the active Wi-Fi adapter's IPv4 address, and open `http://YOUR-IP:5173/` on the phone. Disable a VPN temporarily if it isolates local-network traffic.
 
 ## Phone review checklist
@@ -28,8 +37,10 @@ If Vite does not print a reachable Network address, run `ipconfig`, find the act
 - Confirm the delete control never overlaps **Now**, the live time, or the date.
 - Try a long participant name and long city name.
 - Copy meeting details and download the `.ics` file.
+- Install AtlasTime, launch it from the home screen, and confirm it opens without browser controls.
+- After one online load, turn on airplane mode and confirm the saved group and planner reopen.
 - Test at least one iPhone/Safari and one Android/Chrome device before calling the layout production-ready.
 
 ## Important limitation
 
-The Vite development server is for local testing only. Do not expose it directly to the public internet. An installable PWA and native store packages are separate future milestones.
+The Vite development server is for local testing only. Do not expose it directly to the public internet. This phase creates an installable PWA, not a native App Store or Play Store package. Installation and offline behavior remain provisional until verified on physical iPhone and Android devices.

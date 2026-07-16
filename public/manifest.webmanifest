@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "AtlasTime",
+  "short_name": "AtlasTime",
+  "description": "Find a humane meeting time across time zones.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#101828",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/atlas-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
