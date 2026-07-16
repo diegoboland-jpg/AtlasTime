@@ -2,11 +2,11 @@
 
 ## v0.12: compact mobile time overview
 
-- [ ] Add an in-app, widget-style overview that keeps the device's local time, every person/location time, and the primary 24-hour slider together in the first mobile viewport.
-- [ ] Show both live local time and the selected meeting time without duplicating planner state.
-- [ ] Use a compact responsive strip or grid for small groups, with touch-friendly horizontal overflow for larger groups.
-- [ ] Keep names, locations, day changes, work-hour status, and the selected hour readable at phone widths.
-- [ ] Preserve the full editable person cards below the compact overview instead of hiding working-hour controls.
+- [x] Add an in-app, widget-style overview that keeps the device's local time, every person/location time, and the primary 24-hour slider together in the first mobile viewport.
+- [x] Show both live local time and the selected meeting time without duplicating planner state.
+- [x] Use a compact responsive strip or grid for small groups, with touch-friendly horizontal overflow for larger groups.
+- [x] Keep names, locations, day changes, work-hour status, and the selected hour readable at phone widths.
+- [x] Preserve the full editable person cards below the compact overview instead of hiding working-hour controls.
 - [ ] Add responsive and accessibility regression coverage for compact, overflow, and large-text layouts.
 - [ ] Validate the overview on at least one Android phone and one iPhone before marking the milestone complete.
 

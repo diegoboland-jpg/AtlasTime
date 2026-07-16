@@ -3,6 +3,7 @@ import { ExternalLink, Globe2, MessageCircle, Phone, Plus, Users, Video } from "
 import { AddPersonForm } from "./components/AddPersonForm";
 import { GroupManager } from "./components/GroupManager";
 import { MeetingHandoff } from "./components/MeetingHandoff";
+import { MobileTimeOverview } from "./components/MobileTimeOverview";
 import { PersonCard } from "./components/PersonCard";
 import { PwaInstall } from "./components/PwaInstall";
 import { ShareImportBanner } from "./components/ShareImportBanner";
@@ -122,12 +123,22 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.11 installable preview</span>
+          <span className="mvp-badge">v0.12 mobile overview</span>
         </div>
       </header>
 
       <main id="main-content" tabIndex={-1}>
         {sharedPayload && <ShareImportBanner payload={sharedPayload} onImport={importSharedGroup} onDismiss={() => { setSharedPayload(null); clearShareHash(); }} />}
+
+        <MobileTimeOverview
+          now={now}
+          people={people}
+          selectedInstant={selectedInstant}
+          selectedHour={planner.hour}
+          selectedScore={hours[planner.hour]}
+          onHourChange={selectHour}
+          onNow={selectNow}
+        />
 
         <section className="hero">
           <div>
@@ -235,7 +246,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.11</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.12</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

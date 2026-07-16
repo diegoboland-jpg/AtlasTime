@@ -76,6 +76,8 @@ main { max-width: 1200px; margin: auto; padding: 0 28px 56px; }
 .hero-clock span, .hero-clock small { display: block; color: #c6d2e9; }
 .hero-clock strong { display: block; margin: 6px 0 4px; font-size: 48px; letter-spacing: -.04em; }
 
+.mobile-time-overview { display: none; }
+
 .section { padding: 64px 0 8px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 24px; }
 .section-kicker { display: flex; align-items: center; gap: 8px; color: #246bfd; margin: 0 0 8px; }
@@ -299,9 +301,50 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 @media (max-width: 640px) {
   .topbar, main { padding-left: 16px; padding-right: 16px; }
-  .hero { padding: 38px 24px; min-height: 0; flex-direction: column; align-items: stretch; }
+  .hero { display: none; }
   .hero h1 { font-size: 42px; }
   .hero-clock { min-width: 0; }
+  .mobile-time-overview {
+    display: grid; gap: 13px; margin: 0 -4px; padding: 16px;
+    border-radius: 22px; background: linear-gradient(145deg, #0d1830, #17366f); color: white;
+    box-shadow: 0 16px 34px rgba(13,24,48,.18);
+  }
+  .mobile-overview-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+  .mobile-overview-heading span {
+    display: flex; align-items: center; gap: 5px; color: #9ebaff; font-size: 9px; font-weight: 850;
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+  .mobile-overview-heading h1 { margin: 3px 0 0; font-size: 21px; letter-spacing: -.03em; }
+  .mobile-overview-heading > strong { flex: none; color: #dbe6ff; font-size: 13px; }
+  .mobile-time-strip {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(126px, 42%); gap: 9px;
+    overflow-x: auto; padding: 1px 1px 7px; scroll-snap-type: x proximity; scrollbar-width: none;
+  }
+  .mobile-time-strip::-webkit-scrollbar { display: none; }
+  .compact-time-card {
+    min-width: 0; display: grid; align-content: start; padding: 12px; border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px; background: rgba(255,255,255,.08); scroll-snap-align: start;
+  }
+  .compact-time-card.local-card { background: #fff; color: #172033; }
+  .compact-time-card span, .compact-time-card small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .compact-time-card span { font-size: 11px; font-weight: 850; }
+  .compact-time-card small { margin-top: 2px; color: #b9c8e5; font-size: 9px; }
+  .compact-time-card.local-card small { color: #718099; }
+  .compact-time-card strong { margin-top: 7px; font-size: 23px; letter-spacing: -.04em; }
+  .compact-time-card p { margin: 7px 0 0; color: #d2ddf2; font-size: 9px; font-weight: 700; }
+  .compact-time-card.local-card p { color: #31558f; }
+  .compact-time-card em { margin-top: 3px; color: #aebddb; font-size: 8px; font-style: normal; }
+  .compact-time-card.local-card em { color: #718099; }
+  .compact-time-card em.working { color: #7ce0b7; font-weight: 800; }
+  .mobile-overview-slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; }
+  .mobile-overview-slider label { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; font-size: 10px; font-weight: 800; }
+  .mobile-overview-slider label small { color: #b9c8e5; font-size: 9px; font-weight: 650; }
+  .mobile-overview-slider input { width: 100%; min-height: 28px; padding: 0; border: 0; box-shadow: none; accent-color: #8eb0ff; }
+  .mobile-overview-slider button {
+    min-height: 36px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px;
+    border: 1px solid #7286aa; border-radius: 9px; background: #263d67; color: white; font-size: 10px; font-weight: 800;
+  }
+  main > .time-slider-section { display: none; }
   .section { padding-top: 46px; }
   .section-heading { align-items: flex-start; flex-direction: column; }
   .section-heading > .primary-button { width: 100%; justify-content: center; }
@@ -343,5 +386,5 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 
 @media (forced-colors: active) {
-  .hour-cell.working, .hour-cell.selected, .recommendation, .selected-person-time { border: 1px solid CanvasText; }
+  .hour-cell.working, .hour-cell.selected, .recommendation, .selected-person-time, .compact-time-card { border: 1px solid CanvasText; }
 }
