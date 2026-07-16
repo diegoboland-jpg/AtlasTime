@@ -1,4 +1,5 @@
 import { starterPeople } from "./data";
+import { createId } from "./id";
 import type { Person, PlannerState, SavedGroup, SharedGroupPayload } from "./types";
 
 const GROUPS_STORAGE_KEY = "atlastime.groups.v1";
@@ -59,7 +60,7 @@ function migrateLegacyGroup(): SavedGroup {
     // Fall back to the starter group when legacy data is malformed.
   }
   return {
-    id: crypto.randomUUID(),
+    id: createId(),
     name: "My group",
     people,
     planner,
@@ -135,3 +136,4 @@ export function readSharedGroup(hash = window.location.hash): SharedGroupPayload
 export function clearShareHash() {
   window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
 }
+

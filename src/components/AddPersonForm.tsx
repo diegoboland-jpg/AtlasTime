@@ -1,6 +1,7 @@
 import { FormEvent, KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { MapPin, Search } from "lucide-react";
 import type { CityOption } from "../cities";
+import { createId } from "../id";
 import { searchGlobalCities } from "../services/geocoding";
 import type { Person } from "../types";
 
@@ -87,7 +88,7 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
     event.preventDefault();
     if (!name.trim() || !selectedCity) return;
     onAdd({
-      id: crypto.randomUUID(),
+      id: createId(),
       name: name.trim(),
       city: selectedCity.city,
       timeZone: selectedCity.timeZone,
@@ -143,7 +144,7 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
 
         {showMenu && (
           <div className="city-results" id={resultsId} role="listbox" aria-label="Matching cities">
-            {status === "loading" && <p>Searching cities…</p>}
+            {status === "loading" && <p>Searching citiesâ€¦</p>}
             {status === "error" && (
               <p className="search-error">
                 City search is unavailable. <button type="button" onClick={() => setRetryKey((value) => value + 1)}>Try again</button>
@@ -199,3 +200,4 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
     </form>
   );
 }
+

@@ -4,10 +4,12 @@ import { AddPersonForm } from "./components/AddPersonForm";
 import { GroupManager } from "./components/GroupManager";
 import { MeetingHandoff } from "./components/MeetingHandoff";
 import { PersonCard } from "./components/PersonCard";
+import { PwaInstall } from "./components/PwaInstall";
 import { ShareImportBanner } from "./components/ShareImportBanner";
 import { TimePlanner } from "./components/TimePlanner";
 import { TimeSlider } from "./components/TimeSlider";
 import { clearShareHash, createShareLink, defaultPlanner, loadGroups, readSharedGroup, saveGroups } from "./groups";
+import { createId } from "./id";
 import { bestHour, dateAtUtcHour, formatInZone, scoreHours } from "./time";
 import type { Person, SavedGroup } from "./types";
 
@@ -65,7 +67,7 @@ export default function App() {
   function createGroup() {
     const requested = window.prompt("Name the new group", "New group")?.trim();
     if (!requested) return;
-    const group: SavedGroup = { id: crypto.randomUUID(), name: requested, people: [], planner: defaultPlanner(), updatedAt: new Date().toISOString() };
+    const group: SavedGroup = { id: createId(), name: requested, people: [], planner: defaultPlanner(), updatedAt: new Date().toISOString() };
     setWorkspace((current) => ({ groups: [...current.groups, group], activeGroupId: group.id }));
     setShowForm(false);
   }
@@ -76,7 +78,7 @@ export default function App() {
   }
 
   function deleteGroup() {
-    if (workspace.groups.length === 1 || !window.confirm(`Delete “${activeGroup.name}” from this browser?`)) return;
+    if (workspace.groups.length === 1 || !window.confirm(`Delete â€œ${activeGroup.name}â€ from this browser?`)) return;
     setWorkspace((current) => {
       const groups = current.groups.filter((group) => group.id !== current.activeGroupId);
       return { groups, activeGroupId: groups[0].id };
@@ -99,9 +101,9 @@ export default function App() {
   function importSharedGroup() {
     if (!sharedPayload) return;
     const group: SavedGroup = {
-      id: crypto.randomUUID(),
+      id: createId(),
       name: sharedPayload.name,
-      people: sharedPayload.people.map((person) => ({ ...person, id: crypto.randomUUID() })),
+      people: sharedPayload.people.map((person) => ({ ...person, id: createId() })),
       planner: sharedPayload.planner,
       updatedAt: new Date().toISOString(),
     };
@@ -118,7 +120,10 @@ export default function App() {
           <span className="brand-mark"><Globe2 size={20} /></span>
           <span>AtlasTime</span>
         </a>
-        <span className="mvp-badge">v0.10 mobile readiness</span>
+        <div className="topbar-actions">
+          <PwaInstall />
+          <span className="mvp-badge">v0.11 installable preview</span>
+        </div>
       </header>
 
       <main id="main-content" tabIndex={-1}>
@@ -230,7 +235,8 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.10</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.11</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }
+

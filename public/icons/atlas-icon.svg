@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AtlasTime">
+  <rect width="512" height="512" rx="112" fill="#246bfd"/>
+  <circle cx="256" cy="256" r="146" fill="none" stroke="#fff" stroke-width="28"/>
+  <path d="M110 256h292M256 110c55 52 86 101 86 146s-31 94-86 146M256 110c-55 52-86 101-86 146s31 94 86 146" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
+  <path d="M256 174v89l62 38" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

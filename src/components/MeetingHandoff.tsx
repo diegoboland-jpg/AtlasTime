@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CalendarPlus, Clipboard, Download } from "lucide-react";
 import { createIcsEvent, meetingSummary } from "../meeting";
+import { createId } from "../id";
 import type { Person, PlannerState } from "../types";
 
 type Props = {
@@ -38,7 +39,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
       start: selectedInstant,
       durationMinutes: planner.durationMinutes,
       description: summary,
-      uid: `${crypto.randomUUID()}@atlastime.local`,
+      uid: `${createId()}@atlastime.local`,
       createdAt: new Date(),
     });
     const url = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
@@ -89,3 +90,4 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
     </section>
   );
 }
+
