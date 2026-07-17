@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v0.16: visual time-of-day tiles
+
+- [x] Link the device-time card to the 24-hour slider while exploring, then return the full overview to live time after 20 seconds or with Now.
+- [x] Clearly distinguish Current time from Exploring time so a shifted device clock is never mislabeled as live.
+- [x] Classify every displayed local hour as night, morning, lunch time, afternoon, dinner time, or evening.
+- [x] Apply animated, period-aware color treatments while preserving working-hours status and the two-column mobile grid.
+- [x] Respect the existing reduced-motion preference for all new transitions.
+- [x] Add boundary and normalization tests for the time-of-day model.
+- [ ] Validate the visual language with users in different regions before making meal periods configurable.
+
 ## v0.15: focused planning and progressive disclosure
 
 - [x] Keep Everyone's Time as the primary mobile experience and show the best-scoring hour directly within it.

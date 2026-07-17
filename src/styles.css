@@ -82,6 +82,10 @@ main { max-width: 1200px; margin: auto; padding: 0 28px 56px; }
   from { opacity: .35; transform: translateY(5px) scale(.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+@keyframes time-tile-enter {
+  from { opacity: .55; transform: translateY(4px) scale(.985); filter: saturate(.7); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: saturate(1); }
+}
 
 .section { padding: 64px 0 8px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 24px; }
@@ -324,12 +328,20 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .mobile-current-time {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px;
     padding: 12px 14px; border-radius: 15px; background: white; color: #172033;
+    animation: time-tile-enter 260ms ease-out; transition: background 240ms ease, border-color 240ms ease, color 240ms ease;
   }
+  .mobile-current-time.time-period-night { background: linear-gradient(135deg, #e9edff, #f8f9ff); }
+  .mobile-current-time.time-period-morning { background: linear-gradient(135deg, #fff2ce, #f9fbff 72%); }
+  .mobile-current-time.time-period-lunch { background: linear-gradient(135deg, #fff0c2, #f2fff1); }
+  .mobile-current-time.time-period-afternoon { background: linear-gradient(135deg, #dff3ff, #f7fbff); }
+  .mobile-current-time.time-period-dinner { background: linear-gradient(135deg, #ffe1c9, #fff5ec); }
+  .mobile-current-time.time-period-evening { background: linear-gradient(135deg, #e9e2ff, #f8f5ff); }
+  .mobile-current-time.exploring { box-shadow: inset 0 0 0 2px #8eb0ff; }
   .mobile-current-time div { min-width: 0; }
   .mobile-current-time span { display: block; color: #246bfd; font-size: 9px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
   .mobile-current-time small { display: block; margin-top: 3px; overflow: hidden; color: #718099; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
   .mobile-current-time strong { grid-column: 2; grid-row: 1 / 3; font-size: 30px; letter-spacing: -.045em; }
-  .mobile-current-time em { grid-column: 1 / -1; color: #718099; font-size: 9px; font-style: normal; }
+  .mobile-current-time em { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #718099; font-size: 9px; font-style: normal; }
   .mobile-overview-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
   .mobile-overview-heading span {
     display: flex; align-items: center; gap: 5px; color: #9ebaff; font-size: 9px; font-weight: 850;
@@ -343,17 +355,25 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   }
   .mobile-time-strip::-webkit-scrollbar { display: none; }
   .compact-time-card {
-    min-width: 0; min-height: 102px; display: grid; align-content: start; padding: 8px 10px;
+    min-width: 0; min-height: 110px; display: grid; align-content: start; padding: 8px 10px;
     border: 1px solid rgba(255,255,255,.14); border-radius: 13px; background: rgba(255,255,255,.08);
+    animation: time-tile-enter 260ms ease-out; transition: background 240ms ease, border-color 240ms ease, transform 240ms ease;
   }
+  .compact-time-card.time-period-night { background: linear-gradient(145deg, rgba(91,105,164,.28), rgba(23,37,72,.64)); border-color: rgba(155,168,223,.3); }
+  .compact-time-card.time-period-morning { background: linear-gradient(145deg, rgba(245,187,83,.29), rgba(50,89,151,.38)); border-color: rgba(255,213,134,.32); }
+  .compact-time-card.time-period-lunch { background: linear-gradient(145deg, rgba(237,178,54,.3), rgba(48,119,101,.32)); border-color: rgba(255,215,123,.34); }
+  .compact-time-card.time-period-afternoon { background: linear-gradient(145deg, rgba(74,151,225,.34), rgba(44,91,155,.38)); border-color: rgba(142,200,255,.34); }
+  .compact-time-card.time-period-dinner { background: linear-gradient(145deg, rgba(226,117,70,.34), rgba(112,66,126,.4)); border-color: rgba(255,166,125,.35); }
+  .compact-time-card.time-period-evening { background: linear-gradient(145deg, rgba(117,86,172,.38), rgba(31,45,82,.58)); border-color: rgba(177,145,228,.34); }
   .compact-time-card span, .compact-time-card small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .compact-time-card span { padding-top: 1px; font-size: 11px; font-weight: 850; line-height: 1.2; }
   .compact-time-card small { margin-top: 1px; color: #b9c8e5; font-size: 9px; line-height: 1.2; }
   .compact-time-card strong { margin-top: 4px; font-size: 24px; line-height: 1; letter-spacing: -.04em; }
   .compact-time-card .tile-time-value { animation: tile-time-change 180ms ease-out; }
-  .compact-time-card p { margin: 3px 0 0; color: #d2ddf2; font-size: 8px; font-weight: 700; line-height: 1.1; text-transform: uppercase; }
+  .compact-time-card p { display: flex; align-items: flex-start; flex-direction: column; gap: 3px; margin: 3px 0 0; color: #d2ddf2; font-size: 8px; font-weight: 700; line-height: 1.1; text-transform: uppercase; }
   .compact-time-card em { margin-top: 2px; color: #aebddb; font-size: 8px; font-style: normal; line-height: 1.2; }
   .compact-time-card em.working { color: #7ce0b7; font-weight: 800; }
+  .time-period-badge { display: inline-flex !important; align-items: center; gap: 3px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 999px; opacity: .9; font-size: 7px; font-style: normal; font-weight: 850; letter-spacing: .03em; line-height: 1.1; text-transform: uppercase; }
   .mobile-time-empty { grid-column: 1 / -1; margin: 0; padding: 20px; border: 1px dashed #7286aa; border-radius: 13px; color: #c7d4ec; font-size: 11px; text-align: center; }
   .mobile-recommendation {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 10px;
@@ -464,7 +484,6 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 
 @media (max-width: 420px) {
-  .mobile-time-strip { grid-template-columns: 1fr; }
   .mobile-recommendation { grid-template-columns: 1fr 1fr; }
   .mobile-recommendation > div { grid-column: 1 / -1; grid-row: auto; }
   .mobile-planner-intro { align-items: flex-start; flex-direction: column; gap: 6px; }
