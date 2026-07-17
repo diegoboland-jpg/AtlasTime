@@ -199,6 +199,13 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .work-hours select { min-height: 44px; padding: 6px 8px; }
 
 .planner { overflow: hidden; }
+.planner-disclosure-heading { align-items: center; }
+.planner-helper { max-width: 650px; margin: 8px 0 0; color: #718099; font-size: 13px; line-height: 1.5; }
+.planner-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
+.planner-analysis { display: grid; gap: 20px; }
+.planner-detail-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding-top: 4px; }
+.planner-detail-toolbar > strong { color: #31558f; font-size: 14px; }
+.planner.collapsed { padding-bottom: 20px; }
 .time-slider-section { padding-top: 22px; }
 .time-slider-section + .planner { padding-top: 42px; }
 .date-field input { min-width: 156px; }
@@ -348,6 +355,20 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .compact-time-card em { margin-top: 2px; color: #aebddb; font-size: 8px; font-style: normal; line-height: 1.2; }
   .compact-time-card em.working { color: #7ce0b7; font-weight: 800; }
   .mobile-time-empty { grid-column: 1 / -1; margin: 0; padding: 20px; border: 1px dashed #7286aa; border-radius: 13px; color: #c7d4ec; font-size: 11px; text-align: center; }
+  .mobile-recommendation {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 10px;
+    padding: 10px 11px; border: 1px solid rgba(158,186,255,.34); border-radius: 14px; background: rgba(255,255,255,.08);
+  }
+  .mobile-recommendation > div { grid-row: 1 / 3; min-width: 0; }
+  .mobile-recommendation span, .mobile-recommendation strong, .mobile-recommendation small { display: block; }
+  .mobile-recommendation span { color: #9ebaff; font-size: 8px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+  .mobile-recommendation strong { margin-top: 2px; font-size: 19px; }
+  .mobile-recommendation small { margin-top: 2px; color: #c7d4ec; font-size: 8px; }
+  .mobile-recommendation button {
+    min-height: 44px; padding: 6px 10px; border: 1px solid #7b95c4; border-radius: 9px;
+    background: #e8efff; color: #174fae; font-size: 9px; font-weight: 850; cursor: pointer;
+  }
+  .mobile-recommendation .mobile-compare-button { background: #263d67; color: white; }
   .mobile-overview-slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; }
   .mobile-overview-slider label { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; font-size: 10px; font-weight: 800; }
   .mobile-overview-slider label small { color: #b9c8e5; font-size: 9px; font-weight: 650; }
@@ -436,10 +457,16 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .handoff-panel { padding: 18px; }
   .handoff-actions { flex-direction: column; }
   .handoff-actions button { width: 100%; }
+  .planner-toggle { width: 100%; }
+  .planner-detail-toolbar { align-items: stretch; flex-direction: column; }
+  .planner-detail-toolbar .date-field { width: 100%; }
+  .planner-detail-toolbar .date-field input { width: 100%; }
 }
 
 @media (max-width: 420px) {
   .mobile-time-strip { grid-template-columns: 1fr; }
+  .mobile-recommendation { grid-template-columns: 1fr 1fr; }
+  .mobile-recommendation > div { grid-column: 1 / -1; grid-row: auto; }
   .mobile-planner-intro { align-items: flex-start; flex-direction: column; gap: 6px; }
   .mobile-planner-intro > small { max-width: none; text-align: left; }
   .mobile-person-time { grid-template-columns: 38px minmax(0, 1fr); }

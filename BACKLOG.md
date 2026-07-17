@@ -1,5 +1,14 @@
 # AtlasTime backlog
 
+## v0.15: focused planning and progressive disclosure
+
+- [x] Keep Everyone's Time as the primary mobile experience and show the best-scoring hour directly within it.
+- [x] Offer direct Use time and Compare all hours actions without duplicating every participant time.
+- [x] Keep the detailed date, recommendation context, and 24-hour comparison collapsed until requested.
+- [x] Preserve the planning engine and local calendar-file handoff without adding calendar authorization.
+- [x] Add regression coverage for collapsed and expanded planner states.
+- [ ] Validate the simplified flow with first-time users before introducing calendar integrations.
+
 ## v0.14: mobile and accessibility regression coverage
 
 - [x] Add keyboard navigation for the phone planner's hour picker, including Arrow keys, Home, and End.
