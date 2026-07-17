@@ -2,8 +2,8 @@
 
 ## v0.13: mobile planner ergonomics
 
-- [ ] Redesign the group hour-matching view for phone widths so participant names, selected times, and availability remain easy to scan without a dense horizontal table.
-- [ ] Compare stacked rows, snap paging, and compact hour cards with touch targets of at least 44px; avoid conflicts with the floating time slider.
+- [x] Redesign the group hour-matching view for phone widths so participant names, selected times, and availability remain easy to scan without a dense horizontal table.
+- [x] Use a snap-scrolling UTC hour picker plus stacked local-time cards with touch targets of at least 44px; avoid conflicts with the floating time slider.
 - [ ] Validate the redesigned planner on at least one Android phone and one iPhone.
 
 ## v0.12: compact mobile time overview

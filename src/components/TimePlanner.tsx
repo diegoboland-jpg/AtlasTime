@@ -1,6 +1,7 @@
 import { CalendarDays, Clock3 } from "lucide-react";
 import { dateAtUtcHour, formatInZone, hourInZone, localLabel } from "../time";
 import type { HourScore, Person } from "../types";
+import { MobilePlannerComparison } from "./MobilePlannerComparison";
 
 type TimePlannerProps = {
   people: Person[];
@@ -59,6 +60,15 @@ export function TimePlanner({
           </span>
         </button>
       )}
+
+      <MobilePlannerComparison
+        people={people}
+        dateValue={dateValue}
+        selectedHour={selectedHour}
+        recommendation={recommendation}
+        hours={hours}
+        onHourChange={onHourChange}
+      />
 
       <div className="timeline-wrap" role="region" aria-label="Scrollable 24-hour local-time comparison" tabIndex={0}>
         <div className="timeline-labels">
