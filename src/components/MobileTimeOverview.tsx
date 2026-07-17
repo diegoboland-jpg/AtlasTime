@@ -9,8 +9,10 @@ type MobileTimeOverviewProps = {
   selectedInstant: Date;
   selectedHour: number;
   selectedScore: HourScore | undefined;
+  recommendation: HourScore | null;
   onHourChange: (hour: number) => void;
   onNow: () => void;
+  onOpenPlanner: () => void;
 };
 
 const RETURN_TO_NOW_MS = 20_000;
@@ -29,8 +31,10 @@ export function MobileTimeOverview({
   selectedInstant,
   selectedHour,
   selectedScore,
+  recommendation,
   onHourChange,
   onNow,
+  onOpenPlanner,
 }: MobileTimeOverviewProps) {
   const returnTimer = useRef<number | undefined>(undefined);
   const [returnPending, setReturnPending] = useState(false);
@@ -96,6 +100,18 @@ export function MobileTimeOverview({
         })}
         {people.length === 0 && <p className="mobile-time-empty">Add people, locations, or teams below.</p>}
       </div>
+
+      {recommendation && (
+        <div className="mobile-recommendation" aria-label={`Recommended meeting time ${recommendation.utcHour}:00 UTC`}>
+          <div>
+            <span>Recommended</span>
+            <strong>{String(recommendation.utcHour).padStart(2, "0")}:00 UTC</strong>
+            <small>{recommendation.available}/{recommendation.total} in working hours</small>
+          </div>
+          <button type="button" onClick={() => onHourChange(recommendation.utcHour)}>Use time</button>
+          <button type="button" className="mobile-compare-button" onClick={onOpenPlanner}>Compare all hours</button>
+        </div>
+      )}
 
       <div className="mobile-overview-slider">
         <label htmlFor="mobile-time-slider">

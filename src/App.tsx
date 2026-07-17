@@ -23,6 +23,7 @@ export default function App() {
   const [sharedPayload, setSharedPayload] = useState(readSharedGroup);
   const [now, setNow] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
+  const [plannerExpanded, setPlannerExpanded] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
 
   const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
@@ -30,6 +31,7 @@ export default function App() {
   const planner = activeGroup.planner;
 
   useEffect(() => saveGroups(workspace.groups, workspace.activeGroupId), [workspace]);
+  useEffect(() => setPlannerExpanded(false), [workspace.activeGroupId]);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 15_000);
     return () => window.clearInterval(timer);
@@ -63,6 +65,11 @@ export default function App() {
       ...group,
       planner: { ...group.planner, date: utcDateInput(current), hour: current.getUTCHours() },
     }));
+  }
+
+  function openPlanner() {
+    setPlannerExpanded(true);
+    window.requestAnimationFrame(() => document.getElementById("planner")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
   function createGroup() {
@@ -123,7 +130,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.14 accessibility regression</span>
+          <span className="mvp-badge">v0.15 focused planning</span>
         </div>
       </header>
 
@@ -136,8 +143,10 @@ export default function App() {
           selectedInstant={selectedInstant}
           selectedHour={planner.hour}
           selectedScore={hours[planner.hour]}
+          recommendation={recommendation}
           onHourChange={selectHour}
           onNow={selectNow}
+          onOpenPlanner={openPlanner}
         />
 
         <section className="hero">
@@ -218,6 +227,8 @@ export default function App() {
           selectedHour={planner.hour}
           recommendation={recommendation}
           hours={hours}
+          expanded={plannerExpanded}
+          onExpandedChange={setPlannerExpanded}
           onDateChange={(date) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date } }))}
           onHourChange={selectHour}
         />
@@ -246,7 +257,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.14</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.15</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

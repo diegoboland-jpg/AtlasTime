@@ -10,9 +10,11 @@ describe("mobile time overview", () => {
         selectedInstant={new Date("2026-07-16T14:00:00Z")}
         selectedHour={14}
         selectedScore={{ utcHour: 14, available: 1, total: 1, penalty: 0, score: 12 }}
+        recommendation={{ utcHour: 15, available: 1, total: 1, penalty: 0, score: 12 }}
         people={[{ id: "1", name: "Madrid team", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
         onHourChange={vi.fn()}
         onNow={vi.fn()}
+        onOpenPlanner={vi.fn()}
       />,
     );
 
@@ -26,5 +28,9 @@ describe("mobile time overview", () => {
     expect(markup).toContain("Explore 24 hours");
     expect(markup).toContain('type="range"');
     expect(markup).toContain("1/1 available");
+    expect(markup).toContain("Recommended");
+    expect(markup).toContain("15:00 UTC");
+    expect(markup).toContain("Use time");
+    expect(markup).toContain("Compare all hours");
   });
 });
