@@ -109,3 +109,4 @@ This milestone refers to a widget-style view inside the PWA. Native Android or i
 - Authentication and accounts.
 - Calendar authorization or automatic meeting creation; v0.9 only downloads a local `.ics` file.
 - Contact imports and messaging-provider APIs.
+
