@@ -356,6 +356,14 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
     border: 1px solid #7286aa; border-radius: 9px; background: #263d67; color: white; font-size: 10px; font-weight: 800;
   }
   .mobile-return-note { grid-column: 1 / -1; margin: -2px 0 0; color: #9fb1d2; font-size: 8px; }
+  .mobile-overview-slider {
+    position: fixed; z-index: 50; right: max(12px, env(safe-area-inset-right)); bottom: max(10px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left)); max-width: 616px; margin-inline: auto; padding: 11px 13px;
+    border: 1px solid rgba(158,186,255,.42); border-radius: 15px; background: rgba(13,24,48,.96);
+    box-shadow: 0 14px 34px rgba(13,24,48,.32); backdrop-filter: blur(12px);
+  }
+  main { padding-bottom: calc(132px + env(safe-area-inset-bottom)); }
+  footer { padding-bottom: calc(132px + env(safe-area-inset-bottom)); }
   main > .time-slider-section { display: none; }
   .section { padding-top: 46px; }
   .section-heading { align-items: flex-start; flex-direction: column; }
