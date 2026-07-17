@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { type KeyboardEvent, useLayoutEffect, useRef } from "react";
 import { dateAtUtcHour, formatInZone, hourInZone } from "../time";
 import type { HourScore, Person } from "../types";
 
@@ -23,15 +23,42 @@ export function MobilePlannerComparison({
   const hourScroller = useRef<HTMLDivElement | null>(null);
   const selectedOption = useRef<HTMLButtonElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const scroller = hourScroller.current;
     const option = selectedOption.current;
     if (!scroller || !option) return;
-    scroller.scrollTo({
-      left: option.offsetLeft - (scroller.clientWidth - option.clientWidth) / 2,
-      behavior: "smooth",
-    });
+
+    const centerSelectedHour = () => {
+      scroller.scrollLeft = Math.max(0, option.offsetLeft - (scroller.clientWidth - option.clientWidth) / 2);
+    };
+    centerSelectedHour();
+    const frame = window.requestAnimationFrame(centerSelectedHour);
+    const handleResize = () => centerSelectedHour();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [selectedHour]);
+
+  function handleHourKeys(event: KeyboardEvent<HTMLButtonElement>, hour: number) {
+    const nextHour = event.key === "ArrowRight"
+      ? Math.min(23, hour + 1)
+      : event.key === "ArrowLeft"
+        ? Math.max(0, hour - 1)
+        : event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? 23
+            : null;
+
+    if (nextHour === null) return;
+    event.preventDefault();
+    const nextOption = event.currentTarget.parentElement?.querySelector<HTMLButtonElement>(`[data-utc-hour="${nextHour}"]`);
+    nextOption?.focus();
+    onHourChange(nextHour);
+  }
 
   return (
     <div className="mobile-planner-comparison" aria-label="Phone-friendly meeting-hour comparison">
@@ -40,7 +67,7 @@ export function MobilePlannerComparison({
           <span>Selected meeting hour</span>
           <strong>{String(selectedHour).padStart(2, "0")}:00 UTC</strong>
         </div>
-        <small>Swipe the hours, then compare everyone below.</small>
+        <small>Swipe or use arrow keys, then compare everyone below.</small>
       </div>
 
       <div className="mobile-hour-scroller" role="list" aria-label="Choose a UTC meeting hour" ref={hourScroller}>
@@ -55,8 +82,11 @@ export function MobilePlannerComparison({
               key={hour.utcHour}
               ref={selected ? selectedOption : undefined}
               aria-pressed={selected}
+              aria-keyshortcuts="ArrowLeft ArrowRight Home End"
               aria-label={`${hour.utcHour}:00 UTC, ${hour.available} of ${hour.total} available${best ? ", best-scoring hour" : ""}`}
+              data-utc-hour={hour.utcHour}
               onClick={() => onHourChange(hour.utcHour)}
+              onKeyDown={(event) => handleHourKeys(event, hour.utcHour)}
             >
               <span>{String(hour.utcHour).padStart(2, "0")}:00</span>
               <small>{hour.available}/{hour.total} free</small>
