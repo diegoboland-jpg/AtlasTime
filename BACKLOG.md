@@ -1,5 +1,13 @@
 # AtlasTime backlog
 
+## v0.14: mobile and accessibility regression coverage
+
+- [x] Add keyboard navigation for the phone planner's hour picker, including Arrow keys, Home, and End.
+- [x] Enforce 44px touch targets for install, delete, work-hour, slider, and timeline controls.
+- [x] Add a narrow-layout reflow for compact time cards and planner participant rows.
+- [x] Add automated regression coverage for keyboard behavior, touch sizing, narrow reflow, reduced motion, forced colors, and visible focus.
+- [ ] Complete hands-on testing with VoiceOver, NVDA, and TalkBack on physical devices.
+
 ## v0.13: mobile planner ergonomics
 
 - [x] Redesign the group hour-matching view for phone widths so participant names, selected times, and availability remain easy to scan without a dense horizontal table.

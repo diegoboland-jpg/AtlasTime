@@ -38,7 +38,7 @@ main:focus { outline: none; }
 .topbar-actions { display: flex; align-items: center; gap: 9px; position: relative; }
 .install-control { position: relative; }
 .install-button, .installed-badge {
-  min-height: 36px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px;
+  min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px;
   border: 1px solid #ccd8ee; border-radius: 999px; background: white; color: #31558b; font-size: 12px; font-weight: 800;
 }
 .install-button { cursor: pointer; }
@@ -50,7 +50,7 @@ main:focus { outline: none; }
   border-radius: 12px; background: white; box-shadow: 0 14px 36px rgba(20,33,61,.16); color: #45536c;
   font-size: 12px; line-height: 1.45;
 }
-.install-tip button { border: 0; padding: 2px; background: transparent; color: #63708a; cursor: pointer; }
+.install-tip button { width: 44px; height: 44px; flex: none; border: 0; padding: 0; background: transparent; color: #63708a; cursor: pointer; }
 
 main { max-width: 1200px; margin: auto; padding: 0 28px 56px; }
 .hero {
@@ -186,7 +186,7 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .selected-person-time small { grid-column: 1 / -1; color: #7082a0; font-size: 10px; text-align: right; }
 .icon-button { border: 0; background: transparent; cursor: pointer; color: #9aa5b8; }
 .remove {
-  position: static; width: 40px; height: 40px; display: grid; place-items: center; align-self: start;
+  position: static; width: 44px; height: 44px; display: grid; place-items: center; align-self: start;
   border: 1px solid transparent; border-radius: 10px; background: #f7f9fc; color: #8d98aa; opacity: 1;
 }
 .remove:hover, .remove:focus-visible { border-color: #e7a4af; background: #fff1f3; color: #cc334d; }
@@ -196,7 +196,7 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 }
 .work-hours > span { color: #8a96aa; padding-bottom: 12px; font-size: 12px; }
 .work-hours label { display: grid; gap: 5px; color: #7b879e; font-size: 10px; font-weight: 750; }
-.work-hours select { min-height: 36px; padding: 6px 8px; }
+.work-hours select { min-height: 44px; padding: 6px 8px; }
 
 .planner { overflow: hidden; }
 .time-slider-section { padding-top: 22px; }
@@ -351,9 +351,9 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .mobile-overview-slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; }
   .mobile-overview-slider label { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; font-size: 10px; font-weight: 800; }
   .mobile-overview-slider label small { color: #b9c8e5; font-size: 9px; font-weight: 650; }
-  .mobile-overview-slider input { width: 100%; min-height: 28px; padding: 0; border: 0; box-shadow: none; accent-color: #8eb0ff; }
+  .mobile-overview-slider input { width: 100%; min-height: 44px; padding: 0; border: 0; box-shadow: none; accent-color: #8eb0ff; }
   .mobile-overview-slider button {
-    min-height: 36px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px;
+    min-height: 44px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px;
     border: 1px solid #7286aa; border-radius: 9px; background: #263d67; color: white; font-size: 10px; font-weight: 800;
   }
   .mobile-return-note { grid-column: 1 / -1; margin: -2px 0 0; color: #9fb1d2; font-size: 8px; }
@@ -438,9 +438,18 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .handoff-actions button { width: 100%; }
 }
 
+@media (max-width: 420px) {
+  .mobile-time-strip { grid-template-columns: 1fr; }
+  .mobile-planner-intro { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .mobile-planner-intro > small { max-width: none; text-align: left; }
+  .mobile-person-time { grid-template-columns: 38px minmax(0, 1fr); }
+  .mobile-person-local-time { grid-column: 2; text-align: left; }
+  .mobile-person-time em { grid-column: 2; }
+}
+
 @media (hover: none) {
   .remove { opacity: 1; }
-  .hour-cell { min-height: 40px; }
+  .hour-cell { min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
