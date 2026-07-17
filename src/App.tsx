@@ -130,7 +130,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.15 focused planning</span>
+          <span className="mvp-badge">v0.16 living time tiles</span>
         </div>
       </header>
 
@@ -257,7 +257,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.15</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.16</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

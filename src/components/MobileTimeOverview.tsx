@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Clock3, RotateCcw } from "lucide-react";
+import { Clock3, Coffee, Moon, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
 import { formatInZone, hourInZone } from "../time";
+import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
+import { TimePeriodScene } from "./TimePeriodScene";
 
 type MobileTimeOverviewProps = {
   now: Date;
@@ -25,6 +27,21 @@ function dayLabel(date: Date, timeZone: string) {
   });
 }
 
+function PeriodIcon({ period }: { period: TimePeriodKey }) {
+  const Icon = period === "night"
+    ? Moon
+    : period === "morning"
+      ? Sunrise
+      : period === "lunch"
+        ? Coffee
+        : period === "afternoon"
+          ? SunMedium
+          : period === "dinner"
+            ? Utensils
+            : Sunset;
+  return <Icon size={11} aria-hidden="true" />;
+}
+
 export function MobileTimeOverview({
   now,
   people,
@@ -42,6 +59,9 @@ export function MobileTimeOverview({
   const hourLabel = `${String(selectedHour).padStart(2, "0")}:00 UTC`;
   const available = selectedScore?.available ?? 0;
   const total = selectedScore?.total ?? 0;
+  const overviewInstant = returnPending ? selectedInstant : now;
+  const overviewHour = hourInZone(overviewInstant, localTimeZone);
+  const overviewPeriod = timePeriodForHour(overviewHour);
 
   useEffect(() => () => window.clearTimeout(returnTimer.current), []);
 
@@ -63,13 +83,21 @@ export function MobileTimeOverview({
 
   return (
     <section className="mobile-time-overview" aria-labelledby="mobile-overview-heading">
-      <article className="mobile-current-time" aria-label={`Your current time is ${formatInZone(now, localTimeZone)}`}>
+      <article
+        className={`mobile-current-time time-period-${overviewPeriod.key} ${returnPending ? "exploring" : ""}`}
+        key={overviewInstant.toISOString()}
+        aria-label={`${returnPending ? "Exploring" : "Current"} device time is ${formatInZone(overviewInstant, localTimeZone)}`}
+      >
+        <TimePeriodScene period={overviewPeriod.key} />
         <div>
-          <span>Current time</span>
-          <small>Your device time zone - {localTimeZone.replaceAll("_", " ")}</small>
+          <span>{returnPending ? "Exploring time" : "Current time"}</span>
+          <small>{returnPending ? "Linked to the 24-hour slider" : "Your device time zone"} - {localTimeZone.replaceAll("_", " ")}</small>
         </div>
-        <strong>{formatInZone(now, localTimeZone)}</strong>
-        <em>{dayLabel(now, localTimeZone)}</em>
+        <strong>{formatInZone(overviewInstant, localTimeZone)}</strong>
+        <em>
+          {dayLabel(overviewInstant, localTimeZone)}
+          <span className="time-period-badge"><PeriodIcon period={overviewPeriod.key} /> {overviewPeriod.label}</span>
+        </em>
       </article>
 
       <div className="mobile-overview-heading">
@@ -84,14 +112,16 @@ export function MobileTimeOverview({
         {people.map((person) => {
           const localHour = hourInZone(selectedInstant, person.timeZone);
           const working = localHour >= person.workStart && localHour < person.workEnd;
+          const period = timePeriodForHour(localHour);
           return (
-            <article className="compact-time-card" key={person.id}>
+            <article className={`compact-time-card time-period-${period.key}`} key={`${person.id}-${selectedInstant.toISOString()}`}>
+              <TimePeriodScene period={period.key} compact />
               <span>{person.name}</span>
               <small>{person.city || person.timeZone.replaceAll("_", " ")}</small>
-              <strong className="tile-time-value" key={`${person.id}-${selectedInstant.toISOString()}`}>
+              <strong className="tile-time-value">
                 {formatInZone(selectedInstant, person.timeZone)}
               </strong>
-              <p>Meeting time</p>
+              <p><span>Meeting time</span><span className="time-period-badge"><PeriodIcon period={period.key} /> {period.label}</span></p>
               <em className={working ? "working" : ""}>
                 {dayLabel(selectedInstant, person.timeZone)} - {working ? "Working hours" : "Outside work hours"}
               </em>

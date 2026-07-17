@@ -13,9 +13,9 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toMatch(/@media \(hover: none\) \{[\s\S]*?\.hour-cell \{ min-height: 44px/);
   });
 
-  it("provides narrow-layout reflow instead of forcing horizontal reading", () => {
+  it("keeps the compact phone grid while reflowing detailed planner rows", () => {
     expect(styles).toMatch(/@media \(max-width: 420px\)/);
-    expect(styles).toContain(".mobile-time-strip { grid-template-columns: 1fr; }");
+    expect(styles).toContain("grid-template-columns: repeat(2, minmax(0, 1fr))");
     expect(styles).toContain(".mobile-person-local-time { grid-column: 2; text-align: left; }");
   });
 
@@ -23,5 +23,6 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain(":focus-visible { outline: 3px solid #f2a900");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain("@media (forced-colors: active)");
+    expect(styles).toContain("animation-duration: .01ms !important");
   });
 });
