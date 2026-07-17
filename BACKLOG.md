@@ -7,6 +7,9 @@
 - [x] Use a compact responsive strip or grid for small groups, with touch-friendly horizontal overflow for larger groups.
 - [x] Keep names, locations, day changes, work-hour status, and the selected hour readable at phone widths.
 - [x] Preserve the full editable person cards below the compact overview instead of hiding working-hour controls.
+- [x] Keep the real device clock and time zone fixed above slider-controlled meeting-time tiles.
+- [x] Return the mobile slider to current time after 20 seconds of inactivity or immediately with the Now button.
+- [x] Animate selected-time changes on the tiles while respecting reduced-motion preferences.
 - [ ] Add responsive and accessibility regression coverage for compact, overflow, and large-text layouts.
 - [ ] Validate the overview on at least one Android phone and one iPhone before marking the milestone complete.
 
@@ -106,4 +109,3 @@ This milestone refers to a widget-style view inside the PWA. Native Android or i
 - Authentication and accounts.
 - Calendar authorization or automatic meeting creation; v0.9 only downloads a local `.ics` file.
 - Contact imports and messaging-provider APIs.
-
