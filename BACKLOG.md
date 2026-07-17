@@ -10,6 +10,7 @@
 - [x] Keep the real device clock and time zone fixed above slider-controlled meeting-time tiles.
 - [x] Return the mobile slider to current time after 20 seconds of inactivity or immediately with the Now button.
 - [x] Animate selected-time changes on the tiles while respecting reduced-motion preferences.
+- [x] Keep the mobile time slider visible as a floating control while the rest of the app scrolls.
 - [ ] Add responsive and accessibility regression coverage for compact, overflow, and large-text layouts.
 - [ ] Validate the overview on at least one Android phone and one iPhone before marking the milestone complete.
 
