@@ -1,5 +1,11 @@
 # AtlasTime backlog
 
+## v0.13: mobile planner ergonomics
+
+- [ ] Redesign the group hour-matching view for phone widths so participant names, selected times, and availability remain easy to scan without a dense horizontal table.
+- [ ] Compare stacked rows, snap paging, and compact hour cards with touch targets of at least 44px; avoid conflicts with the floating time slider.
+- [ ] Validate the redesigned planner on at least one Android phone and one iPhone.
+
 ## v0.12: compact mobile time overview
 
 - [x] Add an in-app, widget-style overview that keeps the device's local time, every person/location time, and the primary 24-hour slider together in the first mobile viewport.
