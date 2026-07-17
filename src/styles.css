@@ -86,6 +86,35 @@ main { max-width: 1200px; margin: auto; padding: 0 28px 56px; }
   from { opacity: .55; transform: translateY(4px) scale(.985); filter: saturate(.7); }
   to { opacity: 1; transform: translateY(0) scale(1); filter: saturate(1); }
 }
+@keyframes scene-sun-rise {
+  from { opacity: .55; transform: translateY(10px) scale(.88); }
+  to { opacity: 1; transform: translateY(-2px) scale(1); }
+}
+@keyframes scene-sun-set {
+  from { opacity: 1; transform: translateY(-5px); }
+  to { opacity: .65; transform: translateY(7px); }
+}
+@keyframes scene-moon-rise {
+  from { opacity: .55; transform: translateY(10px) rotate(-7deg); }
+  to { opacity: 1; transform: translateY(-3px) rotate(3deg); }
+}
+@keyframes scene-twinkle {
+  0%, 100% { opacity: .4; }
+  50% { opacity: 1; }
+}
+@keyframes scene-steam {
+  from { opacity: 0; transform: translateY(4px); }
+  45% { opacity: .9; }
+  to { opacity: 0; transform: translateY(-5px); }
+}
+@keyframes scene-cloud-drift {
+  from { transform: translateX(-4px); }
+  to { transform: translateX(5px); }
+}
+@keyframes scene-table-set {
+  from { transform: translateY(3px); }
+  to { transform: translateY(-1px); }
+}
 
 .section { padding: 64px 0 8px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 24px; }
@@ -326,6 +355,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
     box-shadow: 0 16px 34px rgba(13,24,48,.18);
   }
   .mobile-current-time {
+    position: relative; overflow: hidden;
     display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px;
     padding: 12px 14px; border-radius: 15px; background: white; color: #172033;
     animation: time-tile-enter 260ms ease-out; transition: background 240ms ease, border-color 240ms ease, color 240ms ease;
@@ -337,6 +367,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .mobile-current-time.time-period-dinner { background: linear-gradient(135deg, #ffe1c9, #fff5ec); }
   .mobile-current-time.time-period-evening { background: linear-gradient(135deg, #e9e2ff, #f8f5ff); }
   .mobile-current-time.exploring { box-shadow: inset 0 0 0 2px #8eb0ff; }
+  .mobile-current-time > div, .mobile-current-time > strong, .mobile-current-time > em { position: relative; z-index: 1; }
   .mobile-current-time div { min-width: 0; }
   .mobile-current-time span { display: block; color: #246bfd; font-size: 9px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
   .mobile-current-time small { display: block; margin-top: 3px; overflow: hidden; color: #718099; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
@@ -355,7 +386,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   }
   .mobile-time-strip::-webkit-scrollbar { display: none; }
   .compact-time-card {
-    min-width: 0; min-height: 110px; display: grid; align-content: start; padding: 8px 10px;
+    position: relative; overflow: hidden; min-width: 0; min-height: 110px; display: grid; align-content: start; padding: 8px 10px;
     border: 1px solid rgba(255,255,255,.14); border-radius: 13px; background: rgba(255,255,255,.08);
     animation: time-tile-enter 260ms ease-out; transition: background 240ms ease, border-color 240ms ease, transform 240ms ease;
   }
@@ -365,6 +396,39 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .compact-time-card.time-period-afternoon { background: linear-gradient(145deg, rgba(74,151,225,.34), rgba(44,91,155,.38)); border-color: rgba(142,200,255,.34); }
   .compact-time-card.time-period-dinner { background: linear-gradient(145deg, rgba(226,117,70,.34), rgba(112,66,126,.4)); border-color: rgba(255,166,125,.35); }
   .compact-time-card.time-period-evening { background: linear-gradient(145deg, rgba(117,86,172,.38), rgba(31,45,82,.58)); border-color: rgba(177,145,228,.34); }
+  .compact-time-card > span, .compact-time-card > small, .compact-time-card > strong, .compact-time-card > p, .compact-time-card > em { position: relative; z-index: 1; }
+  .time-period-scene {
+    --scene-line: #356095; --scene-fill: #f6b841; --scene-land: rgba(40,91,139,.16);
+    position: absolute; z-index: 0; top: 0; right: 4px; width: 124px; height: 74px;
+    overflow: visible; pointer-events: none; opacity: .58;
+    color: var(--scene-line); fill: none; stroke: var(--scene-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .mobile-current-time .time-period-scene { opacity: .42; }
+  .mobile-current-time .time-period-badge { background: rgba(255,255,255,.74); backdrop-filter: blur(3px); }
+  .time-period-scene.compact { top: 2px; right: -17px; width: 92px; height: 56px; opacity: .34; }
+  .time-period-scene .scene-horizon { fill: var(--scene-land); stroke: none; }
+  .time-period-scene .scene-sun circle, .time-period-scene .scene-moon { fill: var(--scene-fill); stroke: none; }
+  .time-period-scene .scene-stars circle { fill: var(--scene-fill); stroke: none; }
+  .time-period-scene .scene-stars { animation: scene-twinkle 2.8s ease-in-out infinite; }
+  .time-period-scene .scene-stars circle:nth-child(2), .time-period-scene .scene-stars circle:nth-child(4) { animation: scene-twinkle 2.1s .7s ease-in-out infinite reverse; }
+  .time-period-scene .scene-sunrise { transform-origin: 82px 45px; animation: scene-sun-rise 4s ease-in-out infinite alternate; }
+  .time-period-scene .scene-high-sun, .time-period-scene .scene-afternoon-sun { transform-origin: 91px 20px; animation: scene-twinkle 3.8s ease-in-out infinite; }
+  .time-period-scene .scene-sunset { transform-origin: 87px 49px; animation: scene-sun-set 4.5s ease-in-out infinite alternate; }
+  .time-period-scene .scene-moon { transform-origin: 84px 35px; animation: scene-moon-rise 4.8s ease-in-out infinite alternate; }
+  .time-period-scene .scene-steam { animation: scene-steam 2.2s ease-in-out infinite; }
+  .time-period-scene .steam-two { animation-delay: .8s; }
+  .time-period-scene .scene-cloud { animation: scene-cloud-drift 5s ease-in-out infinite alternate; }
+  .time-period-scene .scene-cloud path { fill: rgba(255,255,255,.52); }
+  .time-period-scene .scene-utensils { animation: scene-table-set 2.8s ease-in-out infinite alternate; }
+  .time-period-scene .scene-plate { fill: rgba(255,255,255,.22); }
+  .time-period-scene .scene-plate-inner { stroke-width: 1.3; }
+  .time-period-scene .scene-evening-glow { opacity: .55; }
+  .scene-night, .scene-evening { --scene-line: #6f7ebc; --scene-fill: #f4df96; --scene-land: rgba(54,64,113,.18); }
+  .scene-morning { --scene-line: #b06c31; --scene-fill: #f4ac35; --scene-land: rgba(220,142,55,.15); }
+  .scene-lunch { --scene-line: #7b783c; --scene-fill: #efb631; --scene-land: rgba(66,139,102,.14); }
+  .scene-afternoon { --scene-line: #3984b8; --scene-fill: #ffd45f; --scene-land: rgba(55,125,176,.14); }
+  .scene-dinner { --scene-line: #9b593f; --scene-fill: #e9824b; --scene-land: rgba(126,69,107,.16); }
+  .compact-time-card .time-period-scene { --scene-line: rgba(255,255,255,.88); --scene-fill: rgba(255,218,127,.94); --scene-land: rgba(255,255,255,.15); }
   .compact-time-card span, .compact-time-card small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .compact-time-card span { padding-top: 1px; font-size: 11px; font-weight: 850; line-height: 1.2; }
   .compact-time-card small { margin-top: 1px; color: #b9c8e5; font-size: 9px; line-height: 1.2; }

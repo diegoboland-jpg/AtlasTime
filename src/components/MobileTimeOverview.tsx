@@ -3,6 +3,7 @@ import { Clock3, Coffee, Moon, RotateCcw, SunMedium, Sunrise, Sunset, Utensils }
 import { formatInZone, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
+import { TimePeriodScene } from "./TimePeriodScene";
 
 type MobileTimeOverviewProps = {
   now: Date;
@@ -87,6 +88,7 @@ export function MobileTimeOverview({
         key={overviewInstant.toISOString()}
         aria-label={`${returnPending ? "Exploring" : "Current"} device time is ${formatInZone(overviewInstant, localTimeZone)}`}
       >
+        <TimePeriodScene period={overviewPeriod.key} />
         <div>
           <span>{returnPending ? "Exploring time" : "Current time"}</span>
           <small>{returnPending ? "Linked to the 24-hour slider" : "Your device time zone"} - {localTimeZone.replaceAll("_", " ")}</small>
@@ -113,6 +115,7 @@ export function MobileTimeOverview({
           const period = timePeriodForHour(localHour);
           return (
             <article className={`compact-time-card time-period-${period.key}`} key={`${person.id}-${selectedInstant.toISOString()}`}>
+              <TimePeriodScene period={period.key} compact />
               <span>{person.name}</span>
               <small>{person.city || person.timeZone.replaceAll("_", " ")}</small>
               <strong className="tile-time-value">

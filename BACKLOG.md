@@ -6,6 +6,7 @@
 - [x] Clearly distinguish Current time from Exploring time so a shifted device clock is never mislabeled as live.
 - [x] Classify every displayed local hour as night, morning, lunch time, afternoon, dinner time, or evening.
 - [x] Apply animated, period-aware color treatments while preserving working-hours status and the two-column mobile grid.
+- [x] Add scalable vector scenes for sunrise and coffee, daylight and clouds, meal-time utensils, sunset, moonrise, and stars.
 - [x] Respect the existing reduced-motion preference for all new transitions.
 - [x] Add boundary and normalization tests for the time-of-day model.
 - [ ] Validate the visual language with users in different regions before making meal periods configurable.

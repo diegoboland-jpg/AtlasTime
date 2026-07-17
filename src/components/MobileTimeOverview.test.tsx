@@ -38,6 +38,8 @@ describe("mobile time overview", () => {
     expect(markup).toContain("Compare all hours");
     expect(markup).toContain("time-period-");
     expect(markup).toContain("Afternoon");
+    expect(markup.match(/time-period-scene/g)?.length).toBe(2);
+    expect(markup).toContain("scene-afternoon");
   });
 
   it("links the device-time card to slider exploration and restores it with Now", async () => {
