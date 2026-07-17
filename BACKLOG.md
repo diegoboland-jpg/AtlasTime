@@ -1,12 +1,22 @@
 # AtlasTime backlog
 
+## v0.13: mobile planner ergonomics
+
+- [ ] Redesign the group hour-matching view for phone widths so participant names, selected times, and availability remain easy to scan without a dense horizontal table.
+- [ ] Compare stacked rows, snap paging, and compact hour cards with touch targets of at least 44px; avoid conflicts with the floating time slider.
+- [ ] Validate the redesigned planner on at least one Android phone and one iPhone.
+
 ## v0.12: compact mobile time overview
 
-- [ ] Add an in-app, widget-style overview that keeps the device's local time, every person/location time, and the primary 24-hour slider together in the first mobile viewport.
-- [ ] Show both live local time and the selected meeting time without duplicating planner state.
-- [ ] Use a compact responsive strip or grid for small groups, with touch-friendly horizontal overflow for larger groups.
-- [ ] Keep names, locations, day changes, work-hour status, and the selected hour readable at phone widths.
-- [ ] Preserve the full editable person cards below the compact overview instead of hiding working-hour controls.
+- [x] Add an in-app, widget-style overview that keeps the device's local time, every person/location time, and the primary 24-hour slider together in the first mobile viewport.
+- [x] Show both live local time and the selected meeting time without duplicating planner state.
+- [x] Use a compact responsive strip or grid for small groups, with touch-friendly horizontal overflow for larger groups.
+- [x] Keep names, locations, day changes, work-hour status, and the selected hour readable at phone widths.
+- [x] Preserve the full editable person cards below the compact overview instead of hiding working-hour controls.
+- [x] Keep the real device clock and time zone fixed above slider-controlled meeting-time tiles.
+- [x] Return the mobile slider to current time after 20 seconds of inactivity or immediately with the Now button.
+- [x] Animate selected-time changes on the tiles while respecting reduced-motion preferences.
+- [x] Keep the mobile time slider visible as a floating control while the rest of the app scrolls.
 - [ ] Add responsive and accessibility regression coverage for compact, overflow, and large-text layouts.
 - [ ] Validate the overview on at least one Android phone and one iPhone before marking the milestone complete.
 
