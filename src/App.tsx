@@ -130,7 +130,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.17 solid vector scenes</span>
+          <span className="mvp-badge">v0.18 clearer time tiles</span>
         </div>
       </header>
 
@@ -257,7 +257,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.17</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.18</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

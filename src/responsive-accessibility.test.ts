@@ -26,6 +26,14 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain("@media (prefers-contrast: more)");
   });
 
+  it("cycles compact identity labels without overlap and stops for reduced motion", () => {
+    expect(styles).toContain("@keyframes compact-name-cycle");
+    expect(styles).toContain("@keyframes compact-location-cycle");
+    expect(styles).toContain("animation: compact-name-cycle 6s linear infinite");
+    expect(styles).toContain("animation: compact-location-cycle 6s linear infinite");
+    expect(styles).toContain(".compact-place-rotator span, .compact-place-rotator small { position: static; opacity: 1 !important");
+  });
+
   it("retains reduced-motion, forced-color, and visible-focus support", () => {
     expect(styles).toContain(":focus-visible { outline: 3px solid #f2a900");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");

@@ -16,14 +16,19 @@ describe("time-period vector scenes", () => {
     expect(markup).toContain("<svg");
   });
 
-  it("uses layered solid forms for landscapes, coffee, and clouds", () => {
+  it("uses layered solid forms and distinct afternoon and meal concepts", () => {
     const morning = renderToStaticMarkup(<TimePeriodScene period="morning" />);
+    const lunch = renderToStaticMarkup(<TimePeriodScene period="lunch" />);
     const afternoon = renderToStaticMarkup(<TimePeriodScene period="afternoon" />);
+    const dinner = renderToStaticMarkup(<TimePeriodScene period="dinner" />);
 
     expect(morning).toContain("scene-horizon-far");
     expect(morning).toContain("scene-vessel");
     expect(morning).toContain("scene-saucer");
-    expect(afternoon).toContain("scene-cloud-back");
-    expect(afternoon).toContain("scene-cloud-front");
+    expect(lunch).toContain('data-meal-design="bowl-and-spoon"');
+    expect(afternoon).toContain("scene-sun-track");
+    expect(afternoon).toContain("scene-afternoon-orbit");
+    expect(dinner).toContain('data-meal-design="plate-fork-knife"');
+    expect(dinner).toContain("scene-knife");
   });
 });

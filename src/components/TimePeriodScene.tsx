@@ -26,10 +26,27 @@ function Horizon() {
   );
 }
 
-function UtensilPair() {
+function LunchSetting() {
   return (
-    <g className="scene-utensils">
-      <path d="M30 43v22M25 43v9c0 4 10 4 10 0v-9M57 43v22M57 43c8 3 9 12 0 15" />
+    <g className="scene-lunch-setting" data-meal-design="bowl-and-spoon">
+      <path className="scene-bowl" d="M24 50h32c-1 10-7 15-16 15S26 60 24 50z" />
+      <path className="scene-bowl-rim" d="M21 50h38" />
+      <path className="scene-spoon" d="M67 44c0 4-5 5-6 1-1-3 1-6 4-6 2 0 3 2 2 5zm-4 4-7 18" />
+      <path className="scene-steam steam-one" d="M33 46c-4-5 4-6 0-11" />
+      <path className="scene-steam steam-two" d="M44 46c-4-5 4-6 0-11" />
+    </g>
+  );
+}
+
+function DinnerSetting() {
+  return (
+    <g className="scene-dinner-setting" data-meal-design="plate-fork-knife">
+      <circle className="scene-plate" cx="44" cy="54" r="12" />
+      <circle className="scene-plate-inner" cx="44" cy="54" r="6" />
+      <g className="scene-fork">
+        <path d="M23 40v11M28 40v11M33 40v11M28 51v16M23 48c0 5 10 5 10 0" />
+      </g>
+      <path className="scene-knife" d="M61 39c7 5 8 13 2 20v8h-5V39z" />
     </g>
   );
 }
@@ -73,22 +90,18 @@ export function TimePeriodScene({ period, compact = false }: TimePeriodSceneProp
             <circle cx="91" cy="19" r="9" />
             <path d="M91 4v6M91 28v6M76 19h6M100 19h6M80 8l5 5M97 25l5 5M102 8l-5 5M85 25l-5 5" />
           </g>
-          <circle className="scene-plate" cx="44" cy="55" r="12" />
-          <circle className="scene-plate-inner" cx="44" cy="55" r="6" />
-          <UtensilPair />
+          <LunchSetting />
         </>
       )}
 
       {period === "afternoon" && (
         <>
-          <g className="scene-sun scene-afternoon-sun">
-            <circle cx="91" cy="23" r="11" />
-            <path d="M91 6v7M91 33v7M74 23h7M101 23h7" />
+          <path className="scene-sun-track" d="M48 51c14-27 36-39 62-29" />
+          <g className="scene-sun scene-afternoon-orbit">
+            <circle cx="88" cy="25" r="10" />
+            <path d="M88 8v7M88 35v7M71 25h7M98 25h7M76 13l5 5M100 13l-5 5" />
           </g>
-          <g className="scene-cloud">
-            <path className="scene-cloud-back" d="M43 39h35c0-7-7-10-13-7-5-8-17-5-17 3-4-1-7 1-5 4z" />
-            <path className="scene-cloud-front" d="M18 51h43c1-9-8-13-15-9-5-12-22-8-22 4-5-1-9 1-6 5z" />
-          </g>
+          <path className="scene-afternoon-rays" d="M82 38 66 63h39L94 38z" />
           <Horizon />
         </>
       )}
@@ -99,9 +112,7 @@ export function TimePeriodScene({ period, compact = false }: TimePeriodSceneProp
             <circle cx="87" cy="49" r="12" />
             <path d="M87 29v8M67 49h8M99 35l-6 6M75 35l6 6M99 49h8" />
           </g>
-          <circle className="scene-plate" cx="44" cy="54" r="12" />
-          <circle className="scene-plate-inner" cx="44" cy="54" r="6" />
-          <UtensilPair />
+          <DinnerSetting />
           <Horizon />
         </>
       )}
