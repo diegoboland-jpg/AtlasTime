@@ -113,11 +113,14 @@ export function MobileTimeOverview({
           const localHour = hourInZone(selectedInstant, person.timeZone);
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
+          const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
           return (
             <article className={`compact-time-card time-period-${period.key}`} key={`${person.id}-${selectedInstant.toISOString()}`}>
               <TimePeriodScene period={period.key} compact />
-              <span>{person.name}</span>
-              <small>{person.city || person.timeZone.replaceAll("_", " ")}</small>
+              <div className="compact-place-rotator" aria-label={`${person.name}, ${placeLabel}`}>
+                <span aria-hidden="true">{person.name}</span>
+                <small aria-hidden="true">{placeLabel}</small>
+              </div>
               <strong className="tile-time-value">
                 {formatInZone(selectedInstant, person.timeZone)}
               </strong>

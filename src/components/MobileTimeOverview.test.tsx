@@ -26,6 +26,8 @@ describe("mobile time overview", () => {
     expect(markup).toContain("Current time");
     expect(markup).toContain("Your device time zone");
     expect(markup).toContain("Madrid team");
+    expect(markup).toContain("compact-place-rotator");
+    expect(markup).toContain('aria-label="Madrid team, Madrid"');
     expect(markup).toContain("Meeting time");
     expect(markup).toContain("16:00");
     expect(markup).not.toContain("Working now");

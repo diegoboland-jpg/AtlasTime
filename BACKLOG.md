@@ -1,5 +1,13 @@
 # AtlasTime backlog
 
+## v0.18: clearer time tiles and meal scenes
+
+- [x] Replace the afternoon artwork with a descending sun and visible sky arc that reads differently from morning and midday.
+- [x] Cycle each compact tile between its name and location every three seconds with a fade transition instead of overlapping both labels.
+- [x] Preserve both name and location for assistive technology and show both without motion when reduced motion is preferred.
+- [x] Try distinct meal concepts: a bowl and spoon for lunch, and a plate with clearer solid fork and knife silhouettes for dinner.
+- [ ] Compare the lunch and dinner concepts on physical phones and choose whether both remain or one visual language becomes standard.
+
 ## v0.17: vector scene depth and polish
 
 - [x] Increase the visual weight and opacity of the time-of-day vector scenes so the artwork feels more solid while preserving text contrast.
