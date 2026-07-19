@@ -2,8 +2,8 @@
 
 ## v0.17: vector scene depth and polish
 
-- [ ] Increase the visual weight and opacity of the time-of-day vector scenes so the artwork feels more solid while preserving text contrast.
-- [ ] Refine scene composition, color, and scale across small and large phone widths.
+- [x] Increase the visual weight and opacity of the time-of-day vector scenes so the artwork feels more solid while preserving text contrast.
+- [x] Refine scene composition, color, and scale across small and large phone widths.
 - [ ] Validate the stronger artwork in daylight and dark viewing conditions before finalizing its contrast levels.
 
 ## v0.16: visual time-of-day tiles

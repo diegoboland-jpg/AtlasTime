@@ -15,4 +15,15 @@ describe("time-period vector scenes", () => {
     expect(markup).toContain('aria-hidden="true"');
     expect(markup).toContain("<svg");
   });
+
+  it("uses layered solid forms for landscapes, coffee, and clouds", () => {
+    const morning = renderToStaticMarkup(<TimePeriodScene period="morning" />);
+    const afternoon = renderToStaticMarkup(<TimePeriodScene period="afternoon" />);
+
+    expect(morning).toContain("scene-horizon-far");
+    expect(morning).toContain("scene-vessel");
+    expect(morning).toContain("scene-saucer");
+    expect(afternoon).toContain("scene-cloud-back");
+    expect(afternoon).toContain("scene-cloud-front");
+  });
 });

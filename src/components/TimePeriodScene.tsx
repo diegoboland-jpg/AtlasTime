@@ -18,7 +18,12 @@ function Stars() {
 }
 
 function Horizon() {
-  return <path className="scene-horizon" d="M4 58c22-10 37-8 56 0 18 8 34 8 56-1v15H4z" />;
+  return (
+    <g className="scene-landscape">
+      <path className="scene-horizon-far" d="M3 61c16-13 33-16 51-5 18 11 38 10 63-5v21H3z" />
+      <path className="scene-horizon" d="M3 65c22-10 39-7 57 0 18 7 34 7 57-2v9H3z" />
+    </g>
+  );
 }
 
 function UtensilPair() {
@@ -53,7 +58,8 @@ export function TimePeriodScene({ period, compact = false }: TimePeriodSceneProp
             <path d="M82 26v7M62 45h8M94 31l-5 6M70 31l5 6M94 45h8" />
           </g>
           <g className="scene-coffee">
-            <path d="M18 51h22v12H18zM40 54h4a5 5 0 0 1 0 8h-4" />
+            <path className="scene-vessel" d="M18 51h22v12H18zM40 54h4a5 5 0 0 1 0 8h-4" />
+            <path className="scene-saucer" d="M14 65h32" />
             <path className="scene-steam steam-one" d="M23 47c-4-5 4-6 0-11" />
             <path className="scene-steam steam-two" d="M32 47c-4-5 4-6 0-11" />
           </g>
@@ -80,7 +86,8 @@ export function TimePeriodScene({ period, compact = false }: TimePeriodSceneProp
             <path d="M91 6v7M91 33v7M74 23h7M101 23h7" />
           </g>
           <g className="scene-cloud">
-            <path d="M18 49h40c1-8-8-12-14-8-4-11-20-8-20 3-5-1-8 1-6 5z" />
+            <path className="scene-cloud-back" d="M43 39h35c0-7-7-10-13-7-5-8-17-5-17 3-4-1-7 1-5 4z" />
+            <path className="scene-cloud-front" d="M18 51h43c1-9-8-13-15-9-5-12-22-8-22 4-5-1-9 1-6 5z" />
           </g>
           <Horizon />
         </>

@@ -19,6 +19,13 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain(".mobile-person-local-time { grid-column: 2; text-align: left; }");
   });
 
+  it("scales stronger vector artwork across phone widths", () => {
+    expect(styles).toContain(".time-period-scene.compact { top: 4px; right: -5px; width: 82px; height: 52px; opacity: .68");
+    expect(styles).toContain("@media (max-width: 360px)");
+    expect(styles).toContain("@media (min-width: 480px) and (max-width: 640px)");
+    expect(styles).toContain("@media (prefers-contrast: more)");
+  });
+
   it("retains reduced-motion, forced-color, and visible-focus support", () => {
     expect(styles).toContain(":focus-visible { outline: 3px solid #f2a900");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
