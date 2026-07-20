@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock3, Coffee, Moon, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
+import { countryCodeToFlag } from "../country";
 import { formatInZone, formatUtcHour, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
@@ -126,6 +127,7 @@ export function MobileTimeOverview({
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
           const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
+          const countryFlag = countryCodeToFlag(person.countryCode);
           return (
             <article
               className={`compact-time-card time-period-${period.key}`}
@@ -133,6 +135,7 @@ export function MobileTimeOverview({
               role="listitem"
               aria-label={`${person.name}, ${placeLabel}: ${formatInZone(tileInstant, person.timeZone)}, ${period.label}, ${working ? "working hours" : "outside work hours"}`}
             >
+              {countryFlag && <span className="country-flag-backdrop" aria-hidden="true">{countryFlag}</span>}
               <TimePeriodScene period={period.key} compact />
               <div className="compact-place-rotator" aria-label={`${person.name}, ${placeLabel}`}>
                 <span aria-hidden="true">{person.name}</span>

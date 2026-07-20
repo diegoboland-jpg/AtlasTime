@@ -52,6 +52,13 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain(".compact-place-rotator span, .compact-place-rotator small { position: static; opacity: 1 !important");
   });
 
+  it("keeps trusted country flags subtle, cropped, and optional in high-contrast modes", () => {
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?width: 35%/);
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?opacity: \.22/);
+    expect(styles).toContain("clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%)");
+    expect(styles).toMatch(/@media \(forced-colors: active\) \{[\s\S]*?\.time-period-scene, \.country-flag-backdrop \{ display: none/);
+  });
+
   it("retains reduced-motion, forced-color, and visible-focus support", () => {
     expect(styles).toContain(":focus-visible { outline: 3px solid #f2a900");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");

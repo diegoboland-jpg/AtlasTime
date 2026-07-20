@@ -91,6 +91,8 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
       id: createId(),
       name: name.trim(),
       city: selectedCity.city,
+      country: selectedCity.country,
+      countryCode: selectedCity.countryCode,
       timeZone: selectedCity.timeZone,
       workStart: 9,
       workEnd: 18,

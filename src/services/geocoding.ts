@@ -13,6 +13,7 @@ type OpenMeteoPlace = {
   longitude: number;
   timezone?: string;
   country?: string;
+  country_code?: string;
   admin1?: string;
 };
 
@@ -112,6 +113,7 @@ export async function searchGlobalCities(query: string, signal?: AbortSignal): P
         label: resultLabel(place),
         city: place.name,
         country: place.country ?? "",
+        countryCode: /^[A-Z]{2}$/i.test(place.country_code ?? "") ? place.country_code!.toUpperCase() : undefined,
         timeZone: place.timezone,
         latitude: place.latitude,
         longitude: place.longitude,

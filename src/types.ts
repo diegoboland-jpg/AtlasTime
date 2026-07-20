@@ -2,6 +2,8 @@ export type Person = {
   id: string;
   name: string;
   city: string;
+  country?: string;
+  countryCode?: string;
   timeZone: string;
   workStart: number;
   workEnd: number;
