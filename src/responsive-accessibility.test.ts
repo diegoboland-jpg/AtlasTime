@@ -21,6 +21,8 @@ describe("responsive accessibility safeguards", () => {
 
   it("lets the compact overview survive text zoom and overflowing groups", () => {
     expect(styles).toContain("overscroll-behavior: contain");
+    expect(styles).toContain("max-height: 348px");
+    expect(styles).toContain(".add-time-slot button");
     expect(styles).toContain(".mobile-time-strip:focus-visible");
     expect(styles).toContain("@media (max-width: 280px)");
     expect(styles).toMatch(/@media \(max-width: 280px\) \{[\s\S]*?body \{ min-width: 0/);

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Clock3, Coffee, Moon, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
+import { Clock3, Coffee, Moon, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
 import { formatInZone, formatUtcHour, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
@@ -14,6 +14,7 @@ type MobileTimeOverviewProps = {
   onHourChange: (hour: number) => void;
   onNow: () => void;
   onOpenPlanner: () => void;
+  onAddEntry: () => void;
 };
 
 const RETURN_TO_NOW_MS = 20_000;
@@ -50,6 +51,7 @@ export function MobileTimeOverview({
   onHourChange,
   onNow,
   onOpenPlanner,
+  onAddEntry,
 }: MobileTimeOverviewProps) {
   const returnTimer = useRef<number | undefined>(undefined);
   const [returnPending, setReturnPending] = useState(false);
@@ -62,6 +64,7 @@ export function MobileTimeOverview({
   const hourLabel = returnPending ? selectedHourLabel : `${formatInZone(now, "UTC")} UTC`;
   const overviewHour = hourInZone(overviewInstant, localTimeZone);
   const overviewPeriod = timePeriodForHour(overviewHour);
+  const emptySlots = Math.max(0, 6 - people.length);
 
   useEffect(() => () => window.clearTimeout(returnTimer.current), []);
 
@@ -109,14 +112,14 @@ export function MobileTimeOverview({
       </div>
 
       <p id="mobile-time-strip-help" className="sr-only">
-        Group times are shown as a scrollable list. Each entry includes its place, selected local time, time of day, and working-hours status.
+        Six group slots are shown. Filled entries include their place, local time, time of day, and working-hours status. Empty slots add a person, location, or team. Additional entries scroll below the first six.
       </p>
       <div
         className="mobile-time-strip"
         role="list"
         aria-label="Selected group times"
         aria-describedby="mobile-time-strip-help"
-        tabIndex={people.length > 4 ? 0 : undefined}
+        tabIndex={people.length > 6 ? 0 : undefined}
       >
         {people.map((person) => {
           const localHour = hourInZone(tileInstant, person.timeZone);
@@ -145,7 +148,14 @@ export function MobileTimeOverview({
             </article>
           );
         })}
-        {people.length === 0 && <p className="mobile-time-empty" role="status">Add people, locations, or teams below.</p>}
+        {Array.from({ length: emptySlots }, (_, index) => (
+          <div className="add-time-slot" role="listitem" key={`empty-slot-${index}`}>
+            <button type="button" onClick={onAddEntry} aria-label="Add a person, location, or team">
+              <Plus size={24} aria-hidden="true" />
+              <span>Add location or person</span>
+            </button>
+          </div>
+        ))}
       </div>
 
       {people.length > 0 && (

@@ -18,6 +18,7 @@ describe("mobile time overview", () => {
         onHourChange={vi.fn()}
         onNow={vi.fn()}
         onOpenPlanner={vi.fn()}
+        onAddEntry={vi.fn()}
       />,
     );
 
@@ -41,6 +42,8 @@ describe("mobile time overview", () => {
     expect(markup).toContain("Lunch time");
     expect(markup.match(/time-period-scene/g)?.length).toBe(2);
     expect(markup).toContain("scene-lunch");
+    expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
+    expect(markup).toContain('aria-label="Add a person, location, or team"');
   });
 
   it("links the device-time card to slider exploration and restores it with Now", async () => {
@@ -61,6 +64,7 @@ describe("mobile time overview", () => {
           onHourChange={onHourChange}
           onNow={onNow}
           onOpenPlanner={vi.fn()}
+          onAddEntry={vi.fn()}
         />,
       );
     });
@@ -87,7 +91,7 @@ describe("mobile time overview", () => {
   });
 
   it("keeps long and overflowing group entries available to keyboard and assistive technology", () => {
-    const people = Array.from({ length: 6 }, (_, index) => ({
+    const people = Array.from({ length: 7 }, (_, index) => ({
       id: String(index + 1),
       name: `International operations team ${index + 1}`,
       city: `A deliberately long place name ${index + 1}`,
@@ -104,11 +108,12 @@ describe("mobile time overview", () => {
           now={new Date("2026-07-16T12:00:00Z")}
           selectedInstant={new Date("2026-07-16T14:00:00Z")}
           selectedHour={14}
-          selectedScore={{ utcHour: 14, available: 6, total: 6, penalty: 0, score: 72 }}
+          selectedScore={{ utcHour: 14, available: 7, total: 7, penalty: 0, score: 84 }}
           people={people}
           onHourChange={vi.fn()}
           onNow={vi.fn()}
           onOpenPlanner={vi.fn()}
+          onAddEntry={vi.fn()}
         />,
       );
     });
@@ -116,7 +121,8 @@ describe("mobile time overview", () => {
     const list = container.querySelector<HTMLElement>('[role="list"]')!;
     expect(list.tabIndex).toBe(0);
     expect(list.getAttribute("aria-describedby")).toBe("mobile-time-strip-help");
-    expect(list.querySelectorAll('[role="listitem"]')).toHaveLength(6);
+    expect(list.querySelectorAll('[role="listitem"]')).toHaveLength(7);
+    expect(list.querySelectorAll(".add-time-slot")).toHaveLength(0);
     expect(list.querySelector('[role="listitem"]')?.getAttribute("aria-label")).toContain(
       "International operations team 1, A deliberately long place name 1: 14:00, Lunch time, working hours",
     );
@@ -135,10 +141,41 @@ describe("mobile time overview", () => {
         onHourChange={vi.fn()}
         onNow={vi.fn()}
         onOpenPlanner={vi.fn()}
+        onAddEntry={vi.fn()}
       />,
     );
 
     expect(markup).toContain('role="list"');
     expect(markup).not.toContain('tabindex="0"');
+    expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
+  });
+
+  it("uses six add invitations for an empty group and opens the shared add flow", async () => {
+    const onAddEntry = vi.fn();
+    const container = document.createElement("div");
+    const root = createRoot(container);
+
+    await act(async () => {
+      root.render(
+        <MobileTimeOverview
+          now={new Date("2026-07-16T12:00:00Z")}
+          selectedInstant={new Date("2026-07-16T14:00:00Z")}
+          selectedHour={14}
+          selectedScore={{ utcHour: 14, available: 0, total: 0, penalty: 0, score: 0 }}
+          people={[]}
+          onHourChange={vi.fn()}
+          onNow={vi.fn()}
+          onOpenPlanner={vi.fn()}
+          onAddEntry={onAddEntry}
+        />,
+      );
+    });
+
+    const addButtons = container.querySelectorAll<HTMLButtonElement>(".add-time-slot button");
+    expect(addButtons).toHaveLength(6);
+    await act(async () => addButtons[0].click());
+    expect(onAddEntry).toHaveBeenCalledOnce();
+
+    await act(async () => root.unmount());
   });
 });
