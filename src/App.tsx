@@ -137,7 +137,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.25 meeting details</span>
+          <span className="mvp-badge">v0.26 calendar shortcuts</span>
         </div>
       </header>
 
@@ -268,7 +268,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.25</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.26</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

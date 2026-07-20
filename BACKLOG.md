@@ -1,5 +1,13 @@
 # AtlasTime backlog
 
+## v0.26: calendar handoff shortcuts
+
+- [x] Generate prefilled Google Calendar and Outlook Calendar drafts from the selected AtlasTime meeting.
+- [x] Carry the UTC start/end, title, notes, local-time summary, and location into each provider.
+- [x] Require the user to review and save the event in the calendar provider; AtlasTime receives no calendar permissions.
+- [x] Keep the standards-based `.ics` download as the universal and offline-friendly fallback.
+- [ ] Validate Google and Outlook draft links on installed Windows, Android, and iPhone PWAs.
+
 ## v0.25: local-first meeting details
 
 - [x] Add optional meeting location or joining-link and notes fields to each saved group.
