@@ -1,5 +1,13 @@
 # AtlasTime backlog
 
+## v0.22: desktop PWA parity
+
+- [x] Use the animated Everyone's Time overview as the primary experience on installed Windows and desktop browsers.
+- [x] Show six overview slots in a desktop-friendly 3 × 2 grid while retaining the phone's 2 × 3 grid.
+- [x] Keep live-versus-exploring time behavior, vector scenes, and empty add slots consistent across screen sizes.
+- [x] Keep the shared 24-hour slider visible while scrolling on desktop and phone.
+- [x] Remove the older desktop hero and duplicate in-page slider from the primary flow.
+
 ## v0.21: six-slot mobile overview
 
 - [x] Show a stable two-column, three-row grid with six visible slots in Everyone's time.

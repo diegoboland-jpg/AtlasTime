@@ -136,7 +136,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.21 six-slot overview</span>
+          <span className="mvp-badge">v0.22 desktop PWA parity</span>
         </div>
       </header>
 
@@ -263,7 +263,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.21</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.22</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }
