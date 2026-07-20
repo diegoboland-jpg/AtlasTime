@@ -19,6 +19,13 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain(".mobile-person-local-time { grid-column: 2; text-align: left; }");
   });
 
+  it("uses the shared animated overview as the desktop PWA experience", () => {
+    expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.hero \{ display: none/);
+    expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.mobile-time-strip \{ grid-column: 2; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); max-height: 228px/);
+    expect(styles).toMatch(/\.mobile-overview-slider \{\s*position: fixed/);
+    expect(styles).toContain("main > .time-slider-section { display: none; }");
+  });
+
   it("lets the compact overview survive text zoom and overflowing groups", () => {
     expect(styles).toContain("overscroll-behavior: contain");
     expect(styles).toContain("max-height: 348px");
