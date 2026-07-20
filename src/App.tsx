@@ -101,7 +101,7 @@ export default function App() {
   }
 
   async function shareGroup() {
-    const approved = window.confirm("This link contains the group name, people or team names, locations, time zones, and working hours. Anyone with the link can read that information. Create it?");
+    const approved = window.confirm("This link contains the group name, people or team names, locations, time zones, working hours, and any meeting title, location, or notes. Anyone with the link can read that information. Create it?");
     if (!approved) return;
     const link = createShareLink(activeGroup);
     try {
@@ -137,7 +137,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.24 country tile identity</span>
+          <span className="mvp-badge">v0.25 meeting details</span>
         </div>
       </header>
 
@@ -248,6 +248,8 @@ export default function App() {
           selectedInstant={selectedInstant}
           onTitleChange={(title) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, title } }))}
           onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
+          onLocationChange={(location) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, location } }))}
+          onNotesChange={(notes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, notes } }))}
         />
 
         <section className="section launch-section">
@@ -266,7 +268,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.24</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.25</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

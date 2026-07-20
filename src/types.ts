@@ -22,6 +22,8 @@ export type PlannerState = {
   hour: number;
   title: string;
   durationMinutes: number;
+  location: string;
+  notes: string;
 };
 
 export type SavedGroup = {

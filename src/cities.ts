@@ -72,3 +72,8 @@ export function getCityByPlace(city: string, timeZone: string): CityOption | und
   return cityOptions.find((option) => option.timeZone === timeZone
     && option.city.toLocaleLowerCase() === normalizedCity);
 }
+
+export function getCountryByTimeZone(timeZone: string): Pick<CityOption, "country" | "countryCode"> | undefined {
+  const match = cityOptions.find((option) => option.timeZone === timeZone);
+  return match ? { country: match.country, countryCode: match.countryCode } : undefined;
+}

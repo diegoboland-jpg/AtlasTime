@@ -10,6 +10,8 @@ type Props = {
   selectedInstant: Date;
   onTitleChange: (title: string) => void;
   onDurationChange: (durationMinutes: number) => void;
+  onLocationChange: (location: string) => void;
+  onNotesChange: (notes: string) => void;
 };
 
 const durations = [30, 45, 60, 90, 120];
@@ -19,9 +21,9 @@ function safeFileName(title: string) {
   return `${normalized || "atlastime-meeting"}.ics`;
 }
 
-export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onDurationChange }: Props) {
+export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onDurationChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
-  const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people);
+  const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, planner);
 
   async function copySummary() {
     try {
@@ -39,6 +41,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
       start: selectedInstant,
       durationMinutes: planner.durationMinutes,
       description: summary,
+      location: planner.location,
       uid: `${createId()}@atlastime.local`,
       createdAt: new Date(),
     });
@@ -73,6 +76,14 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             <select value={planner.durationMinutes} onChange={(event) => onDurationChange(Number(event.target.value))}>
               {durations.map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}
             </select>
+          </label>
+          <label>
+            Meeting location or link
+            <input value={planner.location} maxLength={160} placeholder="e.g. Zoom or Conference room 3" onChange={(event) => onLocationChange(event.target.value)} />
+          </label>
+          <label>
+            Notes
+            <textarea value={planner.notes} maxLength={1000} rows={4} placeholder="Optional agenda or instructions" onChange={(event) => onNotesChange(event.target.value)} />
           </label>
         </div>
 

@@ -1,5 +1,5 @@
 import { starterPeople } from "./data";
-import { getCityByPlace } from "./cities";
+import { getCityByPlace, getCountryByTimeZone } from "./cities";
 import { createId } from "./id";
 import type { Person, PlannerState, SavedGroup, SharedGroupPayload } from "./types";
 
@@ -17,7 +17,7 @@ function localDateInput() {
 }
 
 export function defaultPlanner(): PlannerState {
-  return { date: localDateInput(), hour: 12, title: "", durationMinutes: 60 };
+  return { date: localDateInput(), hour: 12, title: "", durationMinutes: 60, location: "", notes: "" };
 }
 
 function safePlanner(value: unknown): PlannerState {
@@ -33,6 +33,8 @@ function safePlanner(value: unknown): PlannerState {
     durationMinutes: typeof candidate?.durationMinutes === "number" && ALLOWED_DURATIONS.includes(candidate.durationMinutes)
       ? candidate.durationMinutes
       : 60,
+    location: typeof candidate?.location === "string" ? candidate.location.trim().slice(0, 160) : "",
+    notes: typeof candidate?.notes === "string" ? candidate.notes.trim().slice(0, 1000) : "",
   };
 }
 
@@ -48,12 +50,13 @@ function safePeople(value: unknown): Person[] {
       && typeof candidate.workEnd === "number";
     if (!valid) return [];
     const knownPlace = getCityByPlace(candidate.city!, candidate.timeZone!);
+    const knownCountry = knownPlace ?? getCountryByTimeZone(candidate.timeZone!);
     const country = typeof candidate.country === "string" && candidate.country.trim()
       ? candidate.country.trim().slice(0, 80)
-      : knownPlace?.country;
+      : knownCountry?.country;
     const countryCode = typeof candidate.countryCode === "string" && /^[A-Z]{2}$/i.test(candidate.countryCode)
       ? candidate.countryCode.toUpperCase()
-      : knownPlace?.countryCode;
+      : knownCountry?.countryCode;
     return [{
       id: candidate.id!,
       name: candidate.name!,
