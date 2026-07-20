@@ -11,6 +11,7 @@ const curitibaResponse = {
     longitude: -49.27,
     timezone: "America/Sao_Paulo",
     country: "Brazil",
+    country_code: "BR",
     admin1: "Paraná",
   }],
 };
@@ -31,7 +32,7 @@ describe("global city search cache", () => {
     const first = await searchGlobalCities("Curitiba");
     const second = await searchGlobalCities("Curitiba");
 
-    expect(first[0]).toMatchObject({ city: "Curitiba", timeZone: "America/Sao_Paulo", source: "network" });
+    expect(first[0]).toMatchObject({ city: "Curitiba", country: "Brazil", countryCode: "BR", timeZone: "America/Sao_Paulo", source: "network" });
     expect(second[0]).toMatchObject({ city: "Curitiba", source: "cache" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });

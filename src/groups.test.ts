@@ -8,6 +8,8 @@ const person: Person = {
   id: "ana",
   name: "Ana",
   city: "São Paulo",
+  country: "Brazil",
+  countryCode: "BR",
   timeZone: "America/Sao_Paulo",
   workStart: 8,
   workEnd: 17,
@@ -39,6 +41,25 @@ describe("saved groups", () => {
     saveGroups(groups, "two");
 
     expect(loadGroups()).toMatchObject({ groups, activeGroupId: "two" });
+  });
+
+  it("normalizes trusted country codes and drops invalid flag metadata", () => {
+    const people = [
+      { ...person, id: "valid", countryCode: "br" },
+      { ...person, id: "invalid", countryCode: "Brazil" },
+    ];
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "countries",
+      name: "Countries",
+      people,
+      planner: { date: "2026-07-20", hour: 12 },
+      updatedAt: "2026-07-20T00:00:00Z",
+    }]));
+
+    const loaded = loadGroups().groups[0].people;
+
+    expect(loaded[0].countryCode).toBe("BR");
+    expect(loaded[1].countryCode).toBeUndefined();
   });
 });
 

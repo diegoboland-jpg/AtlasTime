@@ -14,7 +14,7 @@ describe("mobile time overview", () => {
         selectedInstant={new Date("2026-07-16T14:00:00Z")}
         selectedHour={14}
         selectedScore={{ utcHour: 14, available: 1, total: 1, penalty: 0, score: 12 }}
-        people={[{ id: "1", name: "Madrid team", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
+        people={[{ id: "1", name: "Madrid team", city: "Madrid", country: "Spain", countryCode: "ES", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
         onHourChange={vi.fn()}
         onNow={vi.fn()}
         onOpenPlanner={vi.fn()}
@@ -42,6 +42,8 @@ describe("mobile time overview", () => {
     expect(markup).toContain("Lunch time");
     expect(markup.match(/time-period-scene/g)?.length).toBe(2);
     expect(markup).toContain("scene-lunch");
+    expect(markup).toContain("country-flag-backdrop");
+    expect(markup).toContain("🇪🇸");
     expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
     expect(markup).toContain('aria-label="Add a person, location, or team"');
   });

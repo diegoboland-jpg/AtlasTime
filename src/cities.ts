@@ -3,6 +3,7 @@ export type CityOption = {
   label: string;
   city: string;
   country: string;
+  countryCode?: string;
   timeZone: string;
   latitude?: number;
   longitude?: number;
