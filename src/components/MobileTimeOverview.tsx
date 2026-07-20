@@ -108,14 +108,28 @@ export function MobileTimeOverview({
         <strong>{hourLabel}</strong>
       </div>
 
-      <div className="mobile-time-strip" role="region" aria-label="Selected group times" tabIndex={0}>
+      <p id="mobile-time-strip-help" className="sr-only">
+        Group times are shown as a scrollable list. Each entry includes its place, selected local time, time of day, and working-hours status.
+      </p>
+      <div
+        className="mobile-time-strip"
+        role="list"
+        aria-label="Selected group times"
+        aria-describedby="mobile-time-strip-help"
+        tabIndex={people.length > 4 ? 0 : undefined}
+      >
         {people.map((person) => {
           const localHour = hourInZone(selectedInstant, person.timeZone);
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
           const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
           return (
-            <article className={`compact-time-card time-period-${period.key}`} key={`${person.id}-${selectedInstant.toISOString()}`}>
+            <article
+              className={`compact-time-card time-period-${period.key}`}
+              key={`${person.id}-${selectedInstant.toISOString()}`}
+              role="listitem"
+              aria-label={`${person.name}, ${placeLabel}: ${formatInZone(selectedInstant, person.timeZone)}, ${period.label}, ${working ? "working hours" : "outside work hours"}`}
+            >
               <TimePeriodScene period={period.key} compact />
               <div className="compact-place-rotator" aria-label={`${person.name}, ${placeLabel}`}>
                 <span aria-hidden="true">{person.name}</span>
@@ -131,7 +145,7 @@ export function MobileTimeOverview({
             </article>
           );
         })}
-        {people.length === 0 && <p className="mobile-time-empty">Add people, locations, or teams below.</p>}
+        {people.length === 0 && <p className="mobile-time-empty" role="status">Add people, locations, or teams below.</p>}
       </div>
 
       {recommendation && (
