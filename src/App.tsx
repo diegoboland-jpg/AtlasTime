@@ -11,7 +11,7 @@ import { TimePlanner } from "./components/TimePlanner";
 import { TimeSlider } from "./components/TimeSlider";
 import { clearShareHash, createShareLink, defaultPlanner, loadGroups, readSharedGroup, saveGroups } from "./groups";
 import { createId } from "./id";
-import { bestHour, dateAtUtcHour, formatInZone, scoreHours } from "./time";
+import { bestHour, dateAtUtcHour, formatInZone, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person, SavedGroup } from "./types";
 
 function utcDateInput(date: Date) {
@@ -40,6 +40,7 @@ export default function App() {
   const hours = useMemo(() => scoreHours(people, planner.date), [people, planner.date]);
   const recommendation = useMemo(() => bestHour(people, planner.date), [people, planner.date]);
   const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
+  const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour), [people, planner.date, planner.hour]);
 
   function updateActiveGroup(update: (group: SavedGroup) => SavedGroup) {
     setWorkspace((current) => ({
@@ -63,7 +64,7 @@ export default function App() {
     setNow(current);
     updateActiveGroup((group) => ({
       ...group,
-      planner: { ...group.planner, date: utcDateInput(current), hour: current.getUTCHours() },
+      planner: { ...group.planner, date: utcDateInput(current), hour: current.getUTCHours() + (current.getUTCMinutes() >= 30 ? 0.5 : 0) },
     }));
   }
 
@@ -130,7 +131,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.18 clearer time tiles</span>
+          <span className="mvp-badge">v0.20 accurate local time</span>
         </div>
       </header>
 
@@ -142,8 +143,7 @@ export default function App() {
           people={people}
           selectedInstant={selectedInstant}
           selectedHour={planner.hour}
-          selectedScore={hours[planner.hour]}
-          recommendation={recommendation}
+          selectedScore={selectedScore}
           onHourChange={selectHour}
           onNow={selectNow}
           onOpenPlanner={openPlanner}
@@ -216,7 +216,7 @@ export default function App() {
 
         <TimeSlider
           selectedHour={planner.hour}
-          selectedScore={hours[planner.hour]}
+          selectedScore={selectedScore}
           onHourChange={selectHour}
           onNow={selectNow}
         />
@@ -257,7 +257,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.18</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.20</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

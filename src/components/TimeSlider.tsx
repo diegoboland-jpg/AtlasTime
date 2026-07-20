@@ -1,4 +1,5 @@
 import { RotateCcw } from "lucide-react";
+import { formatUtcHour } from "../time";
 import type { HourScore } from "../types";
 
 type TimeSliderProps = {
@@ -9,7 +10,7 @@ type TimeSliderProps = {
 };
 
 export function TimeSlider({ selectedHour, selectedScore, onHourChange, onNow }: TimeSliderProps) {
-  const hourLabel = `${String(selectedHour).padStart(2, "0")}:00 UTC`;
+  const hourLabel = formatUtcHour(selectedHour);
   const available = selectedScore?.available ?? 0;
   const total = selectedScore?.total ?? 0;
 
@@ -25,8 +26,8 @@ export function TimeSlider({ selectedHour, selectedScore, onHourChange, onNow }:
           className="time-slider"
           type="range"
           min="0"
-          max="23"
-          step="1"
+          max="23.5"
+          step="0.5"
           value={selectedHour}
           onChange={(event) => onHourChange(Number(event.target.value))}
           aria-label="Selected UTC meeting hour"

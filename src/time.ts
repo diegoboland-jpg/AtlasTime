@@ -42,37 +42,41 @@ export function hourInZone(date: Date, timeZone: string): number {
 
 export function dateAtUtcHour(dateValue: string, utcHour: number): Date {
   const [year, month, day] = dateValue.split("-").map(Number);
-  return new Date(Date.UTC(year, month - 1, day, utcHour, 0, 0));
+  const wholeHour = Math.floor(utcHour);
+  const minutes = Math.round((utcHour - wholeHour) * 60);
+  return new Date(Date.UTC(year, month - 1, day, wholeHour, minutes, 0));
+}
+
+export function formatUtcHour(utcHour: number) {
+  const wholeHour = Math.floor(utcHour);
+  const minutes = Math.round((utcHour - wholeHour) * 60);
+  return `${String(wholeHour).padStart(2, "0")}:${String(minutes).padStart(2, "0")} UTC`;
+}
+
+export function scoreAtUtcHour(people: Person[], dateValue: string, utcHour: number): HourScore {
+  const instant = dateAtUtcHour(dateValue, utcHour);
+  let available = 0;
+  const penalty = people.reduce((totalPenalty, person) => {
+    const localHour = hourInZone(instant, person.timeZone);
+    const working = localHour >= person.workStart && localHour < person.workEnd;
+
+    if (working) {
+      available += 1;
+      return totalPenalty;
+    }
+
+    const distance = localHour < person.workStart
+      ? person.workStart - localHour
+      : localHour - person.workEnd + 1;
+    const extremePenalty = localHour < 7 || localHour >= 21 ? 5 : 0;
+    return totalPenalty + 2 + distance + extremePenalty;
+  }, 0);
+
+  return { utcHour, available, total: people.length, penalty, score: available * 12 - penalty };
 }
 
 export function scoreHours(people: Person[], dateValue: string): HourScore[] {
-  return Array.from({ length: 24 }, (_, utcHour) => {
-    const instant = dateAtUtcHour(dateValue, utcHour);
-    let available = 0;
-    const penalty = people.reduce((totalPenalty, person) => {
-      const localHour = hourInZone(instant, person.timeZone);
-      const working = localHour >= person.workStart && localHour < person.workEnd;
-
-      if (working) {
-        available += 1;
-        return totalPenalty;
-      }
-
-      const distance = localHour < person.workStart
-        ? person.workStart - localHour
-        : localHour - person.workEnd + 1;
-      const extremePenalty = localHour < 7 || localHour >= 21 ? 5 : 0;
-      return totalPenalty + 2 + distance + extremePenalty;
-    }, 0);
-
-    return {
-      utcHour,
-      available,
-      total: people.length,
-      penalty,
-      score: available * 12 - penalty,
-    };
-  });
+  return Array.from({ length: 24 }, (_, utcHour) => scoreAtUtcHour(people, dateValue, utcHour));
 }
 
 export function bestHour(people: Person[], dateValue: string): HourScore | null {

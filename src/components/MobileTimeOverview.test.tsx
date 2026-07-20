@@ -10,11 +10,10 @@ describe("mobile time overview", () => {
   it("labels live device time and gives every tile a time-of-day state", () => {
     const markup = renderToStaticMarkup(
       <MobileTimeOverview
-        now={new Date("2026-07-16T12:00:00Z")}
+        now={new Date("2026-07-16T12:17:00Z")}
         selectedInstant={new Date("2026-07-16T14:00:00Z")}
         selectedHour={14}
         selectedScore={{ utcHour: 14, available: 1, total: 1, penalty: 0, score: 12 }}
-        recommendation={{ utcHour: 15, available: 1, total: 1, penalty: 0, score: 12 }}
         people={[{ id: "1", name: "Madrid team", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
         onHourChange={vi.fn()}
         onNow={vi.fn()}
@@ -29,19 +28,19 @@ describe("mobile time overview", () => {
     expect(markup).toContain("compact-place-rotator");
     expect(markup).toContain('aria-label="Madrid team, Madrid"');
     expect(markup).toContain("Meeting time");
-    expect(markup).toContain("16:00");
+    expect(markup).toContain("14:17");
     expect(markup).not.toContain("Working now");
     expect(markup).toContain("Explore 24 hours");
     expect(markup).toContain('type="range"');
     expect(markup).toContain("1/1 available");
-    expect(markup).toContain("Recommended");
-    expect(markup).toContain("15:00 UTC");
-    expect(markup).toContain("Use time");
-    expect(markup).toContain("Compare all hours");
+    expect(markup).not.toContain("Recommended");
+    expect(markup).toContain("Need a recommended meeting time?");
+    expect(markup).toContain("Open planner");
+    expect(markup).toContain('step="0.5"');
     expect(markup).toContain("time-period-");
-    expect(markup).toContain("Afternoon");
+    expect(markup).toContain("Lunch time");
     expect(markup.match(/time-period-scene/g)?.length).toBe(2);
-    expect(markup).toContain("scene-afternoon");
+    expect(markup).toContain("scene-lunch");
   });
 
   it("links the device-time card to slider exploration and restores it with Now", async () => {
@@ -58,7 +57,6 @@ describe("mobile time overview", () => {
           selectedInstant={new Date("2026-07-16T18:00:00Z")}
           selectedHour={18}
           selectedScore={{ utcHour: 18, available: 1, total: 1, penalty: 0, score: 12 }}
-          recommendation={null}
           people={[]}
           onHourChange={onHourChange}
           onNow={onNow}
@@ -72,11 +70,11 @@ describe("mobile time overview", () => {
     const valueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
 
     await act(async () => {
-      valueSetter.call(slider, "19");
+      valueSetter.call(slider, "19.5");
       slider.dispatchEvent(new Event("input", { bubbles: true }));
     });
 
-    expect(onHourChange).toHaveBeenCalledWith(19);
+    expect(onHourChange).toHaveBeenCalledWith(19.5);
     expect(container.querySelector(".mobile-current-time")?.textContent).toContain("Exploring time");
     expect(container.querySelector(".mobile-current-time")?.textContent).toContain("Linked to the 24-hour slider");
 
@@ -107,7 +105,6 @@ describe("mobile time overview", () => {
           selectedInstant={new Date("2026-07-16T14:00:00Z")}
           selectedHour={14}
           selectedScore={{ utcHour: 14, available: 6, total: 6, penalty: 0, score: 72 }}
-          recommendation={null}
           people={people}
           onHourChange={vi.fn()}
           onNow={vi.fn()}
@@ -121,7 +118,7 @@ describe("mobile time overview", () => {
     expect(list.getAttribute("aria-describedby")).toBe("mobile-time-strip-help");
     expect(list.querySelectorAll('[role="listitem"]')).toHaveLength(6);
     expect(list.querySelector('[role="listitem"]')?.getAttribute("aria-label")).toContain(
-      "International operations team 1, A deliberately long place name 1: 16:00, Afternoon, working hours",
+      "International operations team 1, A deliberately long place name 1: 14:00, Lunch time, working hours",
     );
 
     act(() => root.unmount());
@@ -134,7 +131,6 @@ describe("mobile time overview", () => {
         selectedInstant={new Date("2026-07-16T14:00:00Z")}
         selectedHour={14}
         selectedScore={{ utcHour: 14, available: 1, total: 1, penalty: 0, score: 12 }}
-        recommendation={null}
         people={[{ id: "1", name: "Madrid", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
         onHourChange={vi.fn()}
         onNow={vi.fn()}

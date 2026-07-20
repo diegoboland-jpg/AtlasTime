@@ -475,20 +475,14 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .compact-time-card em.working { color: #7ce0b7; font-weight: 800; }
   .time-period-badge { display: inline-flex !important; align-items: center; gap: 3px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 999px; opacity: .9; font-size: 7px; font-style: normal; font-weight: 850; letter-spacing: .03em; line-height: 1.1; text-transform: uppercase; }
   .mobile-time-empty { grid-column: 1 / -1; margin: 0; padding: 20px; border: 1px dashed #7286aa; border-radius: 13px; color: #c7d4ec; font-size: 11px; text-align: center; }
-  .mobile-recommendation {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 10px;
-    padding: 10px 11px; border: 1px solid rgba(158,186,255,.34); border-radius: 14px; background: rgba(255,255,255,.08);
+  .mobile-planner-shortcut {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 5px 0 0; color: #b9c8e5; font-size: 9px;
   }
-  .mobile-recommendation > div { grid-row: 1 / 3; min-width: 0; }
-  .mobile-recommendation span, .mobile-recommendation strong, .mobile-recommendation small { display: block; }
-  .mobile-recommendation span { color: #9ebaff; font-size: 8px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
-  .mobile-recommendation strong { margin-top: 2px; font-size: 19px; }
-  .mobile-recommendation small { margin-top: 2px; color: #c7d4ec; font-size: 8px; }
-  .mobile-recommendation button {
-    min-height: 44px; padding: 6px 10px; border: 1px solid #7b95c4; border-radius: 9px;
-    background: #e8efff; color: #174fae; font-size: 9px; font-weight: 850; cursor: pointer;
+  .mobile-planner-shortcut button {
+    min-height: 44px; padding: 6px 11px; border: 1px solid #7286aa; border-radius: 9px;
+    background: transparent; color: white; font-size: 9px; font-weight: 850; cursor: pointer;
   }
-  .mobile-recommendation .mobile-compare-button { background: #263d67; color: white; }
   .mobile-overview-slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; }
   .mobile-overview-slider label { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; font-size: 10px; font-weight: 800; }
   .mobile-overview-slider label small { color: #b9c8e5; font-size: 9px; font-weight: 650; }
@@ -604,8 +598,6 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 
 @media (max-width: 420px) {
-  .mobile-recommendation { grid-template-columns: 1fr 1fr; }
-  .mobile-recommendation > div { grid-column: 1 / -1; grid-row: auto; }
   .mobile-planner-intro { align-items: flex-start; flex-direction: column; gap: 6px; }
   .mobile-planner-intro > small { max-width: none; text-align: left; }
   .mobile-person-time { grid-template-columns: 38px minmax(0, 1fr); }
