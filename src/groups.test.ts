@@ -46,7 +46,7 @@ describe("saved groups", () => {
   it("normalizes trusted country codes and drops invalid flag metadata", () => {
     const people = [
       { ...person, id: "valid", countryCode: "br" },
-      { ...person, id: "invalid", countryCode: "Brazil" },
+      { ...person, id: "invalid", city: "Unlisted place", country: undefined, countryCode: "Brazil" },
     ];
     localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
       id: "countries",
@@ -60,6 +60,20 @@ describe("saved groups", () => {
 
     expect(loaded[0].countryCode).toBe("BR");
     expect(loaded[1].countryCode).toBeUndefined();
+  });
+
+  it("backfills flags for trusted known city and timezone pairs", () => {
+    const oldPeople = [
+      { ...person, id: "granada", city: "Granada", country: undefined, countryCode: undefined, timeZone: "Europe/Madrid" },
+      { ...person, id: "manila", city: "Manila", country: undefined, countryCode: undefined, timeZone: "Asia/Manila" },
+      { ...person, id: "kochi", city: "Kochi", country: undefined, countryCode: undefined, timeZone: "Asia/Kolkata" },
+      { ...person, id: "buenos", city: "Buenos aires", country: undefined, countryCode: undefined, timeZone: "America/Argentina/Buenos_Aires" },
+    ];
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "old", name: "Old group", people: oldPeople, planner: { date: "2026-07-20", hour: 12 }, updatedAt: "2026-07-20T00:00:00Z",
+    }]));
+
+    expect(loadGroups().groups[0].people.map(({ countryCode }) => countryCode)).toEqual(["ES", "PH", "IN", "AR"]);
   });
 });
 

@@ -1,4 +1,5 @@
 import { starterPeople } from "./data";
+import { getCityByPlace } from "./cities";
 import { createId } from "./id";
 import type { Person, PlannerState, SavedGroup, SharedGroupPayload } from "./types";
 
@@ -46,12 +47,13 @@ function safePeople(value: unknown): Person[] {
       && typeof candidate.workStart === "number"
       && typeof candidate.workEnd === "number";
     if (!valid) return [];
+    const knownPlace = getCityByPlace(candidate.city!, candidate.timeZone!);
     const country = typeof candidate.country === "string" && candidate.country.trim()
       ? candidate.country.trim().slice(0, 80)
-      : undefined;
+      : knownPlace?.country;
     const countryCode = typeof candidate.countryCode === "string" && /^[A-Z]{2}$/i.test(candidate.countryCode)
       ? candidate.countryCode.toUpperCase()
-      : undefined;
+      : knownPlace?.countryCode;
     return [{
       id: candidate.id!,
       name: candidate.name!,

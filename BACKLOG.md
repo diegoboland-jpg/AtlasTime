@@ -7,6 +7,7 @@
 - [x] Add a subtle diagonal flag crop behind roughly 35% of each filled time tile while keeping time and status text primary.
 - [x] Hide decorative flags in forced-colors mode and keep them out of the accessibility tree.
 - [x] Never infer a flag from a timezone; older entries without dependable country metadata remain visually unchanged.
+- [x] Backfill trusted metadata for older entries only when both city and timezone match the curated place registry.
 - [ ] Compare flag opacity and crop on physical Windows, Android, and iPhone displays.
 
 ## v0.23: reliable installed-app updates
