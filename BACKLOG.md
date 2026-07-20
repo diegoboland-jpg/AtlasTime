@@ -1,5 +1,14 @@
 # AtlasTime backlog
 
+## v0.25: local-first meeting details
+
+- [x] Add optional meeting location or joining-link and notes fields to each saved group.
+- [x] Safely migrate older saved groups and shared links with empty detail defaults.
+- [x] Include meeting details in copied timezone summaries and standard calendar files.
+- [x] Warn clearly that shared links also contain meeting titles, locations, and notes.
+- [x] Keep details local-first and portable without calendar authorization, accounts, or a backend.
+- [ ] Validate imported `.ics` location and notes in Google Calendar, Outlook, and Apple Calendar.
+
 ## v0.24: country-aware tile identity
 
 - [x] Preserve country name and ISO alpha-2 country code when a city is selected from global search.
