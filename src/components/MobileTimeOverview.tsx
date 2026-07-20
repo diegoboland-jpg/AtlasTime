@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock3, Coffee, Moon, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
-import { formatInZone, hourInZone } from "../time";
+import { formatInZone, formatUtcHour, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
 import { TimePeriodScene } from "./TimePeriodScene";
@@ -11,7 +11,6 @@ type MobileTimeOverviewProps = {
   selectedInstant: Date;
   selectedHour: number;
   selectedScore: HourScore | undefined;
-  recommendation: HourScore | null;
   onHourChange: (hour: number) => void;
   onNow: () => void;
   onOpenPlanner: () => void;
@@ -48,7 +47,6 @@ export function MobileTimeOverview({
   selectedInstant,
   selectedHour,
   selectedScore,
-  recommendation,
   onHourChange,
   onNow,
   onOpenPlanner,
@@ -56,10 +54,12 @@ export function MobileTimeOverview({
   const returnTimer = useRef<number | undefined>(undefined);
   const [returnPending, setReturnPending] = useState(false);
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const hourLabel = `${String(selectedHour).padStart(2, "0")}:00 UTC`;
+  const selectedHourLabel = formatUtcHour(selectedHour);
   const available = selectedScore?.available ?? 0;
   const total = selectedScore?.total ?? 0;
   const overviewInstant = returnPending ? selectedInstant : now;
+  const tileInstant = returnPending ? selectedInstant : now;
+  const hourLabel = returnPending ? selectedHourLabel : `${formatInZone(now, "UTC")} UTC`;
   const overviewHour = hourInZone(overviewInstant, localTimeZone);
   const overviewPeriod = timePeriodForHour(overviewHour);
 
@@ -119,16 +119,16 @@ export function MobileTimeOverview({
         tabIndex={people.length > 4 ? 0 : undefined}
       >
         {people.map((person) => {
-          const localHour = hourInZone(selectedInstant, person.timeZone);
+          const localHour = hourInZone(tileInstant, person.timeZone);
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
           const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
           return (
             <article
               className={`compact-time-card time-period-${period.key}`}
-              key={`${person.id}-${selectedInstant.toISOString()}`}
+              key={`${person.id}-${tileInstant.toISOString()}`}
               role="listitem"
-              aria-label={`${person.name}, ${placeLabel}: ${formatInZone(selectedInstant, person.timeZone)}, ${period.label}, ${working ? "working hours" : "outside work hours"}`}
+              aria-label={`${person.name}, ${placeLabel}: ${formatInZone(tileInstant, person.timeZone)}, ${period.label}, ${working ? "working hours" : "outside work hours"}`}
             >
               <TimePeriodScene period={period.key} compact />
               <div className="compact-place-rotator" aria-label={`${person.name}, ${placeLabel}`}>
@@ -136,11 +136,11 @@ export function MobileTimeOverview({
                 <small aria-hidden="true">{placeLabel}</small>
               </div>
               <strong className="tile-time-value">
-                {formatInZone(selectedInstant, person.timeZone)}
+                {formatInZone(tileInstant, person.timeZone)}
               </strong>
               <p><span>Meeting time</span><span className="time-period-badge"><PeriodIcon period={period.key} /> {period.label}</span></p>
               <em className={working ? "working" : ""}>
-                {dayLabel(selectedInstant, person.timeZone)} - {working ? "Working hours" : "Outside work hours"}
+                {dayLabel(tileInstant, person.timeZone)} - {working ? "Working hours" : "Outside work hours"}
               </em>
             </article>
           );
@@ -148,15 +148,10 @@ export function MobileTimeOverview({
         {people.length === 0 && <p className="mobile-time-empty" role="status">Add people, locations, or teams below.</p>}
       </div>
 
-      {recommendation && (
-        <div className="mobile-recommendation" aria-label={`Recommended meeting time ${recommendation.utcHour}:00 UTC`}>
-          <div>
-            <span>Recommended</span>
-            <strong>{String(recommendation.utcHour).padStart(2, "0")}:00 UTC</strong>
-            <small>{recommendation.available}/{recommendation.total} in working hours</small>
-          </div>
-          <button type="button" onClick={() => onHourChange(recommendation.utcHour)}>Use time</button>
-          <button type="button" className="mobile-compare-button" onClick={onOpenPlanner}>Compare all hours</button>
+      {people.length > 0 && (
+        <div className="mobile-planner-shortcut">
+          <span>Need a recommended meeting time?</span>
+          <button type="button" onClick={onOpenPlanner}>Open planner</button>
         </div>
       )}
 
@@ -169,12 +164,12 @@ export function MobileTimeOverview({
           id="mobile-time-slider"
           type="range"
           min="0"
-          max="23"
-          step="1"
+          max="23.5"
+          step="0.5"
           value={selectedHour}
           onChange={(event) => scheduleReturnToNow(Number(event.target.value))}
           aria-label="Selected UTC meeting hour in mobile overview"
-          aria-valuetext={`${hourLabel}, ${available} of ${total} available`}
+          aria-valuetext={`${selectedHourLabel}, ${available} of ${total} available`}
         />
         <button type="button" onClick={returnToNow} title="Return to the current UTC date and hour">
           <RotateCcw size={14} aria-hidden="true" /> Now
@@ -185,7 +180,7 @@ export function MobileTimeOverview({
       </div>
 
       <p className="sr-only" aria-live="polite">
-        Selected meeting time {hourLabel}. {available} of {total} entries are within working hours.
+        Selected meeting time {selectedHourLabel}. {available} of {total} entries are within working hours.
       </p>
     </section>
   );

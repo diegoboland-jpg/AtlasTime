@@ -17,5 +17,19 @@ describe("time slider", () => {
     expect(markup).toContain('aria-valuetext="14:00 UTC, 2 of 3 available"');
     expect(markup).toContain("2/3 available - score 19");
     expect(markup).toContain("Explore meeting hours");
+    expect(markup).toContain('step="0.5"');
+  });
+
+  it("formats half-hour exploration values", () => {
+    const markup = renderToStaticMarkup(
+      <TimeSlider
+        selectedHour={14.5}
+        selectedScore={{ utcHour: 14.5, available: 2, total: 3, penalty: 1, score: 19 }}
+        onHourChange={vi.fn()}
+        onNow={vi.fn()}
+      />,
+    );
+
+    expect(markup).toContain("14:30 UTC");
   });
 });

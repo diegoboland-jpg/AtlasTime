@@ -1,5 +1,20 @@
 # AtlasTime backlog
 
+## v0.20: accurate live time and calmer mobile planning
+
+- [x] Show the exact current minute in every compact time tile while the overview is idle.
+- [x] Switch all compact tiles and the device card together only while the user explores, then return them to live time after 20 seconds or with Now.
+- [x] Add 30-minute increments to the primary desktop and mobile sliders.
+- [x] Use neutral local-time defaults of 12:00-14:59 for lunch and 19:00-21:59 for dinner.
+- [x] Reduce the mobile recommendation panel to a quiet planner shortcut without duplicating a recommended time.
+- [ ] Validate the meal windows with people from different regions before making them configurable by locale or personal preference.
+
+### Future visual review
+
+- Explore a subtle country-flag crop covering roughly 25-35% of each tile after place results retain dependable country metadata.
+- Test diagonal and left-edge treatments at low opacity; time, status, and accessibility contrast must remain primary.
+- Avoid inferring a flag from a timezone alone because one timezone can represent multiple countries or territories.
+
 ## v0.19: compact overview resilience
 
 - [x] Expose the compact group as a semantic list with complete spoken summaries for every time card.

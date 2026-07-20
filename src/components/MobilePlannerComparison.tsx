@@ -1,5 +1,5 @@
 import { type KeyboardEvent, useLayoutEffect, useRef } from "react";
-import { dateAtUtcHour, formatInZone, hourInZone } from "../time";
+import { dateAtUtcHour, formatInZone, formatUtcHour, hourInZone } from "../time";
 import type { HourScore, Person } from "../types";
 
 type MobilePlannerComparisonProps = {
@@ -65,7 +65,7 @@ export function MobilePlannerComparison({
       <div className="mobile-planner-intro">
         <div>
           <span>Selected meeting hour</span>
-          <strong>{String(selectedHour).padStart(2, "0")}:00 UTC</strong>
+          <strong>{formatUtcHour(selectedHour)}</strong>
         </div>
         <small>Swipe or use arrow keys, then compare everyone below.</small>
       </div>

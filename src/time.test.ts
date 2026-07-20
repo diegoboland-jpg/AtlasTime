@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bestHour, dateAtUtcHour, formatInZone, hourInZone, scoreHours } from "./time";
+import { bestHour, dateAtUtcHour, formatInZone, formatUtcHour, hourInZone, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person } from "./types";
 
 function person(overrides: Partial<Person> = {}): Person {
@@ -17,6 +17,8 @@ function person(overrides: Partial<Person> = {}): Person {
 describe("timezone conversion", () => {
   it("creates the requested UTC instant", () => {
     expect(dateAtUtcHour("2026-07-15", 14).toISOString()).toBe("2026-07-15T14:00:00.000Z");
+    expect(dateAtUtcHour("2026-07-15", 14.5).toISOString()).toBe("2026-07-15T14:30:00.000Z");
+    expect(formatUtcHour(14.5)).toBe("14:30 UTC");
   });
 
   it("handles the New York spring daylight-saving transition", () => {
@@ -39,5 +41,9 @@ describe("meeting scoring", () => {
 
   it("returns no recommendation for an empty group", () => {
     expect(bestHour([], "2026-07-15")).toBeNull();
+  });
+
+  it("scores half-hour exploration instants", () => {
+    expect(scoreAtUtcHour([person()], "2026-07-15", 9.5)).toMatchObject({ utcHour: 9.5, available: 1, score: 12 });
   });
 });
