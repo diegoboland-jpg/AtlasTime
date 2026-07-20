@@ -51,6 +51,21 @@ main:focus { outline: none; }
   font-size: 12px; line-height: 1.45;
 }
 .install-tip button { width: 44px; height: 44px; flex: none; border: 0; padding: 0; background: transparent; color: #63708a; cursor: pointer; }
+.pwa-update-notice {
+  position: fixed; z-index: 80; top: 82px; right: max(18px, env(safe-area-inset-right));
+  width: min(470px, calc(100vw - 36px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center; gap: 12px; padding: 14px; border: 1px solid #aac1f6; border-radius: 16px;
+  background: rgba(255,255,255,.97); color: #26334a; box-shadow: 0 18px 44px rgba(20,33,61,.2); backdrop-filter: blur(14px);
+}
+.pwa-update-notice > svg { color: #246bfd; }
+.pwa-update-notice strong, .pwa-update-notice span { display: block; }
+.pwa-update-notice strong { font-size: 13px; }
+.pwa-update-notice span { margin-top: 3px; color: #6d7890; font-size: 10px; }
+.pwa-update-action, .pwa-update-dismiss { min-height: 44px; border-radius: 10px; cursor: pointer; font-weight: 800; }
+.pwa-update-action { border: 0; padding: 8px 13px; background: #246bfd; color: white; font-size: 11px; }
+.pwa-update-action:disabled { cursor: wait; opacity: .7; }
+.pwa-update-dismiss { width: 44px; display: grid; place-items: center; border: 1px solid transparent; background: transparent; color: #78859b; }
+.pwa-update-dismiss:hover { border-color: #d9dfeb; background: #f4f7fb; }
 
 main { max-width: 1200px; margin: auto; padding: 0 28px 56px; }
 .hero {
@@ -360,6 +375,12 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 @media (max-width: 640px) {
   .topbar, main { padding-left: 16px; padding-right: 16px; }
+  .pwa-update-notice {
+    top: auto; right: max(12px, env(safe-area-inset-right)); bottom: calc(116px + env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left)); width: auto; grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .pwa-update-action { grid-column: 2 / 4; width: 100%; }
+  .pwa-update-dismiss { grid-column: 3; grid-row: 1; }
   .hero { display: none; }
   .hero h1 { font-size: 42px; }
   .hero-clock { min-width: 0; }

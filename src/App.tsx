@@ -6,6 +6,7 @@ import { MeetingHandoff } from "./components/MeetingHandoff";
 import { MobileTimeOverview } from "./components/MobileTimeOverview";
 import { PersonCard } from "./components/PersonCard";
 import { PwaInstall } from "./components/PwaInstall";
+import { PwaUpdateNotice } from "./components/PwaUpdateNotice";
 import { ShareImportBanner } from "./components/ShareImportBanner";
 import { TimePlanner } from "./components/TimePlanner";
 import { TimeSlider } from "./components/TimeSlider";
@@ -136,9 +137,11 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.22 desktop PWA parity</span>
+          <span className="mvp-badge">v0.23 reliable updates</span>
         </div>
       </header>
+
+      <PwaUpdateNotice />
 
       <main id="main-content" tabIndex={-1}>
         {sharedPayload && <ShareImportBanner payload={sharedPayload} onImport={importSharedGroup} onDismiss={() => { setSharedPayload(null); clearShareHash(); }} />}
@@ -263,7 +266,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.22</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.23</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

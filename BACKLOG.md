@@ -1,5 +1,21 @@
 # AtlasTime backlog
 
+## v0.23: reliable installed-app updates
+
+- [x] Detect when a newer AtlasTime service worker is installed and waiting.
+- [x] Show a clear in-app update notice on installed Windows, Android, and iPhone PWAs.
+- [x] Let the user activate the update immediately and reload without clearing locally saved groups.
+- [x] Check again when the app regains focus and retain offline app-shell behavior.
+- [x] Add a repeatable old-version-to-new-version test guide.
+- [ ] Validate the complete update flow on the installed Windows PWA and one physical phone.
+
+### Branch-retention policy
+
+- Keep `main`, any active development branch, and the 10 most recently merged feature branches as a temporary safety buffer.
+- Preserve important milestones as Git tags or GitHub releases; major versions do not need permanent feature branches.
+- Never delete an unmerged branch or a branch with unique work.
+- Do not begin automatic branch deletion yet. Review the policy after v1.0 or when the branch list becomes difficult to navigate.
+
 ## v0.22: desktop PWA parity
 
 - [x] Use the animated Everyone's Time overview as the primary experience on installed Windows and desktop browsers.
