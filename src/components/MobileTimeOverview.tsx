@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock3, Coffee, Moon, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
+import { getCountryByTimeZone } from "../cities";
 import { countryCodeToFlag } from "../country";
 import { formatInZone, formatUtcHour, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
@@ -127,7 +128,7 @@ export function MobileTimeOverview({
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
           const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
-          const countryFlag = countryCodeToFlag(person.countryCode);
+          const countryFlag = countryCodeToFlag(person.countryCode ?? getCountryByTimeZone(person.timeZone)?.countryCode);
           return (
             <article
               className={`compact-time-card time-period-${period.key}`}

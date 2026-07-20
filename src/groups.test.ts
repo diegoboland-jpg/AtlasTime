@@ -46,7 +46,7 @@ describe("saved groups", () => {
   it("normalizes trusted country codes and drops invalid flag metadata", () => {
     const people = [
       { ...person, id: "valid", countryCode: "br" },
-      { ...person, id: "invalid", city: "Unlisted place", country: undefined, countryCode: "Brazil" },
+      { ...person, id: "invalid", city: "Unlisted place", country: undefined, countryCode: "Brazil", timeZone: "Etc/UTC" },
     ];
     localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
       id: "countries",
@@ -74,6 +74,18 @@ describe("saved groups", () => {
     }]));
 
     expect(loadGroups().groups[0].people.map(({ countryCode }) => countryCode)).toEqual(["ES", "PH", "IN", "AR"]);
+  });
+
+  it("backfills a representative flag from a known timezone for person and team labels", () => {
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "teams",
+      name: "Teams",
+      people: [{ ...person, id: "team", name: "Europe support", city: "Remote team", country: undefined, countryCode: undefined, timeZone: "Europe/Madrid" }],
+      planner: { date: "2026-07-20", hour: 12 },
+      updatedAt: "2026-07-20T00:00:00Z",
+    }]));
+
+    expect(loadGroups().groups[0].people[0]).toMatchObject({ country: "Spain", countryCode: "ES" });
   });
 });
 

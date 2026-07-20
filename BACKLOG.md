@@ -15,8 +15,8 @@
 - [x] Carry validated optional country metadata through local persistence and share links.
 - [x] Add a subtle diagonal flag crop behind roughly 35% of each filled time tile while keeping time and status text primary.
 - [x] Hide decorative flags in forced-colors mode and keep them out of the accessibility tree.
-- [x] Never infer a flag from a timezone; older entries without dependable country metadata remain visually unchanged.
-- [x] Backfill trusted metadata for older entries only when both city and timezone match the curated place registry.
+- [x] Use saved country metadata first, then a representative country from the trusted timezone registry so person and team tiles also receive flags.
+- [x] Backfill older entries from an exact city-and-timezone match first, then use the timezone's representative registry country.
 - [ ] Compare flag opacity and crop on physical Windows, Android, and iPhone displays.
 
 ## v0.23: reliable installed-app updates
@@ -64,7 +64,7 @@
 
 - Explore a subtle country-flag crop covering roughly 25-35% of each tile after place results retain dependable country metadata.
 - Test diagonal and left-edge treatments at low opacity; time, status, and accessibility contrast must remain primary.
-- Avoid inferring a flag from a timezone alone because one timezone can represent multiple countries or territories.
+- For shared timezones, document that the fallback uses the primary country in AtlasTime's trusted place registry.
 
 ## v0.19: compact overview resilience
 

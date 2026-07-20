@@ -4,6 +4,7 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
+import { countryCodeToFlag } from "../country";
 import { MobileTimeOverview } from "./MobileTimeOverview";
 
 describe("mobile time overview", () => {
@@ -150,6 +151,25 @@ describe("mobile time overview", () => {
     expect(markup).toContain('role="list"');
     expect(markup).not.toContain('tabindex="0"');
     expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
+  });
+
+  it("uses a timezone flag for a person or team tile without saved country metadata", () => {
+    const markup = renderToStaticMarkup(
+      <MobileTimeOverview
+        now={new Date("2026-07-20T12:00:00Z")}
+        selectedInstant={new Date("2026-07-20T12:00:00Z")}
+        selectedHour={12}
+        selectedScore={{ utcHour: 12, available: 1, total: 1, penalty: 0, score: 10 }}
+        people={[{ id: "1", name: "Europe support", city: "Remote team", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
+        onHourChange={vi.fn()}
+        onNow={vi.fn()}
+        onOpenPlanner={vi.fn()}
+        onAddEntry={vi.fn()}
+      />,
+    );
+
+    expect(markup).toContain("country-flag-backdrop");
+    expect(markup).toContain(countryCodeToFlag("ES")!);
   });
 
   it("uses six add invitations for an empty group and opens the shared add flow", async () => {

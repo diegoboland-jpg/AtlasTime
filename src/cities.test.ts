@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getCityByPlace } from "./cities";
+import { getCityByPlace, getCountryByTimeZone } from "./cities";
 
 describe("trusted known-place metadata", () => {
   it.each([
@@ -13,5 +13,10 @@ describe("trusted known-place metadata", () => {
 
   it("does not infer a country from a timezone alone", () => {
     expect(getCityByPlace("Unlisted place", "Europe/Madrid")).toBeUndefined();
+  });
+
+  it("provides a representative country for a known timezone", () => {
+    expect(getCountryByTimeZone("Europe/Madrid")).toEqual({ country: "Spain", countryCode: "ES" });
+    expect(getCountryByTimeZone("Etc/UTC")).toBeUndefined();
   });
 });
