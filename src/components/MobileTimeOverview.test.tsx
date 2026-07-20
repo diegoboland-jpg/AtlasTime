@@ -87,4 +87,62 @@ describe("mobile time overview", () => {
     await act(async () => root.unmount());
     container.remove();
   });
+
+  it("keeps long and overflowing group entries available to keyboard and assistive technology", () => {
+    const people = Array.from({ length: 6 }, (_, index) => ({
+      id: String(index + 1),
+      name: `International operations team ${index + 1}`,
+      city: `A deliberately long place name ${index + 1}`,
+      timeZone: "Europe/Madrid",
+      workStart: 9,
+      workEnd: 18,
+    }));
+    const container = document.createElement("div");
+    const root = createRoot(container);
+
+    act(() => {
+      root.render(
+        <MobileTimeOverview
+          now={new Date("2026-07-16T12:00:00Z")}
+          selectedInstant={new Date("2026-07-16T14:00:00Z")}
+          selectedHour={14}
+          selectedScore={{ utcHour: 14, available: 6, total: 6, penalty: 0, score: 72 }}
+          recommendation={null}
+          people={people}
+          onHourChange={vi.fn()}
+          onNow={vi.fn()}
+          onOpenPlanner={vi.fn()}
+        />,
+      );
+    });
+
+    const list = container.querySelector<HTMLElement>('[role="list"]')!;
+    expect(list.tabIndex).toBe(0);
+    expect(list.getAttribute("aria-describedby")).toBe("mobile-time-strip-help");
+    expect(list.querySelectorAll('[role="listitem"]')).toHaveLength(6);
+    expect(list.querySelector('[role="listitem"]')?.getAttribute("aria-label")).toContain(
+      "International operations team 1, A deliberately long place name 1: 16:00, Afternoon, working hours",
+    );
+
+    act(() => root.unmount());
+  });
+
+  it("does not add an unnecessary keyboard stop for a group that does not overflow", () => {
+    const markup = renderToStaticMarkup(
+      <MobileTimeOverview
+        now={new Date("2026-07-16T12:00:00Z")}
+        selectedInstant={new Date("2026-07-16T14:00:00Z")}
+        selectedHour={14}
+        selectedScore={{ utcHour: 14, available: 1, total: 1, penalty: 0, score: 12 }}
+        recommendation={null}
+        people={[{ id: "1", name: "Madrid", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 }]}
+        onHourChange={vi.fn()}
+        onNow={vi.fn()}
+        onOpenPlanner={vi.fn()}
+      />,
+    );
+
+    expect(markup).toContain('role="list"');
+    expect(markup).not.toContain('tabindex="0"');
+  });
 });

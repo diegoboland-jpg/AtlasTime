@@ -1,5 +1,14 @@
 # AtlasTime backlog
 
+## v0.19: compact overview resilience
+
+- [x] Expose the compact group as a semantic list with complete spoken summaries for every time card.
+- [x] Keep overflowing groups keyboard-scrollable without adding an unnecessary tab stop for small groups.
+- [x] Add an extreme text-zoom reflow that stacks cards and slider controls instead of clipping them.
+- [x] Add component and stylesheet regression coverage for long labels, overflowing groups, and large-text layouts.
+- [x] Refresh the PWA cache generation and guard it with a version regression test so installed previews do not stay on an older interface.
+- [ ] Validate 200% text zoom and a six-entry group on physical Android and iPhone devices.
+
 ## v0.18: clearer time tiles and meal scenes
 
 - [x] Replace the afternoon artwork with a descending sun and visible sky arc that reads differently from morning and midday.
@@ -59,7 +68,7 @@
 - [x] Return the mobile slider to current time after 20 seconds of inactivity or immediately with the Now button.
 - [x] Animate selected-time changes on the tiles while respecting reduced-motion preferences.
 - [x] Keep the mobile time slider visible as a floating control while the rest of the app scrolls.
-- [ ] Add responsive and accessibility regression coverage for compact, overflow, and large-text layouts.
+- [x] Add responsive and accessibility regression coverage for compact, overflow, and large-text layouts.
 - [ ] Validate the overview on at least one Android phone and one iPhone before marking the milestone complete.
 
 This milestone refers to a widget-style view inside the PWA. Native Android or iOS home-screen widgets remain future work until web-app validation is complete.
