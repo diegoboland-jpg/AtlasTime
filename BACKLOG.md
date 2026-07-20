@@ -1,5 +1,13 @@
 # AtlasTime backlog
 
+## v0.21: six-slot mobile overview
+
+- [x] Show a stable two-column, three-row grid with six visible slots in Everyone's time.
+- [x] Fill unused slots with accessible plus-button invitations that open the existing add-entry form.
+- [x] Keep the first six entries visible and let larger groups scroll inside the overview.
+- [x] Avoid an unnecessary keyboard scroll stop until a group contains more than six entries.
+- [ ] Validate the six-slot height and add invitation on a physical Android phone and iPhone.
+
 ## v0.20: accurate live time and calmer mobile planning
 
 - [x] Show the exact current minute in every compact time tile while the overview is idle.

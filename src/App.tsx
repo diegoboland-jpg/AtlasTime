@@ -73,6 +73,11 @@ export default function App() {
     window.requestAnimationFrame(() => document.getElementById("planner")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
+  function openAddEntry() {
+    setShowForm(true);
+    window.requestAnimationFrame(() => document.getElementById("add-entry-form")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  }
+
   function createGroup() {
     const requested = window.prompt("Name the new group", "New group")?.trim();
     if (!requested) return;
@@ -131,7 +136,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.20 accurate local time</span>
+          <span className="mvp-badge">v0.21 six-slot overview</span>
         </div>
       </header>
 
@@ -147,6 +152,7 @@ export default function App() {
           onHourChange={selectHour}
           onNow={selectNow}
           onOpenPlanner={openPlanner}
+          onAddEntry={openAddEntry}
         />
 
         <section className="hero">
@@ -179,7 +185,7 @@ export default function App() {
               <p className="section-kicker"><Users size={16} /> PEOPLE</p>
               <h2>Who or what needs to connect?</h2>
             </div>
-            <button className="primary-button" onClick={() => setShowForm((value) => !value)} aria-expanded={showForm} aria-controls="add-entry-form">
+            <button className="primary-button" onClick={() => showForm ? setShowForm(false) : openAddEntry()} aria-expanded={showForm} aria-controls="add-entry-form">
               <Plus size={18} /> Add person, location, or team
             </button>
           </div>
@@ -257,7 +263,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.20</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.21</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }
