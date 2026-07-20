@@ -20,6 +20,7 @@ describe("PWA update lifecycle", () => {
     const serviceWorker = readFileSync(new URL("../public/sw.js", import.meta.url), "utf8");
 
     expect(serviceWorker).toContain(`const CACHE_NAME = "atlastime-v${packageJson.version.replace(/\.0$/, "")}";`);
+    expect(serviceWorker).toContain('event.data?.type === "SKIP_WAITING"');
     expect(serviceWorker).toContain("self.skipWaiting()");
     expect(serviceWorker).toContain("self.clients.claim()");
   });
