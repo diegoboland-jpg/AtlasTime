@@ -28,6 +28,8 @@ The approved city/time-zone requirement is therefore implemented. Remaining work
 
 ### ATLAS-001 Duration-aware recommendations
 
+**Status:** Implemented in AtlasTime v0.29.
+
 **Outcome:** A 90-minute meeting is recommended only when the complete 90 minutes fits the stated availability.
 
 Acceptance:

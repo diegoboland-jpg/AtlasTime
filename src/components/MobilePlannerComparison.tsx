@@ -1,11 +1,12 @@
 import { type KeyboardEvent, useLayoutEffect, useRef } from "react";
-import { dateAtUtcHour, formatInZone, formatUtcHour, hourInZone } from "../time";
+import { dateAtUtcHour, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
 import type { HourScore, Person } from "../types";
 
 type MobilePlannerComparisonProps = {
   people: Person[];
   dateValue: string;
   selectedHour: number;
+  durationMinutes: number;
   recommendation: HourScore | null;
   hours: HourScore[];
   onHourChange: (hour: number) => void;
@@ -15,6 +16,7 @@ export function MobilePlannerComparison({
   people,
   dateValue,
   selectedHour,
+  durationMinutes,
   recommendation,
   hours,
   onHourChange,
@@ -43,18 +45,20 @@ export function MobilePlannerComparison({
   }, [selectedHour]);
 
   function handleHourKeys(event: KeyboardEvent<HTMLButtonElement>, hour: number) {
-    const nextHour = event.key === "ArrowRight"
-      ? Math.min(23, hour + 1)
+    const currentIndex = hours.findIndex((candidate) => candidate.utcHour === hour);
+    const nextIndex = event.key === "ArrowRight"
+      ? Math.min(hours.length - 1, currentIndex + 1)
       : event.key === "ArrowLeft"
-        ? Math.max(0, hour - 1)
+        ? Math.max(0, currentIndex - 1)
         : event.key === "Home"
           ? 0
           : event.key === "End"
-            ? 23
+            ? hours.length - 1
             : null;
 
-    if (nextHour === null) return;
+    if (nextIndex === null) return;
     event.preventDefault();
+    const nextHour = hours[nextIndex].utcHour;
     const nextOption = event.currentTarget.parentElement?.querySelector<HTMLButtonElement>(`[data-utc-hour="${nextHour}"]`);
     nextOption?.focus();
     onHourChange(nextHour);
@@ -83,12 +87,12 @@ export function MobilePlannerComparison({
               ref={selected ? selectedOption : undefined}
               aria-pressed={selected}
               aria-keyshortcuts="ArrowLeft ArrowRight Home End"
-              aria-label={`${hour.utcHour}:00 UTC, ${hour.available} of ${hour.total} available${best ? ", best-scoring hour" : ""}`}
+              aria-label={`${formatUtcHour(hour.utcHour)}, ${hour.available} of ${hour.total} available for ${durationMinutes} minutes${best ? ", best-scoring start" : ""}`}
               data-utc-hour={hour.utcHour}
               onClick={() => onHourChange(hour.utcHour)}
               onKeyDown={(event) => handleHourKeys(event, hour.utcHour)}
             >
-              <span>{String(hour.utcHour).padStart(2, "0")}:00</span>
+              <span>{formatUtcHour(hour.utcHour).replace(" UTC", "")}</span>
               <small>{hour.available}/{hour.total} free</small>
               {best && <em>Best</em>}
             </button>
@@ -98,8 +102,7 @@ export function MobilePlannerComparison({
 
       <div className="mobile-person-times" aria-live="polite">
         {people.map((person) => {
-          const localHour = hourInZone(selectedInstant, person.timeZone);
-          const working = localHour >= person.workStart && localHour < person.workEnd;
+          const working = meetingFitsWorkingHours(person, selectedInstant, durationMinutes);
           return (
             <article className="mobile-person-time" key={person.id}>
               <span className="mobile-person-initial" aria-hidden="true">{person.name.slice(0, 1).toUpperCase()}</span>
@@ -109,12 +112,7 @@ export function MobilePlannerComparison({
               </span>
               <span className="mobile-person-local-time">
                 <strong>{formatInZone(selectedInstant, person.timeZone)}</strong>
-                <small>{new Intl.DateTimeFormat("en-GB", {
-                  timeZone: person.timeZone,
-                  weekday: "short",
-                  day: "2-digit",
-                  month: "short",
-                }).format(selectedInstant)}</small>
+                <small>{localRangeLabel(dateValue, selectedHour, durationMinutes, person)}</small>
               </span>
               <em className={working ? "working" : "outside"}>{working ? "Working hours" : "Outside hours"}</em>
             </article>

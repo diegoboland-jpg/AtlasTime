@@ -19,11 +19,13 @@ function renderPlanner(expanded: boolean) {
       people={people}
       dateValue="2026-07-17"
       selectedHour={12}
+      durationMinutes={90}
       recommendation={hours[15]}
       hours={hours}
       expanded={expanded}
       onExpandedChange={vi.fn()}
       onDateChange={vi.fn()}
+      onDurationChange={vi.fn()}
       onHourChange={vi.fn()}
     />,
   );
@@ -46,7 +48,8 @@ describe("progressive planner disclosure", () => {
     expect(markup).toContain("Hide comparison");
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('type="date"');
-    expect(markup).toContain("Best-scoring one-hour window");
+    expect(markup).toContain("Best-scoring 90-minute window");
+    expect(markup).toContain("90 minutes");
     expect(markup).toContain("Scrollable 24-hour local-time comparison");
   });
 });
