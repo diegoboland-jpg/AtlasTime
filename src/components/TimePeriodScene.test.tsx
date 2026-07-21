@@ -28,6 +28,8 @@ describe("time-period vector scenes", () => {
     expect(lunch).toContain('data-meal-design="bowl-and-spoon"');
     expect(afternoon).toContain("scene-sun-track");
     expect(afternoon).toContain("scene-afternoon-orbit");
+    expect(afternoon).toContain('data-ray-set="complete-eight"');
+    expect(afternoon).toContain("scene-afternoon-short-rays");
     expect(dinner).toContain('data-meal-design="plate-fork-knife"');
     expect(dinner).toContain("scene-knife");
   });

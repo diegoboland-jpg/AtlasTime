@@ -461,6 +461,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .time-period-scene .scene-sunrise { transform-origin: 82px 45px; animation: scene-sun-rise 4s ease-in-out infinite alternate; }
   .time-period-scene .scene-high-sun { transform-origin: 91px 20px; animation: scene-twinkle 3.8s ease-in-out infinite; }
   .time-period-scene .scene-afternoon-orbit { transform-origin: 88px 25px; animation: scene-afternoon-path 4.2s ease-in-out infinite alternate; }
+  .time-period-scene .scene-afternoon-short-rays { stroke-width: 2.1; }
   .time-period-scene .scene-sun-track { opacity: .68; stroke-dasharray: 3 4; stroke-width: 1.6; }
   .time-period-scene .scene-afternoon-rays { fill: var(--scene-fill); fill-opacity: .2; stroke: none; }
   .time-period-scene .scene-sunset { transform-origin: 87px 49px; animation: scene-sun-set 4.5s ease-in-out infinite alternate; }

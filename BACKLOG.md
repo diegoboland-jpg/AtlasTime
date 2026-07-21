@@ -6,6 +6,7 @@
 - [x] Carry the UTC start/end, title, notes, local-time summary, and location into each provider.
 - [x] Require the user to review and save the event in the calendar provider; AtlasTime receives no calendar permissions.
 - [x] Keep the standards-based `.ics` download as the universal and offline-friendly fallback.
+- [x] Complete the afternoon sun with balanced, slightly shorter lower diagonal rays.
 - [ ] Validate Google and Outlook draft links on installed Windows, Android, and iPhone PWAs.
 
 ## v0.25: local-first meeting details

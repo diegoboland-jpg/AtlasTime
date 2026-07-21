@@ -97,9 +97,10 @@ export function TimePeriodScene({ period, compact = false }: TimePeriodSceneProp
       {period === "afternoon" && (
         <>
           <path className="scene-sun-track" d="M48 51c14-27 36-39 62-29" />
-          <g className="scene-sun scene-afternoon-orbit">
+          <g className="scene-sun scene-afternoon-orbit" data-ray-set="complete-eight">
             <circle cx="88" cy="25" r="10" />
             <path d="M88 8v7M88 35v7M71 25h7M98 25h7M76 13l5 5M100 13l-5 5" />
+            <path className="scene-afternoon-short-rays" d="M80 32l-4 4M96 32l4 4" />
           </g>
           <path className="scene-afternoon-rays" d="M82 38 66 63h39L94 38z" />
           <Horizon />
