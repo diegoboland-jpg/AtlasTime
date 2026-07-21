@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Globe2, MessageCircle, Phone, Plus, Users, Video } from "lucide-react";
 import { AddPersonForm } from "./components/AddPersonForm";
 import { GroupManager } from "./components/GroupManager";
@@ -15,6 +15,13 @@ import { createId } from "./id";
 import { bestHour, dateAtUtcHour, formatInZone, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person, SavedGroup } from "./types";
 
+type PendingPersonRemoval = {
+  groupId: string;
+  groupName: string;
+  person: Person;
+  index: number;
+};
+
 function utcDateInput(date: Date) {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
@@ -26,6 +33,9 @@ export default function App() {
   const [showForm, setShowForm] = useState(false);
   const [plannerExpanded, setPlannerExpanded] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
+  const [pendingPersonRemoval, setPendingPersonRemoval] = useState<PendingPersonRemoval | null>(null);
+  const [restoredPersonFocusId, setRestoredPersonFocusId] = useState<string | null>(null);
+  const removalTimer = useRef<number | null>(null);
 
   const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
   const people = activeGroup.people;
@@ -37,6 +47,20 @@ export default function App() {
     const timer = window.setInterval(() => setNow(new Date()), 15_000);
     return () => window.clearInterval(timer);
   }, []);
+  useEffect(() => () => {
+    if (removalTimer.current !== null) window.clearTimeout(removalTimer.current);
+  }, []);
+  useEffect(() => {
+    if (!pendingPersonRemoval) return;
+    window.requestAnimationFrame(() => document.getElementById("undo-person-removal")?.focus());
+  }, [pendingPersonRemoval]);
+  useEffect(() => {
+    if (!restoredPersonFocusId) return;
+    window.requestAnimationFrame(() => {
+      document.getElementById(`person-card-${restoredPersonFocusId}`)?.focus();
+      setRestoredPersonFocusId(null);
+    });
+  }, [restoredPersonFocusId]);
 
   const hours = useMemo(() => scoreHours(people, planner.date), [people, planner.date]);
   const recommendation = useMemo(() => bestHour(people, planner.date), [people, planner.date]);
@@ -54,6 +78,46 @@ export default function App() {
 
   function updatePerson(updated: Person) {
     updateActiveGroup((group) => ({ ...group, people: group.people.map((person) => person.id === updated.id ? updated : person) }));
+  }
+
+  function clearRemovalTimer() {
+    if (removalTimer.current === null) return;
+    window.clearTimeout(removalTimer.current);
+    removalTimer.current = null;
+  }
+
+  function scheduleRemovalExpiry() {
+    clearRemovalTimer();
+    removalTimer.current = window.setTimeout(() => {
+      setPendingPersonRemoval(null);
+      removalTimer.current = null;
+    }, 8_000);
+  }
+
+  function removePerson(id: string) {
+    const index = people.findIndex((person) => person.id === id);
+    const person = people[index];
+    if (!person) return;
+    setPendingPersonRemoval({ groupId: activeGroup.id, groupName: activeGroup.name, person, index });
+    updateActiveGroup((group) => ({ ...group, people: group.people.filter((item) => item.id !== id) }));
+    scheduleRemovalExpiry();
+  }
+
+  function undoPersonRemoval() {
+    const removal = pendingPersonRemoval;
+    if (!removal) return;
+    clearRemovalTimer();
+    setWorkspace((current) => ({
+      ...current,
+      groups: current.groups.map((group) => {
+        if (group.id !== removal.groupId || group.people.some((person) => person.id === removal.person.id)) return group;
+        const peopleAtOriginalPosition = [...group.people];
+        peopleAtOriginalPosition.splice(Math.min(removal.index, peopleAtOriginalPosition.length), 0, removal.person);
+        return { ...group, people: peopleAtOriginalPosition, updatedAt: new Date().toISOString() };
+      }),
+    }));
+    setPendingPersonRemoval(null);
+    setRestoredPersonFocusId(removal.person.id);
   }
 
   function selectHour(hour: number) {
@@ -137,7 +201,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.27 share-ready invites</span>
+          <span className="mvp-badge">v0.28 forgiving removal</span>
         </div>
       </header>
 
@@ -210,7 +274,7 @@ export default function App() {
                 now={now}
                 selectedInstant={selectedInstant}
                 onChange={updatePerson}
-                onRemove={(id) => updateActiveGroup((group) => ({ ...group, people: group.people.filter((item) => item.id !== id) }))}
+                onRemove={removePerson}
               />
             ))}
             {people.length === 0 && (
@@ -268,7 +332,22 @@ export default function App() {
         </section>
       </main>
 
-      <footer><span>AtlasTime v0.27</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      {pendingPersonRemoval && (
+        <aside
+          className="undo-toast"
+          aria-live="polite"
+          aria-atomic="true"
+          onFocus={clearRemovalTimer}
+          onBlur={scheduleRemovalExpiry}
+          onMouseEnter={clearRemovalTimer}
+          onMouseLeave={scheduleRemovalExpiry}
+        >
+          <span><strong>{pendingPersonRemoval.person.name} removed</strong> from {pendingPersonRemoval.groupName}.</span>
+          <button id="undo-person-removal" type="button" onClick={undoPersonRemoval}>Undo</button>
+        </aside>
+      )}
+
+      <footer><span>AtlasTime v0.28</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

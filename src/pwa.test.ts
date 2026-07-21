@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { installInstructions, isIosDevice } from "./pwa";
 
@@ -6,6 +6,16 @@ describe("PWA install guidance", () => {
   it("recognizes iPhone and Android user agents", () => {
     expect(isIosDevice("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)")).toBe(true);
     expect(isIosDevice("Mozilla/5.0 (Linux; Android 15; Pixel 9)")).toBe(false);
+  });
+
+  it("is safe when browser globals are unavailable", () => {
+    vi.stubGlobal("navigator", undefined);
+
+    try {
+      expect(isIosDevice()).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("provides platform-appropriate installation instructions", () => {

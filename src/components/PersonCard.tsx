@@ -30,7 +30,7 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
   }
 
   return (
-    <article className="person-card" aria-labelledby={`person-${person.id}-name`}>
+    <article id={`person-card-${person.id}`} className="person-card" tabIndex={-1} aria-labelledby={`person-${person.id}-name`}>
       <div className="avatar" aria-hidden="true">{person.name.slice(0, 1).toUpperCase()}</div>
       <div className="person-main">
         <h3 id={`person-${person.id}-name`}>{person.name}</h3>

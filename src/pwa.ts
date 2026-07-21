@@ -18,9 +18,12 @@ export function isStandalone() {
     || Boolean((navigator as StandaloneNavigator).standalone);
 }
 
-export function isIosDevice(userAgent = navigator.userAgent) {
-  return /iPad|iPhone|iPod/.test(userAgent)
-    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+export function isIosDevice(userAgent?: string) {
+  const browserNavigator = typeof navigator === "undefined" ? undefined : navigator;
+  const resolvedUserAgent = userAgent ?? browserNavigator?.userAgent ?? "";
+
+  return /iPad|iPhone|iPod/.test(resolvedUserAgent)
+    || (browserNavigator?.platform === "MacIntel" && browserNavigator.maxTouchPoints > 1);
 }
 
 export function installInstructions(ios: boolean) {
