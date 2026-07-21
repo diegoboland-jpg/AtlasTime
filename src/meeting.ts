@@ -23,6 +23,11 @@ type CalendarLinkEvent = {
   location?: string;
 };
 
+export type MeetingShareData = {
+  title: string;
+  text: string;
+};
+
 function localDateTime(date: Date, timeZone: string) {
   return new Intl.DateTimeFormat("en-GB", {
     timeZone,
@@ -70,6 +75,13 @@ export function meetingSummary(title: string, start: Date, durationMinutes: numb
     "Local times:",
     ...localTimes,
   ].join("\n");
+}
+
+export function createMeetingShareData(title: string, summary: string): MeetingShareData {
+  return {
+    title: title.trim() || "AtlasTime meeting",
+    text: summary,
+  };
 }
 
 export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt }: IcsEvent) {

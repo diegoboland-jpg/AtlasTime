@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createGoogleCalendarUrl, createIcsEvent, createOutlookCalendarUrl, meetingSummary } from "./meeting";
+import { createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "./meeting";
 import type { Person } from "./types";
 
 const people: Person[] = [
@@ -39,6 +39,17 @@ describe("meeting handoff", () => {
     expect(calendar).toContain("LOCATION:Room 4\\, West\\; wing\r\n");
     expect(calendar).toContain("DESCRIPTION:Line one\\nLine two\r\n");
     expect(calendar.endsWith("END:VCALENDAR\r\n")).toBe(true);
+  });
+
+  it("creates a native-share invitation without exposing a group link", () => {
+    const summary = "Project sync\nUTC: Wed, 15 Jul 2026, 15:00 - 15:45";
+
+    expect(createMeetingShareData(" Project sync ", summary)).toEqual({
+      title: "Project sync",
+      text: summary,
+    });
+    expect(createMeetingShareData("   ", summary).title).toBe("AtlasTime meeting");
+    expect(createMeetingShareData("Project sync", summary)).not.toHaveProperty("url");
   });
 
   it("creates prefilled Google and Outlook calendar drafts", () => {

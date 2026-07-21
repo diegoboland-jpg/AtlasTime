@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CalendarPlus, Clipboard, Download, ExternalLink } from "lucide-react";
-import { createGoogleCalendarUrl, createIcsEvent, createOutlookCalendarUrl, meetingSummary } from "../meeting";
+import { CalendarPlus, Clipboard, Download, ExternalLink, Share2 } from "lucide-react";
+import { createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "../meeting";
 import { createId } from "../id";
 import type { Person, PlannerState } from "../types";
 
@@ -23,7 +23,9 @@ function safeFileName(title: string) {
 
 export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onDurationChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
   const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, planner);
+  const shareData = createMeetingShareData(planner.title, summary);
   const calendarLinkEvent = {
     title: planner.title,
     start: selectedInstant,
@@ -41,6 +43,27 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
       window.setTimeout(() => setCopyStatus(""), 2200);
     } catch {
       window.prompt("Copy these meeting details", summary);
+    }
+  }
+
+  async function shareInvite() {
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share(shareData);
+        setShareStatus("Shared!");
+        window.setTimeout(() => setShareStatus(""), 2200);
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(summary);
+      setShareStatus("Copied instead");
+      window.setTimeout(() => setShareStatus(""), 2200);
+    } catch {
+      window.prompt("Copy this meeting invitation", summary);
     }
   }
 
@@ -70,7 +93,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
         <div>
           <p className="section-kicker"><CalendarPlus size={16} /> HANDOFF</p>
           <h2 id="handoff-heading">Take the selected time with you</h2>
-          <p>Copy the timezone-aware details, download a standard calendar file, or open a prefilled calendar draft. AtlasTime never reads or edits your calendar.</p>
+          <p>Share the timezone-aware invitation through an app you choose, copy it, download a standard calendar file, or open a prefilled calendar draft. AtlasTime never sends anything automatically or reads your accounts.</p>
         </div>
       </div>
 
@@ -99,6 +122,9 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
         <pre className="meeting-summary" aria-label="Meeting summary preview">{summary}</pre>
 
         <div className="handoff-actions">
+          <button type="button" className="primary-button" onClick={shareInvite}>
+            <Share2 size={17} /> {shareStatus || "Share invite"}
+          </button>
           <button type="button" className="secondary-button" onClick={copySummary}>
             <Clipboard size={17} /> {copyStatus || "Copy details"}
           </button>
@@ -108,10 +134,11 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           <a className="secondary-button" href={outlookCalendarUrl} target="_blank" rel="noreferrer">
             Outlook Calendar <ExternalLink size={15} />
           </a>
-          <button type="button" className="primary-button" onClick={downloadCalendarFile}>
+          <button type="button" className="secondary-button" onClick={downloadCalendarFile}>
             <Download size={17} /> Download .ics
           </button>
         </div>
+        <p className="handoff-privacy-note">Share invite opens your device's share sheet. You choose the app and recipient before anything leaves AtlasTime.</p>
       </div>
     </section>
   );
