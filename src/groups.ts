@@ -38,6 +38,15 @@ function safePlanner(value: unknown): PlannerState {
   };
 }
 
+function isValidTimeZone(value: string) {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value }).format(new Date(0));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function safePeople(value: unknown): Person[] {
   if (!Array.isArray(value)) return [];
   return value.slice(0, MAX_SHARED_PEOPLE).flatMap((person) => {
@@ -46,6 +55,7 @@ function safePeople(value: unknown): Person[] {
       && typeof candidate.name === "string"
       && typeof candidate.city === "string"
       && typeof candidate.timeZone === "string"
+      && isValidTimeZone(candidate.timeZone)
       && typeof candidate.workStart === "number"
       && typeof candidate.workEnd === "number";
     if (!valid) return [];
