@@ -1,90 +1,120 @@
 # AtlasTime
 
-AtlasTime is a lightweight scheduling MVP for people who coordinate calls across time zones.
+AtlasTime is a local-first Progressive Web App for people coordinating calls across time zones. It replaces manual conversion with synchronized local times, working-hour comparison, and meeting recommendations.
 
-## MVP capabilities
+## Current release
 
-- Add and remove people with an IANA time zone
-- See everybody's current local time
-- Compare a selected date across a 24-hour timeline
-- Highlight shared working-hour overlap
-- Get a recommended one-hour meeting window
-- Open WhatsApp, Zoom, Telegram and Viber launch links
-- Save data locally in the browser
+**Version:** 0.27
 
-This version intentionally avoids accounts, cloud storage, calendar authorization and contact permissions. Those belong to later phases after validating the core scheduling experience.
+### Implemented
 
-## Run on Windows 10
+- Add a person, location, or team through global city search
+- Automatically resolve the selected city's IANA time zone
+- Prevent arbitrary city/time-zone mismatches
+- Handle daylight-saving rules through the browser's Intl time-zone data
+- Show current and selected local times
+- Explore a 24-hour UTC timeline in hourly and half-hour steps
+- Configure working hours and compare availability
+- Recommend a humane meeting hour
+- Save multiple groups locally
+- Add meeting title, duration, location, and notes
+- Create portable share links with an explicit privacy warning
+- Import shared groups without overwriting local data
+- Install as a PWA and return to saved data offline
+- Use recent cached places when network city search is unavailable
+- Launch WhatsApp, Zoom, Telegram, or Viber
+- Use keyboard-accessible city autocomplete and reduced-motion/forced-color support
 
-1. Install Node.js LTS from the official Node.js website.
-2. Extract this project ZIP.
-3. Open the extracted `AtlasTime` folder.
-4. Click the File Explorer address bar, type `cmd`, and press Enter.
-5. Run:
+## Important privacy model
+
+AtlasTime does not require an account. Groups, people, schedules, and meeting drafts are stored in the current browser.
+
+City search uses Open-Meteo. The search sends location text, not a person's name, group name, schedule, meeting title, or notes.
+
+Share links contain a portable copy of the group in the URL fragment. Anyone with the link can read the included group name, people or team names, locations, time zones, working hours, and meeting details. A share is a snapshot, not a live synchronized workspace.
+
+## Run locally
+
+Requirements:
+
+- Node.js LTS
+- npm
 
 ```bash
 npm install
 npm run dev
 ```
 
-6. Open the local address shown in the terminal, normally `http://localhost:5173`.
+Open the local address shown by Vite, normally `http://localhost:5173`.
 
-## Production build
+## Build and test
 
 ```bash
 npm run build
+npm test
 npm run preview
 ```
 
-## Publish with GitHub Desktop
+## Product documentation
 
-1. Install GitHub Desktop.
-2. Sign in to the GitHub account `diegoboland-jpg`.
-3. Choose **File â†’ Add local repository**.
-4. Select the extracted `AtlasTime` folder.
-5. If prompted, choose **Create a repository** for this folder.
-6. Commit the files with message `Initial AtlasTime MVP`.
-7. In **Repository â†’ Repository settings â†’ Remote**, set:
-   `https://github.com/diegoboland-jpg/AtlasTime.git`
-8. Click **Push origin**.
+- [UX Specification](docs/UX_SPECIFICATION.md)
+- [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)
+- [Data and API Design](docs/DATA_AND_API_DESIGN.md)
+- [MVP Implementation Backlog](docs/MVP_IMPLEMENTATION_BACKLOG.md)
 
-Because the remote repository is empty, GitHub Desktop may instead show **Publish repository**. Keep the name `AtlasTime`, ensure the owner is `diegoboland-jpg`, and do not create a second repository with another name.
+These documents define intended MVP behavior where the prototype and product specification differ.
 
-## Product roadmap
+## Architecture summary
 
-### Phase 1 â€” Current MVP
-- Time-zone roster
-- Current local times
-- Work-hour overlap
-- Suggested meeting hour
-- Calling-app shortcuts
-- Browser persistence
+- React 19
+- TypeScript
+- Vite
+- Native Intl time-zone calculations
+- Open-Meteo geocoding behind an internal service adapter
+- Browser localStorage
+- Vitest
+- Progressive Web App service worker
 
-### Phase 2 â€” Validation
-- Editable work hours per person
-- Multiple saved groups
-- Shareable scheduling link
-- Compact mobile overview with local time, participant/location times, and the slider in one screen
-- Accessibility and usability testing
+The MVP intentionally has no application server, cloud database, account, calendar authorization, or contact permission.
 
-### Phase 3 â€” Integrations
-- Phone contacts, only with explicit permission
-- Google and Microsoft calendars
-- Zoom meeting creation
-- WhatsApp, Viber and Telegram deep-link improvements
-- Native mobile application if web validation is positive
+## Roadmap
 
-### Phase 4 â€” Collaboration
-- Accounts and synchronized data
-- Team workspaces
-- Invitations and voting
-- Reminders and notifications
+### Correctness and trust
 
-## Privacy
+- Duration-aware meeting recommendations
+- Stronger persisted/share-data validation
+- Storage failure messaging
+- Automated CI
 
-The current MVP stores contacts only in the user's browser using `localStorage`. It does not upload or transmit contact information.
+### Complete MVP experience
+
+- Edit a person's city with automatic re-resolution
+- Remove with Undo
+- Favorites and accessible reordering
+- Participant-aware planner
+- Theme and time-format settings
+- Empty-state onboarding
+
+### Validation and release
+
+- Component and end-to-end tests
+- Keyboard and screen-reader validation
+- Responsive and contrast audit
+- Production privacy copy and security headers
+
+### Later phases
+
+- Optional accounts and synchronized data
+- Shared workspaces
+- Google and Microsoft calendar integrations
+- AI-assisted scheduling
+- Regional holiday and travel awareness
+- Enterprise integrations and APIs
+
+## Product rule
+
+Users choose a valid city. AtlasTime determines the time zone. The product must not offer arbitrary manual time-zone selection.
 
 ## License
 
-No license has been selected yet. All rights are reserved by the repository owner until a license is added.
-
+No license has been selected. All rights are reserved by the repository owner until a license is added.
