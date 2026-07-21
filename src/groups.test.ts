@@ -76,6 +76,21 @@ describe("saved groups", () => {
     expect(loadGroups().groups[0].people.map(({ countryCode }) => countryCode)).toEqual(["ES", "PH", "IN", "AR"]);
   });
 
+  it("drops people with invalid IANA time zones from persisted data", () => {
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "invalid-zones",
+      name: "Invalid zones",
+      people: [
+        person,
+        { ...person, id: "broken", name: "Broken", timeZone: "Not/A_Time_Zone" },
+      ],
+      planner: { date: "2026-07-20", hour: 12 },
+      updatedAt: "2026-07-20T00:00:00Z",
+    }]));
+
+    expect(loadGroups().groups[0].people).toEqual([person]);
+  });
+
   it("backfills a representative flag from a known timezone for person and team labels", () => {
     localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
       id: "teams",
