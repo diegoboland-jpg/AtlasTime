@@ -1,5 +1,14 @@
 # AtlasTime backlog
 
+## v0.27: share-ready invitations
+
+- [x] Add a clear Share invite action to the meeting handoff.
+- [x] Open the device's native share sheet with the meeting title and complete timezone-aware summary.
+- [x] Fall back to copying the invitation when native sharing is unavailable or fails.
+- [x] Keep sharing explicit: the user chooses the destination and recipient, and AtlasTime never sends automatically.
+- [x] Avoid attaching a portable group link so names, work hours, and saved-group configuration are not exposed beyond the visible invitation.
+- [ ] Validate the native share sheet on installed Windows, Android, and iPhone PWAs.
+
 ## v0.26: calendar handoff shortcuts
 
 - [x] Generate prefilled Google Calendar and Outlook Calendar drafts from the selected AtlasTime meeting.
