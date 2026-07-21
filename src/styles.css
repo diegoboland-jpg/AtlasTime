@@ -358,6 +358,20 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .launch-grid a:hover { border-color: #246bfd; color: #246bfd; }
 .selected-summary { grid-column: 1 / -1; margin: 0; font-size: 12px; }
 
+.undo-toast {
+  position: fixed; z-index: 70; right: 20px; bottom: 112px; max-width: min(420px, calc(100vw - 32px));
+  display: flex; align-items: center; gap: 18px; padding: 14px 16px;
+  border: 1px solid rgba(158,186,255,.48); border-radius: 14px; background: #101b34; color: white;
+  box-shadow: 0 16px 40px rgba(13,24,48,.3);
+}
+.undo-toast span { min-width: 0; color: #dbe6fa; font-size: 12px; line-height: 1.4; }
+.undo-toast strong { color: white; }
+.undo-toast button {
+  min-width: 64px; min-height: 44px; padding: 8px 12px; border: 1px solid #8eb0ff; border-radius: 9px;
+  background: #263d67; color: white; font-weight: 850; cursor: pointer;
+}
+.undo-toast button:hover { background: #31528d; }
+
 footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex; justify-content: space-between; color: #8a96aa; font-size: 12px; }
 
 @media (max-width: 900px) {
@@ -630,6 +644,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .handoff-actions { flex-direction: column; }
   .handoff-actions button, .handoff-actions a { width: 100%; }
   .handoff-privacy-note { text-align: left; }
+  .undo-toast { right: 12px; bottom: 118px; left: 12px; max-width: none; justify-content: space-between; }
   .planner-toggle { width: 100%; }
   .planner-detail-toolbar { align-items: stretch; flex-direction: column; }
   .planner-detail-toolbar .date-field { width: 100%; }
@@ -683,6 +698,6 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 
 @media (forced-colors: active) {
-  .hour-cell.working, .hour-cell.selected, .recommendation, .selected-person-time, .compact-time-card { border: 1px solid CanvasText; }
+  .hour-cell.working, .hour-cell.selected, .recommendation, .selected-person-time, .compact-time-card, .undo-toast { border: 1px solid CanvasText; }
   .time-period-scene, .country-flag-backdrop { display: none; }
 }

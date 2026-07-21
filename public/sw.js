@@ -1,4 +1,4 @@
-const CACHE_NAME = "atlastime-v0.27";
+const CACHE_NAME = "atlastime-v0.28";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/atlas-icon.svg"];
 
 self.addEventListener("install", (event) => {

@@ -1,5 +1,14 @@
 # AtlasTime backlog
 
+## v0.28: forgiving person removal
+
+- [x] Remove a person immediately without adding a blocking confirmation dialog.
+- [x] Show a calm, keyboard-reachable Undo notice for at least eight seconds.
+- [x] Restore the person to the same saved group and original position.
+- [x] Move focus to Undo after removal and back to the restored person after recovery.
+- [x] Pause expiration while the Undo notice is focused or hovered.
+- [ ] Validate removal and Undo with NVDA, TalkBack, and VoiceOver on physical devices.
+
 ## v0.27: share-ready invitations
 
 - [x] Add a clear Share invite action to the meeting handoff.
