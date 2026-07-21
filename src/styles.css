@@ -341,7 +341,7 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
   font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .handoff-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
-.handoff-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.handoff-actions button, .handoff-actions a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
 
 .launch-section {
   display: grid; grid-template-columns: 1fr 1.3fr; gap: 48px; align-items: center;
@@ -461,6 +461,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .time-period-scene .scene-sunrise { transform-origin: 82px 45px; animation: scene-sun-rise 4s ease-in-out infinite alternate; }
   .time-period-scene .scene-high-sun { transform-origin: 91px 20px; animation: scene-twinkle 3.8s ease-in-out infinite; }
   .time-period-scene .scene-afternoon-orbit { transform-origin: 88px 25px; animation: scene-afternoon-path 4.2s ease-in-out infinite alternate; }
+  .time-period-scene .scene-afternoon-short-rays { stroke-width: 2.1; }
   .time-period-scene .scene-sun-track { opacity: .68; stroke-dasharray: 3 4; stroke-width: 1.6; }
   .time-period-scene .scene-afternoon-rays { fill: var(--scene-fill); fill-opacity: .2; stroke: none; }
   .time-period-scene .scene-sunset { transform-origin: 87px 49px; animation: scene-sun-set 4.5s ease-in-out infinite alternate; }
@@ -626,7 +627,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   footer { flex-direction: column; gap: 8px; }
   .handoff-panel { padding: 18px; }
   .handoff-actions { flex-direction: column; }
-  .handoff-actions button { width: 100%; }
+  .handoff-actions button, .handoff-actions a { width: 100%; }
   .planner-toggle { width: 100%; }
   .planner-detail-toolbar { align-items: stretch; flex-direction: column; }
   .planner-detail-toolbar .date-field { width: 100%; }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createIcsEvent, meetingSummary } from "./meeting";
+import { createGoogleCalendarUrl, createIcsEvent, createOutlookCalendarUrl, meetingSummary } from "./meeting";
 import type { Person } from "./types";
 
 const people: Person[] = [
@@ -39,5 +39,33 @@ describe("meeting handoff", () => {
     expect(calendar).toContain("LOCATION:Room 4\\, West\\; wing\r\n");
     expect(calendar).toContain("DESCRIPTION:Line one\\nLine two\r\n");
     expect(calendar.endsWith("END:VCALENDAR\r\n")).toBe(true);
+  });
+
+  it("creates prefilled Google and Outlook calendar drafts", () => {
+    const event = {
+      title: "Planning & review",
+      start: new Date("2026-07-15T23:30:00Z"),
+      durationMinutes: 90,
+      description: "Line one\nLine two",
+      location: "Room 4, West wing",
+    };
+    const google = new URL(createGoogleCalendarUrl(event));
+    const outlook = new URL(createOutlookCalendarUrl(event));
+
+    expect(google.origin).toBe("https://calendar.google.com");
+    expect(google.searchParams.get("action")).toBe("TEMPLATE");
+    expect(google.searchParams.get("dates")).toBe("20260715T233000Z/20260716T010000Z");
+    expect(google.searchParams.get("text")).toBe(event.title);
+    expect(google.searchParams.get("details")).toBe(event.description);
+    expect(google.searchParams.get("location")).toBe(event.location);
+
+    expect(outlook.origin).toBe("https://outlook.office.com");
+    expect(outlook.searchParams.get("path")).toBe("/calendar/action/compose");
+    expect(outlook.searchParams.get("rru")).toBe("addevent");
+    expect(outlook.searchParams.get("startdt")).toBe("2026-07-15T23:30:00.000Z");
+    expect(outlook.searchParams.get("enddt")).toBe("2026-07-16T01:00:00.000Z");
+    expect(outlook.searchParams.get("subject")).toBe(event.title);
+    expect(outlook.searchParams.get("body")).toBe(event.description);
+    expect(outlook.searchParams.get("location")).toBe(event.location);
   });
 });

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CalendarPlus, Clipboard, Download } from "lucide-react";
-import { createIcsEvent, meetingSummary } from "../meeting";
+import { CalendarPlus, Clipboard, Download, ExternalLink } from "lucide-react";
+import { createGoogleCalendarUrl, createIcsEvent, createOutlookCalendarUrl, meetingSummary } from "../meeting";
 import { createId } from "../id";
 import type { Person, PlannerState } from "../types";
 
@@ -24,6 +24,15 @@ function safeFileName(title: string) {
 export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onDurationChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
   const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, planner);
+  const calendarLinkEvent = {
+    title: planner.title,
+    start: selectedInstant,
+    durationMinutes: planner.durationMinutes,
+    description: summary,
+    location: planner.location,
+  };
+  const googleCalendarUrl = createGoogleCalendarUrl(calendarLinkEvent);
+  const outlookCalendarUrl = createOutlookCalendarUrl(calendarLinkEvent);
 
   async function copySummary() {
     try {
@@ -61,7 +70,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
         <div>
           <p className="section-kicker"><CalendarPlus size={16} /> HANDOFF</p>
           <h2 id="handoff-heading">Take the selected time with you</h2>
-          <p>Copy a timezone-aware summary or download a standard calendar file. AtlasTime never connects to your calendar account.</p>
+          <p>Copy the timezone-aware details, download a standard calendar file, or open a prefilled calendar draft. AtlasTime never reads or edits your calendar.</p>
         </div>
       </div>
 
@@ -93,6 +102,12 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           <button type="button" className="secondary-button" onClick={copySummary}>
             <Clipboard size={17} /> {copyStatus || "Copy details"}
           </button>
+          <a className="secondary-button" href={googleCalendarUrl} target="_blank" rel="noreferrer">
+            Google Calendar <ExternalLink size={15} />
+          </a>
+          <a className="secondary-button" href={outlookCalendarUrl} target="_blank" rel="noreferrer">
+            Outlook Calendar <ExternalLink size={15} />
+          </a>
           <button type="button" className="primary-button" onClick={downloadCalendarFile}>
             <Download size={17} /> Download .ics
           </button>

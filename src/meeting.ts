@@ -15,6 +15,14 @@ type MeetingDetails = {
   notes?: string;
 };
 
+type CalendarLinkEvent = {
+  title: string;
+  start: Date;
+  durationMinutes: number;
+  description: string;
+  location?: string;
+};
+
 function localDateTime(date: Date, timeZone: string) {
   return new Intl.DateTimeFormat("en-GB", {
     timeZone,
@@ -32,6 +40,10 @@ function utcDateTime(date: Date) {
   return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
 }
 
+function eventEnd(start: Date, durationMinutes: number) {
+  return new Date(start.getTime() + durationMinutes * 60_000);
+}
+
 function escapeIcs(value: string) {
   return value
     .replaceAll("\\", "\\\\")
@@ -41,7 +53,7 @@ function escapeIcs(value: string) {
 }
 
 export function meetingSummary(title: string, start: Date, durationMinutes: number, people: Person[], details: MeetingDetails = {}) {
-  const end = new Date(start.getTime() + durationMinutes * 60_000);
+  const end = eventEnd(start, durationMinutes);
   const heading = title.trim() || "AtlasTime meeting";
   const location = details.location?.trim();
   const notes = details.notes?.trim();
@@ -61,7 +73,7 @@ export function meetingSummary(title: string, start: Date, durationMinutes: numb
 }
 
 export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt }: IcsEvent) {
-  const end = new Date(start.getTime() + durationMinutes * 60_000);
+  const end = eventEnd(start, durationMinutes);
   const summary = title.trim() || "AtlasTime meeting";
   return [
     "BEGIN:VCALENDAR",
@@ -80,4 +92,28 @@ export function createIcsEvent({ title, start, durationMinutes, description, loc
     "END:VCALENDAR",
     "",
   ].join("\r\n");
+}
+
+export function createGoogleCalendarUrl({ title, start, durationMinutes, description, location }: CalendarLinkEvent) {
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    dates: `${utcDateTime(start)}/${utcDateTime(eventEnd(start, durationMinutes))}`,
+    text: title.trim() || "AtlasTime meeting",
+    details: description,
+  });
+  if (location?.trim()) params.set("location", location.trim());
+  return `https://calendar.google.com/calendar/r/eventedit?${params}`;
+}
+
+export function createOutlookCalendarUrl({ title, start, durationMinutes, description, location }: CalendarLinkEvent) {
+  const params = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    startdt: start.toISOString(),
+    enddt: eventEnd(start, durationMinutes).toISOString(),
+    subject: title.trim() || "AtlasTime meeting",
+    body: description,
+  });
+  if (location?.trim()) params.set("location", location.trim());
+  return `https://outlook.office.com/calendar/deeplink/compose?${params}`;
 }
