@@ -328,7 +328,7 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .recommendation {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px;
   background: #eaf1ff; border: 1px solid #cfddff; padding: 22px; border-radius: 18px; margin-bottom: 22px;
-  width: 100%; color: inherit; text-align: left; cursor: pointer;
+  width: 100%; color: inherit; text-align: left;
 }
 .planner-sticky-recommendation {
   position: sticky; z-index: 12; top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
@@ -345,7 +345,6 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .my-time-copy > strong { display: block; margin-top: 3px; font-size: 24px; }
 .my-time-copy > small, .my-time-copy > em { display: block; margin-top: 4px; color: #63708a; font-size: 11px; font-style: normal; line-height: 1.35; }
 .my-time-copy > em { overflow: hidden; color: #31558f; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
-.recommendation:hover { border-color: #8fb0ff; box-shadow: 0 8px 22px rgba(36,107,253,.09); }
 .recommendation-icon { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 15px; background: white; color: #246bfd; }
 .recommendation-copy > span { display: block; color: #63708a; font-size: 12px; font-weight: 700; }
 .recommendation-copy > strong { display: block; font-size: 24px; margin-top: 3px; }
