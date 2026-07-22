@@ -1,5 +1,25 @@
 # AtlasTime backlog
 
+## v1.0: local-first planner release
+
+- [x] Complete global place discovery, saved groups, humane-time scoring, exact durations, and all-day planning.
+- [x] Provide responsive installed-PWA experiences for phone and Windows layouts.
+- [x] Export complete `.ics` events and open prefilled Google and Outlook calendar drafts without account access.
+- [x] Align package, visible UI, service-worker cache, README, and release documentation to version 1.0.0.
+- [x] Add a repeatable v1.0 physical-device acceptance checklist.
+- [ ] Complete the required Android and installed-Windows acceptance checks.
+- [ ] Complete an iPhone/Safari compatibility check when an iPhone is available.
+- [ ] Publish the `v1.0.0` Git tag and GitHub release after acceptance.
+
+## v1.1: optional connected calendars
+
+- Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
+- Create events only after showing a final AtlasTime confirmation.
+- Start with the user's primary calendar and the narrowest practical event permission.
+- Provide clear connection status, failure recovery, disconnect, and access revocation.
+- Keep calendar drafts and `.ics` export fully usable without signing in.
+- Add Microsoft/Outlook authorization only after the Google flow is validated.
+
 ## v0.31: human-friendly durations and all-day events
 
 - [x] Replace the minutes-first duration control with editable UTC start and finish times.
