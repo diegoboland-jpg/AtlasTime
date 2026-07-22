@@ -13,17 +13,18 @@
 
 ## v1.1: optional connected calendars
 
-- Add a local AtlasTime contact directory with optional email addresses and editable current/travel locations.
-- Import user-selected names and email addresses through the device contact picker when supported, with manual and vCard/CSV fallbacks.
-- Keep imported details editable inside AtlasTime; do not imply that PWA edits modify the phone's source contact.
-- Migrate saved groups and shared snapshots safely when optional contact email fields are introduced.
-- Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
-- Create events only after showing a final AtlasTime confirmation.
-- Start with the user's primary calendar and the narrowest practical event permission.
-- Add valid AtlasTime contact emails as event attendees and let the organizer explicitly choose whether invitations are sent.
-- Provide clear connection status, failure recovery, disconnect, and access revocation.
-- Keep calendar drafts and `.ics` export fully usable without signing in.
-- Add Microsoft/Outlook authorization only after the Google flow is validated.
+- [x] Add a local AtlasTime contact directory with optional email addresses and editable current/travel locations.
+- [ ] Import user-selected names and email addresses through the device contact picker when supported, with manual and vCard/CSV fallbacks.
+- [x] Keep local details editable inside AtlasTime and explain that PWA edits never modify a phone or account source contact.
+- [x] Migrate saved groups and shared snapshots safely when optional contact email fields are introduced.
+- [ ] Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
+- [ ] Create connected events only after showing a final AtlasTime confirmation.
+- [ ] Start with the user's primary calendar and the narrowest practical event permission.
+- [x] Add valid AtlasTime contact emails to Google/Outlook drafts and `.ics` attendees while leaving invitation sending under the calendar provider's confirmation.
+- [ ] Let the organizer explicitly include or exclude individual invitees before connected event creation.
+- [ ] Provide clear connection status, failure recovery, disconnect, and access revocation.
+- [x] Keep calendar drafts and `.ics` export fully usable without signing in.
+- [ ] Add Microsoft/Outlook authorization only after the Google flow is validated.
 
 ## v1.2: consent-based availability
 

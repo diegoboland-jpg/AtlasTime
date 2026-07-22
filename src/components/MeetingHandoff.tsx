@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CalendarPlus, Clipboard, Download, ExternalLink, Share2 } from "lucide-react";
-import { createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "../meeting";
+import { calendarAttendees, createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "../meeting";
 import { createId } from "../id";
 import type { Person, PlannerState } from "../types";
 
@@ -24,6 +24,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
   const allDay = planner.eventMode === "all-day";
   const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, { ...planner, allDay });
   const shareData = createMeetingShareData(planner.title, summary);
+  const attendees = calendarAttendees(people);
   const calendarLinkEvent = {
     title: planner.title,
     start: selectedInstant,
@@ -32,6 +33,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
     location: planner.location,
     allDay,
     date: planner.date,
+    attendees,
   };
   const googleCalendarUrl = createGoogleCalendarUrl(calendarLinkEvent);
   const outlookCalendarUrl = createOutlookCalendarUrl(calendarLinkEvent);
@@ -78,6 +80,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
       createdAt: new Date(),
       allDay,
       date: planner.date,
+      attendees,
     });
     const url = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
     const anchor = document.createElement("a");
@@ -137,7 +140,10 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             <Download size={17} /> Apple / device calendar (.ics)
           </button>
         </div>
-        <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Apple and device calendars import the complete .ics event. If a mobile app intercepts a draft link and drops its details, use the .ics option. AtlasTime never saves an event without your confirmation.</p>
+        {attendees.length > 0 && (
+          <p className="handoff-attendees"><strong>{attendees.length} calendar {attendees.length === 1 ? "invitee" : "invitees"} ready:</strong> {attendees.map(({ email }) => email).join(", ")}</p>
+        )}
+        <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Valid contact emails are included as invitees, but the calendar provider decides whether invitations are sent when you save. Apple and device calendars import the complete .ics event. AtlasTime never saves or sends anything without your confirmation.</p>
       </div>
     </section>
   );

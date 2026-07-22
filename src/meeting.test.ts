@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "./meeting";
+import { calendarAttendees, createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "./meeting";
 import type { Person } from "./types";
 
 const people: Person[] = [
-  { id: "ana", name: "Ana", city: "São Paulo", timeZone: "America/Sao_Paulo", workStart: 9, workEnd: 18 },
+  { id: "ana", name: "Ana", email: "ana@example.com", city: "São Paulo", timeZone: "America/Sao_Paulo", workStart: 9, workEnd: 18 },
   { id: "lee", name: "Lee", city: "Kathmandu", timeZone: "Asia/Kathmandu", workStart: 9, workEnd: 18 },
 ];
 
@@ -31,6 +31,7 @@ describe("meeting handoff", () => {
       location: "Room 4, West; wing",
       uid: "event-123@atlastime.local",
       createdAt: new Date("2026-07-15T12:00:00Z"),
+      attendees: [{ name: "Ana Example", email: "ana@example.com" }],
     });
 
     expect(calendar).toContain("DTSTART:20260715T233000Z\r\n");
@@ -39,6 +40,7 @@ describe("meeting handoff", () => {
     expect(calendar).toContain("SUMMARY:Planning\\, review\\; follow-up\r\n");
     expect(calendar).toContain("LOCATION:Room 4\\, West\\; wing\r\n");
     expect(calendar).toContain("DESCRIPTION:Line one\\nLine two\r\n");
+    expect(calendar).toContain('ATTENDEE;CN="Ana Example";RSVP=TRUE:mailto:ana@example.com\r\n');
     expect(calendar.endsWith("END:VCALENDAR\r\n")).toBe(true);
   });
 
@@ -60,6 +62,7 @@ describe("meeting handoff", () => {
       durationMinutes: 90,
       description: "Line one\nLine two",
       location: "Room 4, West wing",
+      attendees: [{ name: "Ana", email: "ana@example.com" }, { name: "Lee", email: "lee@example.com" }],
     };
     const google = new URL(createGoogleCalendarUrl(event));
     const outlook = new URL(createOutlookCalendarUrl(event));
@@ -71,6 +74,7 @@ describe("meeting handoff", () => {
     expect(google.searchParams.get("text")).toBe(event.title);
     expect(google.searchParams.get("details")).toBe(event.description);
     expect(google.searchParams.get("location")).toBe(event.location);
+    expect(google.searchParams.get("add")).toBe("ana@example.com,lee@example.com");
 
     expect(outlook.origin).toBe("https://outlook.office.com");
     expect(outlook.pathname).toBe("/calendar/deeplink/compose");
@@ -81,6 +85,15 @@ describe("meeting handoff", () => {
     expect(outlook.searchParams.get("subject")).toBe(event.title);
     expect(outlook.searchParams.get("body")).toBe(event.description);
     expect(outlook.searchParams.get("location")).toBe(event.location);
+    expect(outlook.searchParams.get("requiredAttendees")).toBe("ana@example.com,lee@example.com");
+  });
+
+  it("collects valid calendar attendees once", () => {
+    expect(calendarAttendees([
+      ...people,
+      { ...people[0], id: "ana-copy", email: "ANA@example.com" },
+      { ...people[1], email: "invalid" },
+    ])).toEqual([{ name: "Ana", email: "ana@example.com" }]);
   });
 
   it("uses date-only semantics for all-day calendar exports", () => {

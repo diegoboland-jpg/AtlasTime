@@ -10,6 +10,7 @@ type IcsEvent = {
   createdAt: Date;
   allDay?: boolean;
   date?: string;
+  attendees?: CalendarAttendee[];
 };
 
 type MeetingDetails = {
@@ -27,7 +28,10 @@ type CalendarLinkEvent = {
   location?: string;
   allDay?: boolean;
   date?: string;
+  attendees?: CalendarAttendee[];
 };
+
+export type CalendarAttendee = { name: string; email: string };
 
 export type MeetingShareData = {
   title: string;
@@ -91,6 +95,20 @@ function escapeIcs(value: string) {
     .replaceAll(";", "\\;");
 }
 
+function escapeIcsParameter(value: string) {
+  return value.replaceAll("\\", "\\\\").replaceAll('"', "\\\"");
+}
+
+export function calendarAttendees(people: Person[]): CalendarAttendee[] {
+  const seen = new Set<string>();
+  return people.flatMap((person) => {
+    const email = person.email?.trim().toLowerCase();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || seen.has(email)) return [];
+    seen.add(email);
+    return [{ name: person.name, email }];
+  });
+}
+
 export function meetingSummary(title: string, start: Date, durationMinutes: number, people: Person[], details: MeetingDetails = {}) {
   const allDayDate = details.allDay ? validDate(details.date) : null;
   const end = eventEnd(start, durationMinutes);
@@ -124,7 +142,7 @@ export function createMeetingShareData(title: string, summary: string): MeetingS
   };
 }
 
-export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt, allDay, date }: IcsEvent) {
+export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt, allDay, date, attendees = [] }: IcsEvent) {
   const allDayDate = allDay ? validDate(date) : null;
   const end = eventEnd(start, durationMinutes);
   const summary = title.trim() || "AtlasTime meeting";
@@ -142,6 +160,7 @@ export function createIcsEvent({ title, start, durationMinutes, description, loc
       : [`DTSTART:${utcDateTime(start)}`, `DTEND:${utcDateTime(end)}`]),
     `SUMMARY:${escapeIcs(summary)}`,
     ...(location?.trim() ? [`LOCATION:${escapeIcs(location.trim())}`] : []),
+    ...attendees.map((attendee) => `ATTENDEE;CN="${escapeIcsParameter(attendee.name)}";RSVP=TRUE:mailto:${attendee.email}`),
     `DESCRIPTION:${escapeIcs(description)}`,
     "END:VEVENT",
     "END:VCALENDAR",
@@ -149,7 +168,7 @@ export function createIcsEvent({ title, start, durationMinutes, description, loc
   ].join("\r\n");
 }
 
-export function createGoogleCalendarUrl({ title, start, durationMinutes, description, location, allDay, date }: CalendarLinkEvent) {
+export function createGoogleCalendarUrl({ title, start, durationMinutes, description, location, allDay, date, attendees = [] }: CalendarLinkEvent) {
   const allDayDate = allDay ? validDate(date) : null;
   const params = new URLSearchParams({
     action: "TEMPLATE",
@@ -160,10 +179,11 @@ export function createGoogleCalendarUrl({ title, start, durationMinutes, descrip
     details: description,
   });
   if (location?.trim()) params.set("location", location.trim());
+  if (attendees.length) params.set("add", attendees.map(({ email }) => email).join(","));
   return `https://calendar.google.com/calendar/render?${params}`;
 }
 
-export function createOutlookCalendarUrl({ title, start, durationMinutes, description, location, allDay, date }: CalendarLinkEvent) {
+export function createOutlookCalendarUrl({ title, start, durationMinutes, description, location, allDay, date, attendees = [] }: CalendarLinkEvent) {
   const allDayDate = allDay ? validDate(date) : null;
   const params = new URLSearchParams({
     path: "/calendar/action/compose",
@@ -175,5 +195,6 @@ export function createOutlookCalendarUrl({ title, start, durationMinutes, descri
   });
   if (allDayDate) params.set("allday", "true");
   if (location?.trim()) params.set("location", location.trim());
+  if (attendees.length) params.set("requiredAttendees", attendees.map(({ email }) => email).join(","));
   return `https://outlook.office.com/calendar/deeplink/compose?${params}`;
 }

@@ -7,7 +7,7 @@ import type { Person, PlannerState } from "../types";
 import { MeetingHandoff } from "./MeetingHandoff";
 
 const people: Person[] = [
-  { id: "ana", name: "Ana", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 },
+  { id: "ana", name: "Ana", email: "ana@example.com", city: "Madrid", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 },
 ];
 
 const planner: PlannerState = {
@@ -83,6 +83,12 @@ describe("meeting handoff sharing", () => {
     expect(container.textContent).toContain("Google Calendar draft");
     expect(container.textContent).toContain("Outlook Calendar draft");
     expect(container.textContent).toContain("Apple / device calendar (.ics)");
+    expect(container.textContent).toContain("1 calendar invitee ready");
+    expect(container.textContent).toContain("ana@example.com");
+    const google = new URL(container.querySelector<HTMLAnchorElement>('a[href*="calendar.google.com"]')!.href);
+    const outlook = new URL(container.querySelector<HTMLAnchorElement>('a[href*="outlook.office.com"]')!.href);
+    expect(google.searchParams.get("add")).toBe("ana@example.com");
+    expect(outlook.searchParams.get("requiredAttendees")).toBe("ana@example.com");
     root.unmount();
   });
 });

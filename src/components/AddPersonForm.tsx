@@ -8,15 +8,24 @@ import type { Person } from "../types";
 type AddPersonFormProps = {
   onAdd: (person: Person) => void;
   onCancel: () => void;
+  initialPerson?: Person;
 };
 
 type SearchStatus = "idle" | "loading" | "success" | "error";
 
-export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
-  const [name, setName] = useState("");
-  const [query, setQuery] = useState("");
+export function AddPersonForm({ onAdd, onCancel, initialPerson }: AddPersonFormProps) {
+  const initialCity = initialPerson ? {
+    label: [initialPerson.city, initialPerson.country].filter(Boolean).join(", "),
+    city: initialPerson.city,
+    country: initialPerson.country ?? "",
+    countryCode: initialPerson.countryCode,
+    timeZone: initialPerson.timeZone,
+  } satisfies CityOption : undefined;
+  const [name, setName] = useState(initialPerson?.name ?? "");
+  const [email, setEmail] = useState(initialPerson?.email ?? "");
+  const [query, setQuery] = useState(initialCity?.label ?? "");
   const [results, setResults] = useState<CityOption[]>([]);
-  const [selectedCity, setSelectedCity] = useState<CityOption>();
+  const [selectedCity, setSelectedCity] = useState<CityOption | undefined>(initialCity);
   const [status, setStatus] = useState<SearchStatus>("idle");
   const [activeIndex, setActiveIndex] = useState(0);
   const [focused, setFocused] = useState(false);
@@ -88,8 +97,10 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
     event.preventDefault();
     if (!name.trim() || !selectedCity) return;
     onAdd({
-      id: createId(),
+      id: initialPerson?.id ?? createId(),
+      contactId: initialPerson?.contactId ?? createId(),
       name: name.trim(),
+      ...(email.trim() ? { email: email.trim().toLowerCase() } : {}),
       city: selectedCity.city,
       country: selectedCity.country,
       countryCode: selectedCity.countryCode,
@@ -112,6 +123,18 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
           placeholder="e.g. Olesya, Madrid office, or Design team"
           autoFocus
           required
+        />
+      </label>
+
+      <label htmlFor={`${nameId}-email`}>
+        Email address <span className="optional-label">Optional</span>
+        <input
+          id={`${nameId}-email`}
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="name@example.com"
+          autoComplete="email"
         />
       </label>
 
@@ -197,7 +220,9 @@ export function AddPersonForm({ onAdd, onCancel }: AddPersonFormProps) {
 
       <div className="form-actions">
         <button className="secondary-button" type="button" onClick={onCancel}>Cancel</button>
-        <button className="primary-button" type="submit" disabled={!name.trim() || !selectedCity}>Save entry</button>
+        <button className="primary-button" type="submit" disabled={!name.trim() || !selectedCity}>
+          {initialPerson ? "Save changes" : "Save contact and add"}
+        </button>
       </div>
     </form>
   );

@@ -1,12 +1,27 @@
 export type Person = {
   id: string;
+  contactId?: string;
   name: string;
+  email?: string;
   city: string;
   country?: string;
   countryCode?: string;
   timeZone: string;
   workStart: number;
   workEnd: number;
+};
+
+export type ContactRecord = {
+  id: string;
+  name: string;
+  email?: string;
+  city: string;
+  country?: string;
+  countryCode?: string;
+  timeZone: string;
+  workStart: number;
+  workEnd: number;
+  updatedAt: string;
 };
 
 export type HourScore = {
