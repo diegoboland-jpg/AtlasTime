@@ -8,11 +8,15 @@ type IcsEvent = {
   location?: string;
   uid: string;
   createdAt: Date;
+  allDay?: boolean;
+  date?: string;
 };
 
 type MeetingDetails = {
   location?: string;
   notes?: string;
+  allDay?: boolean;
+  date?: string;
 };
 
 type CalendarLinkEvent = {
@@ -21,6 +25,8 @@ type CalendarLinkEvent = {
   durationMinutes: number;
   description: string;
   location?: string;
+  allDay?: boolean;
+  date?: string;
 };
 
 export type MeetingShareData = {
@@ -49,6 +55,34 @@ function eventEnd(start: Date, durationMinutes: number) {
   return new Date(start.getTime() + durationMinutes * 60_000);
 }
 
+function validDate(value?: string) {
+  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
+}
+
+function nextDate(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + 1));
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+}
+
+function compactDate(value: string) {
+  return value.replaceAll("-", "");
+}
+
+function readableDate(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" })
+    .format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+export function durationLabel(durationMinutes: number) {
+  if (durationMinutes < 60) return `${durationMinutes} min`;
+  const hours = Math.floor(durationMinutes / 60);
+  const minutes = durationMinutes % 60;
+  const hourLabel = `${hours} ${hours === 1 ? "hour" : "hours"}`;
+  return minutes ? `${hourLabel} ${minutes} min` : hourLabel;
+}
+
 function escapeIcs(value: string) {
   return value
     .replaceAll("\\", "\\\\")
@@ -58,21 +92,27 @@ function escapeIcs(value: string) {
 }
 
 export function meetingSummary(title: string, start: Date, durationMinutes: number, people: Person[], details: MeetingDetails = {}) {
+  const allDayDate = details.allDay ? validDate(details.date) : null;
   const end = eventEnd(start, durationMinutes);
   const heading = title.trim() || "AtlasTime meeting";
   const location = details.location?.trim();
   const notes = details.notes?.trim();
-  const localTimes = people.length
+  const localTimes = allDayDate
+    ? (people.length
+      ? people.map((person) => `- ${person.name} (${person.city || person.timeZone}): ${readableDate(allDayDate)}, all day`)
+      : ["- No people or locations added yet."])
+    : people.length
     ? people.map((person) => `- ${person.name} (${person.city || person.timeZone}): ${localDateTime(start, person.timeZone)} - ${localDateTime(end, person.timeZone)}`)
     : ["- No people or locations added yet."];
 
   return [
     heading,
-    `UTC: ${localDateTime(start, "UTC")} - ${localDateTime(end, "UTC")}`,
-    `Duration: ${durationMinutes} minutes`,
+    ...(allDayDate
+      ? [`Date: ${readableDate(allDayDate)} (all day)`]
+      : [`UTC: ${localDateTime(start, "UTC")} - ${localDateTime(end, "UTC")}`, `Duration: ${durationLabel(durationMinutes)}`]),
     ...(location ? [`Location: ${location}`] : []),
     ...(notes ? [`Notes: ${notes}`] : []),
-    "Local times:",
+    allDayDate ? "Participant dates:" : "Local times:",
     ...localTimes,
   ].join("\n");
 }
@@ -84,7 +124,8 @@ export function createMeetingShareData(title: string, summary: string): MeetingS
   };
 }
 
-export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt }: IcsEvent) {
+export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt, allDay, date }: IcsEvent) {
+  const allDayDate = allDay ? validDate(date) : null;
   const end = eventEnd(start, durationMinutes);
   const summary = title.trim() || "AtlasTime meeting";
   return [
@@ -92,11 +133,13 @@ export function createIcsEvent({ title, start, durationMinutes, description, loc
     "VERSION:2.0",
     "PRODID:-//AtlasTime//Meeting Handoff//EN",
     "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${escapeIcs(uid)}`,
     `DTSTAMP:${utcDateTime(createdAt)}`,
-    `DTSTART:${utcDateTime(start)}`,
-    `DTEND:${utcDateTime(end)}`,
+    ...(allDayDate
+      ? [`DTSTART;VALUE=DATE:${compactDate(allDayDate)}`, `DTEND;VALUE=DATE:${compactDate(nextDate(allDayDate))}`]
+      : [`DTSTART:${utcDateTime(start)}`, `DTEND:${utcDateTime(end)}`]),
     `SUMMARY:${escapeIcs(summary)}`,
     ...(location?.trim() ? [`LOCATION:${escapeIcs(location.trim())}`] : []),
     `DESCRIPTION:${escapeIcs(description)}`,
@@ -106,26 +149,31 @@ export function createIcsEvent({ title, start, durationMinutes, description, loc
   ].join("\r\n");
 }
 
-export function createGoogleCalendarUrl({ title, start, durationMinutes, description, location }: CalendarLinkEvent) {
+export function createGoogleCalendarUrl({ title, start, durationMinutes, description, location, allDay, date }: CalendarLinkEvent) {
+  const allDayDate = allDay ? validDate(date) : null;
   const params = new URLSearchParams({
     action: "TEMPLATE",
-    dates: `${utcDateTime(start)}/${utcDateTime(eventEnd(start, durationMinutes))}`,
+    dates: allDayDate
+      ? `${compactDate(allDayDate)}/${compactDate(nextDate(allDayDate))}`
+      : `${utcDateTime(start)}/${utcDateTime(eventEnd(start, durationMinutes))}`,
     text: title.trim() || "AtlasTime meeting",
     details: description,
   });
   if (location?.trim()) params.set("location", location.trim());
-  return `https://calendar.google.com/calendar/r/eventedit?${params}`;
+  return `https://calendar.google.com/calendar/render?${params}`;
 }
 
-export function createOutlookCalendarUrl({ title, start, durationMinutes, description, location }: CalendarLinkEvent) {
+export function createOutlookCalendarUrl({ title, start, durationMinutes, description, location, allDay, date }: CalendarLinkEvent) {
+  const allDayDate = allDay ? validDate(date) : null;
   const params = new URLSearchParams({
     path: "/calendar/action/compose",
     rru: "addevent",
-    startdt: start.toISOString(),
-    enddt: eventEnd(start, durationMinutes).toISOString(),
+    startdt: allDayDate ?? start.toISOString(),
+    enddt: allDayDate ? nextDate(allDayDate) : eventEnd(start, durationMinutes).toISOString(),
     subject: title.trim() || "AtlasTime meeting",
     body: description,
   });
+  if (allDayDate) params.set("allday", "true");
   if (location?.trim()) params.set("location", location.trim());
   return `https://outlook.office.com/calendar/deeplink/compose?${params}`;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bestHour, dateAtUtcHour, formatInZone, formatUtcHour, hourInZone, meetingFitsWorkingHours, scoreAtUtcHour, scoreHours } from "./time";
+import { bestHour, dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, hourInZone, meetingFitsWorkingHours, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person } from "./types";
 
 function person(overrides: Partial<Person> = {}): Person {
@@ -33,6 +33,12 @@ describe("timezone conversion", () => {
 });
 
 describe("meeting scoring", () => {
+  it("derives exact durations from start and finish clock times", () => {
+    expect(durationBetweenUtcTimes(14 + 37 / 60, 15 + 22 / 60)).toBe(45);
+    expect(durationBetweenUtcTimes(23.5, 0.25)).toBe(45);
+    expect(durationBetweenUtcTimes(9, 9)).toBe(1440);
+  });
+
   it("penalizes very early and very late hours", () => {
     const scores = scoreHours([person()], "2026-07-15");
     const scoreAt = (hour: number) => scores.find((score) => score.utcHour === hour)!;

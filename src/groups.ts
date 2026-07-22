@@ -17,7 +17,7 @@ function localDateInput() {
 }
 
 export function defaultPlanner(): PlannerState {
-  return { date: localDateInput(), hour: 12, title: "", durationMinutes: 60, location: "", notes: "" };
+  return { date: localDateInput(), hour: 12, title: "", durationMinutes: 60, eventMode: "timed", location: "", notes: "" };
 }
 
 function safePlanner(value: unknown): PlannerState {
@@ -36,6 +36,7 @@ function safePlanner(value: unknown): PlannerState {
       && candidate.durationMinutes <= MAX_DURATION_MINUTES
       ? candidate.durationMinutes
       : 60,
+    eventMode: candidate?.eventMode === "all-day" ? "all-day" : "timed",
     location: typeof candidate?.location === "string" ? candidate.location.trim().slice(0, 160) : "",
     notes: typeof candidate?.notes === "string" ? candidate.notes.trim().slice(0, 1000) : "",
   };

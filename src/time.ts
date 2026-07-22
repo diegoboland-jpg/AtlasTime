@@ -133,6 +133,13 @@ export function localRangeLabel(dateValue: string, utcHour: number, durationMinu
   return `${formatInZone(start, person.timeZone, options)} – ${formatInZone(end, person.timeZone, options)}`;
 }
 
+export function durationBetweenUtcTimes(startHour: number, finishHour: number) {
+  const startMinutes = Math.round(startHour * 60) % (24 * 60);
+  const finishMinutes = Math.round(finishHour * 60) % (24 * 60);
+  const sameDayDifference = finishMinutes - startMinutes;
+  return sameDayDifference > 0 ? sameDayDifference : sameDayDifference + 24 * 60;
+}
+
 export function localLabel(dateValue: string, utcHour: number, person: Person) {
   return formatInZone(dateAtUtcHour(dateValue, utcHour), person.timeZone, {
     weekday: "short",

@@ -15,6 +15,7 @@ const planner: PlannerState = {
   hour: 12,
   title: "Project sync",
   durationMinutes: 60,
+  eventMode: "timed",
   location: "Zoom",
   notes: "Review launch readiness.",
 };
@@ -29,7 +30,6 @@ function renderHandoff() {
       planner={planner}
       selectedInstant={new Date("2026-07-21T12:00:00Z")}
       onTitleChange={vi.fn()}
-      onDurationChange={vi.fn()}
       onLocationChange={vi.fn()}
       onNotesChange={vi.fn()}
     />,
@@ -80,7 +80,9 @@ describe("meeting handoff sharing", () => {
     const disclosure = container.querySelector<HTMLDetailsElement>(".meeting-summary-disclosure");
     expect(disclosure?.open).toBe(false);
     expect(disclosure?.querySelector("summary")?.textContent).toContain("Preview copied invitation details");
-    expect(container.textContent).toContain("Any calendar (.ics)");
+    expect(container.textContent).toContain("Google Calendar draft");
+    expect(container.textContent).toContain("Outlook Calendar draft");
+    expect(container.textContent).toContain("Apple / device calendar (.ics)");
     root.unmount();
   });
 });

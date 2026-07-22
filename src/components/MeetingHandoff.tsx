@@ -21,7 +21,8 @@ function safeFileName(title: string) {
 export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
   const [shareStatus, setShareStatus] = useState("");
-  const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, planner);
+  const allDay = planner.eventMode === "all-day";
+  const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, { ...planner, allDay });
   const shareData = createMeetingShareData(planner.title, summary);
   const calendarLinkEvent = {
     title: planner.title,
@@ -29,6 +30,8 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
     durationMinutes: planner.durationMinutes,
     description: summary,
     location: planner.location,
+    allDay,
+    date: planner.date,
   };
   const googleCalendarUrl = createGoogleCalendarUrl(calendarLinkEvent);
   const outlookCalendarUrl = createOutlookCalendarUrl(calendarLinkEvent);
@@ -73,6 +76,8 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
       location: planner.location,
       uid: `${createId()}@atlastime.local`,
       createdAt: new Date(),
+      allDay,
+      date: planner.date,
     });
     const url = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
     const anchor = document.createElement("a");
@@ -123,16 +128,16 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             <Clipboard size={17} /> {copyStatus || "Copy details"}
           </button>
           <a className="secondary-button" href={googleCalendarUrl} target="_blank" rel="noreferrer">
-            Google Calendar <ExternalLink size={15} />
+            Google Calendar draft <ExternalLink size={15} />
           </a>
           <a className="secondary-button" href={outlookCalendarUrl} target="_blank" rel="noreferrer">
-            Outlook Calendar <ExternalLink size={15} />
+            Outlook Calendar draft <ExternalLink size={15} />
           </a>
           <button type="button" className="secondary-button" onClick={downloadCalendarFile}>
-            <Download size={17} /> Any calendar (.ics)
+            <Download size={17} /> Apple / device calendar (.ics)
           </button>
         </div>
-        <p className="handoff-privacy-note">Share invite opens your device's share sheet. You choose the app and recipient before anything leaves AtlasTime.</p>
+        <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Apple and device calendars import the complete .ics event. If a mobile app intercepts a draft link and drops its details, use the .ics option. AtlasTime never saves an event without your confirmation.</p>
       </div>
     </section>
   );

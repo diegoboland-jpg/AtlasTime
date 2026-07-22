@@ -202,7 +202,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.30 focused workspace</span>
+          <span className="mvp-badge">v0.31 flexible durations</span>
         </div>
       </header>
 
@@ -234,6 +234,7 @@ export default function App() {
           selectedInstant={selectedInstant}
           selectedHour={planner.hour}
           selectedScore={selectedScore}
+          scoringEnabled={planner.eventMode === "timed"}
           onHourChange={selectHour}
           onNow={selectNow}
           onOpenPlanner={openPlanner}
@@ -284,6 +285,7 @@ export default function App() {
         <TimeSlider
           selectedHour={planner.hour}
           selectedScore={selectedScore}
+          scoringEnabled={planner.eventMode === "timed"}
           onHourChange={selectHour}
           onNow={selectNow}
         />
@@ -293,12 +295,14 @@ export default function App() {
           dateValue={planner.date}
           selectedHour={planner.hour}
           durationMinutes={planner.durationMinutes}
+          eventMode={planner.eventMode}
           recommendation={recommendation}
           hours={hours}
           expanded={plannerExpanded}
           onExpandedChange={setPlannerExpanded}
           onDateChange={(date) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date } }))}
           onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
+          onEventModeChange={(eventMode) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, eventMode } }))}
           onHourChange={selectHour}
         />
 
@@ -344,7 +348,7 @@ export default function App() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v0.30</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.31</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

@@ -17,7 +17,8 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Configure working hours and compare availability
 - Recommend a humane meeting hour
 - Save multiple groups locally
-- Add meeting title, duration, location, and notes
+- Set editable start and finish times, use quick 30-minute meeting lengths, type any exact minute, or create a true all-day event
+- Add meeting title, location, and notes
 - Create portable share links with an explicit privacy warning
 - Import shared groups without overwriting local data
 - Install as a PWA and return to saved data offline

@@ -5,11 +5,12 @@ import type { HourScore } from "../types";
 type TimeSliderProps = {
   selectedHour: number;
   selectedScore: HourScore | undefined;
+  scoringEnabled?: boolean;
   onHourChange: (hour: number) => void;
   onNow: () => void;
 };
 
-export function TimeSlider({ selectedHour, selectedScore, onHourChange, onNow }: TimeSliderProps) {
+export function TimeSlider({ selectedHour, selectedScore, scoringEnabled = true, onHourChange, onNow }: TimeSliderProps) {
   const hourLabel = formatUtcHour(selectedHour);
   const available = selectedScore?.available ?? 0;
   const total = selectedScore?.total ?? 0;
@@ -31,10 +32,10 @@ export function TimeSlider({ selectedHour, selectedScore, onHourChange, onNow }:
           value={selectedHour}
           onChange={(event) => onHourChange(Number(event.target.value))}
           aria-label="Selected UTC meeting hour"
-          aria-valuetext={`${hourLabel}, ${available} of ${total} available`}
+          aria-valuetext={scoringEnabled ? `${hourLabel}, ${available} of ${total} available` : hourLabel}
         />
         <div className="slider-actions">
-          <p>{available}/{total} available - score {selectedScore?.score ?? 0}</p>
+          <p>{scoringEnabled ? `${available}/${total} available - score ${selectedScore?.score ?? 0}` : "All-day event - hourly score paused"}</p>
           <button type="button" onClick={onNow} title="Return to the current UTC date and hour">
             <RotateCcw size={14} /> Now
           </button>
@@ -42,7 +43,7 @@ export function TimeSlider({ selectedHour, selectedScore, onHourChange, onNow }:
       </div>
 
       <p className="sr-only" aria-live="polite">
-        Selected meeting time {hourLabel}. {available} of {total} entries are within working hours.
+        {scoringEnabled ? `Selected meeting time ${hourLabel}. ${available} of ${total} entries are within working hours.` : "All-day event selected. Hourly availability scoring is paused."}
       </p>
     </section>
   );

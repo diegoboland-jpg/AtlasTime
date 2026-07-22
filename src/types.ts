@@ -22,6 +22,7 @@ export type PlannerState = {
   hour: number;
   title: string;
   durationMinutes: number;
+  eventMode: "timed" | "all-day";
   location: string;
   notes: string;
 };
