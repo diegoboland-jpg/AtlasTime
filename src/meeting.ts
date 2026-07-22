@@ -133,6 +133,7 @@ export function createIcsEvent({ title, start, durationMinutes, description, loc
     "VERSION:2.0",
     "PRODID:-//AtlasTime//Meeting Handoff//EN",
     "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${escapeIcs(uid)}`,
     `DTSTAMP:${utcDateTime(createdAt)}`,

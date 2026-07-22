@@ -35,6 +35,7 @@ describe("meeting handoff", () => {
 
     expect(calendar).toContain("DTSTART:20260715T233000Z\r\n");
     expect(calendar).toContain("DTEND:20260716T010000Z\r\n");
+    expect(calendar).toContain("METHOD:PUBLISH\r\n");
     expect(calendar).toContain("SUMMARY:Planning\\, review\\; follow-up\r\n");
     expect(calendar).toContain("LOCATION:Room 4\\, West\\; wing\r\n");
     expect(calendar).toContain("DESCRIPTION:Line one\\nLine two\r\n");
@@ -72,6 +73,7 @@ describe("meeting handoff", () => {
     expect(google.searchParams.get("location")).toBe(event.location);
 
     expect(outlook.origin).toBe("https://outlook.office.com");
+    expect(outlook.pathname).toBe("/calendar/deeplink/compose");
     expect(outlook.searchParams.get("path")).toBe("/calendar/action/compose");
     expect(outlook.searchParams.get("rru")).toBe("addevent");
     expect(outlook.searchParams.get("startdt")).toBe("2026-07-15T23:30:00.000Z");

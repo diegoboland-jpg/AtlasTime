@@ -80,7 +80,9 @@ describe("meeting handoff sharing", () => {
     const disclosure = container.querySelector<HTMLDetailsElement>(".meeting-summary-disclosure");
     expect(disclosure?.open).toBe(false);
     expect(disclosure?.querySelector("summary")?.textContent).toContain("Preview copied invitation details");
-    expect(container.textContent).toContain("Any calendar (.ics)");
+    expect(container.textContent).toContain("Google Calendar draft");
+    expect(container.textContent).toContain("Outlook Calendar draft");
+    expect(container.textContent).toContain("Apple / device calendar (.ics)");
     root.unmount();
   });
 });

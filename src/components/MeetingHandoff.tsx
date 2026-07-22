@@ -131,13 +131,13 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             Google Calendar draft <ExternalLink size={15} />
           </a>
           <a className="secondary-button" href={outlookCalendarUrl} target="_blank" rel="noreferrer">
-            Outlook Calendar <ExternalLink size={15} />
+            Outlook Calendar draft <ExternalLink size={15} />
           </a>
           <button type="button" className="secondary-button" onClick={downloadCalendarFile}>
-            <Download size={17} /> Any calendar (.ics)
+            <Download size={17} /> Apple / device calendar (.ics)
           </button>
         </div>
-        <p className="handoff-privacy-note">Calendar buttons open a prefilled draft for you to review and save. If a mobile calendar app ignores the draft details, use Any calendar (.ics). AtlasTime never saves an event without your confirmation.</p>
+        <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Apple and device calendars import the complete .ics event. If a mobile app intercepts a draft link and drops its details, use the .ics option. AtlasTime never saves an event without your confirmation.</p>
       </div>
     </section>
   );
