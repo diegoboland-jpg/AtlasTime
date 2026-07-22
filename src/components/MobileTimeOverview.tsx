@@ -13,6 +13,7 @@ type MobileTimeOverviewProps = {
   selectedInstant: Date;
   selectedHour: number;
   selectedScore: HourScore | undefined;
+  scoringEnabled?: boolean;
   onHourChange: (hour: number) => void;
   onNow: () => void;
   onOpenPlanner: () => void;
@@ -50,6 +51,7 @@ export function MobileTimeOverview({
   selectedInstant,
   selectedHour,
   selectedScore,
+  scoringEnabled = true,
   onHourChange,
   onNow,
   onOpenPlanner,
@@ -172,7 +174,7 @@ export function MobileTimeOverview({
       <div className="mobile-overview-slider">
         <label htmlFor="mobile-time-slider">
           <span>Explore 24 hours</span>
-          <small>{available}/{total} available - score {selectedScore?.score ?? 0}</small>
+          <small>{scoringEnabled ? `${available}/${total} available - score ${selectedScore?.score ?? 0}` : "All-day event"}</small>
         </label>
         <input
           id="mobile-time-slider"
@@ -183,7 +185,7 @@ export function MobileTimeOverview({
           value={selectedHour}
           onChange={(event) => scheduleReturnToNow(Number(event.target.value))}
           aria-label="Selected UTC meeting hour in mobile overview"
-          aria-valuetext={`${selectedHourLabel}, ${available} of ${total} available`}
+          aria-valuetext={scoringEnabled ? `${selectedHourLabel}, ${available} of ${total} available` : selectedHourLabel}
         />
         <button type="button" onClick={returnToNow} title="Return to the current UTC date and hour">
           <RotateCcw size={14} aria-hidden="true" /> Now
@@ -194,7 +196,7 @@ export function MobileTimeOverview({
       </div>
 
       <p className="sr-only" aria-live="polite">
-        Selected meeting time {selectedHourLabel}. {available} of {total} entries are within working hours.
+        {scoringEnabled ? `Selected meeting time ${selectedHourLabel}. ${available} of ${total} entries are within working hours.` : "All-day event selected. Hourly availability scoring is paused."}
       </p>
     </section>
   );

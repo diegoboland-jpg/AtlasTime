@@ -15,7 +15,7 @@ describe("meeting handoff", () => {
     });
 
     expect(summary).toContain("Project sync");
-    expect(summary).toContain("Duration: 45 minutes");
+    expect(summary).toContain("Duration: 45 min");
     expect(summary).toContain("Location: Zoom room 4");
     expect(summary).toContain("Notes: Review launch risks.");
     expect(summary).toContain("Ana (São Paulo): Wed, 15 Jul 2026, 12:00 - Wed, 15 Jul 2026, 12:45");
@@ -78,5 +78,30 @@ describe("meeting handoff", () => {
     expect(outlook.searchParams.get("subject")).toBe(event.title);
     expect(outlook.searchParams.get("body")).toBe(event.description);
     expect(outlook.searchParams.get("location")).toBe(event.location);
+  });
+
+  it("uses date-only semantics for all-day calendar exports", () => {
+    const event = {
+      title: "Company holiday",
+      start: new Date("2026-07-22T15:00:00Z"),
+      durationMinutes: 60,
+      description: "Office closed",
+      allDay: true,
+      date: "2026-07-22",
+    };
+    const calendar = createIcsEvent({ ...event, uid: "day@atlastime.local", createdAt: new Date("2026-07-20T12:00:00Z") });
+    const google = new URL(createGoogleCalendarUrl(event));
+    const outlook = new URL(createOutlookCalendarUrl(event));
+    const summary = meetingSummary(event.title, event.start, event.durationMinutes, people, { allDay: true, date: event.date });
+
+    expect(calendar).toContain("DTSTART;VALUE=DATE:20260722\r\n");
+    expect(calendar).toContain("DTEND;VALUE=DATE:20260723\r\n");
+    expect(calendar).not.toContain("DTSTART:2026");
+    expect(google.searchParams.get("dates")).toBe("20260722/20260723");
+    expect(outlook.searchParams.get("startdt")).toBe("2026-07-22");
+    expect(outlook.searchParams.get("enddt")).toBe("2026-07-23");
+    expect(outlook.searchParams.get("allday")).toBe("true");
+    expect(summary).toContain("Date: Wed, 22 Jul 2026 (all day)");
+    expect(summary).not.toContain("Duration:");
   });
 });

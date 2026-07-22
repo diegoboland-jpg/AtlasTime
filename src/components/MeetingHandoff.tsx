@@ -21,7 +21,8 @@ function safeFileName(title: string) {
 export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
   const [shareStatus, setShareStatus] = useState("");
-  const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, planner);
+  const allDay = planner.eventMode === "all-day";
+  const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, { ...planner, allDay });
   const shareData = createMeetingShareData(planner.title, summary);
   const calendarLinkEvent = {
     title: planner.title,
@@ -29,6 +30,8 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
     durationMinutes: planner.durationMinutes,
     description: summary,
     location: planner.location,
+    allDay,
+    date: planner.date,
   };
   const googleCalendarUrl = createGoogleCalendarUrl(calendarLinkEvent);
   const outlookCalendarUrl = createOutlookCalendarUrl(calendarLinkEvent);
@@ -73,6 +76,8 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
       location: planner.location,
       uid: `${createId()}@atlastime.local`,
       createdAt: new Date(),
+      allDay,
+      date: planner.date,
     });
     const url = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
     const anchor = document.createElement("a");

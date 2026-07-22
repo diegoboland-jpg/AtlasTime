@@ -14,7 +14,7 @@ const group = {
     { id: "ana", name: "Ana", city: "Madrid", country: "Spain", countryCode: "ES", timeZone: "Europe/Madrid", workStart: 9, workEnd: 18 },
     { id: "lee", name: "Lee", city: "Kathmandu", country: "Nepal", countryCode: "NP", timeZone: "Asia/Kathmandu", workStart: 9, workEnd: 18 },
   ],
-  planner: { date: "2026-07-21", hour: 12, title: "", durationMinutes: 60, location: "", notes: "" },
+  planner: { date: "2026-07-21", hour: 12, title: "", durationMinutes: 60, eventMode: "timed", location: "", notes: "" },
   updatedAt: "2026-07-21T12:00:00.000Z",
 };
 

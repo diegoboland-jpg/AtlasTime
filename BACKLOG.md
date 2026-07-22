@@ -2,13 +2,14 @@
 
 ## v0.31: human-friendly durations and all-day events
 
-- [ ] Replace the minutes-first duration control with quick choices in 30-minute increments.
-- [ ] Label quick choices naturally as `30 min`, `1 hour`, `1 h 30`, `2 hours`, and so on.
-- [ ] Preserve a Custom option for exact whole-minute durations such as 15, 47, or 125 minutes.
-- [ ] Add a true All-day event mode based on local calendar dates rather than treating it as a 1,440-minute timed meeting.
-- [ ] Export all-day events with date-only calendar semantics in `.ics`, Google Calendar, and Outlook drafts.
-- [ ] Hide hour-based availability scoring when an all-day event is selected, while preserving participant date context.
-- [ ] Persist, share, migrate, and test the selected timed-versus-all-day mode without breaking existing saved groups.
+- [x] Replace the minutes-first duration control with quick choices in 30-minute increments.
+- [x] Label quick choices naturally as `30 min`, `1 hour`, `1 hour 30 min`, `2 hours`, and so on.
+- [x] Preserve a Custom option for exact whole-minute durations such as 15, 47, or 125 minutes.
+- [x] Add a true All-day event mode based on local calendar dates rather than treating it as a 1,440-minute timed meeting.
+- [x] Export all-day events with date-only calendar semantics in `.ics`, Google Calendar, and Outlook drafts.
+- [x] Hide hour-based availability scoring when an all-day event is selected, while preserving participant date context.
+- [x] Persist, share, migrate, and test the selected timed-versus-all-day mode without breaking existing saved groups.
+- [ ] Validate timed, custom, and all-day calendar drafts on physical Android, iPhone, and installed Windows PWAs.
 
 ## v0.30: focused workspace
 

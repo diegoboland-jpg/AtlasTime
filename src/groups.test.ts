@@ -29,13 +29,13 @@ describe("saved groups", () => {
 
     expect(workspace.groups).toHaveLength(1);
     expect(workspace.groups[0].people).toEqual([person]);
-    expect(workspace.groups[0].planner).toEqual({ date: "2026-08-10", hour: 16, title: "", durationMinutes: 60, location: "", notes: "" });
+    expect(workspace.groups[0].planner).toEqual({ date: "2026-08-10", hour: 16, title: "", durationMinutes: 60, eventMode: "timed", location: "", notes: "" });
   });
 
   it("persists and restores the active group", () => {
     const groups: SavedGroup[] = [
-      { id: "one", name: "One", people: [], planner: { date: "2026-07-15", hour: 12, title: "", durationMinutes: 60, location: "", notes: "" }, updatedAt: "2026-07-15T00:00:00Z" },
-      { id: "two", name: "Two", people: [person], planner: { date: "2026-07-16", hour: 14, title: "Planning", durationMinutes: 45, location: "Zoom", notes: "Agenda" }, updatedAt: "2026-07-15T00:00:00Z" },
+      { id: "one", name: "One", people: [], planner: { date: "2026-07-15", hour: 12, title: "", durationMinutes: 60, eventMode: "timed", location: "", notes: "" }, updatedAt: "2026-07-15T00:00:00Z" },
+      { id: "two", name: "Two", people: [person], planner: { date: "2026-07-16", hour: 14, title: "Planning", durationMinutes: 45, eventMode: "all-day", location: "Zoom", notes: "Agenda" }, updatedAt: "2026-07-15T00:00:00Z" },
     ];
 
     saveGroups(groups, "two");
@@ -54,6 +54,15 @@ describe("saved groups", () => {
     }]));
 
     expect(loadGroups().groups[0].planner).toMatchObject({ hour: exactHour, durationMinutes: 15 });
+  });
+
+  it("migrates old planners to timed events and preserves all-day mode", () => {
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([
+      { id: "old", name: "Old", people: [], planner: { date: "2026-07-22", hour: 9, durationMinutes: 30 }, updatedAt: "2026-07-22T00:00:00Z" },
+      { id: "day", name: "Day", people: [], planner: { date: "2026-07-23", hour: 9, durationMinutes: 30, eventMode: "all-day" }, updatedAt: "2026-07-22T00:00:00Z" },
+    ]));
+
+    expect(loadGroups().groups.map((group) => group.planner.eventMode)).toEqual(["timed", "all-day"]);
   });
 
   it("normalizes trusted country codes and drops invalid flag metadata", () => {
@@ -123,7 +132,7 @@ describe("share links", () => {
       id: "group",
       name: "Equipe São Paulo",
       people: [person],
-      planner: { date: "2026-09-01", hour: 15, title: "Project sync", durationMinutes: 90, location: "Room 7", notes: "Bring estimates" },
+      planner: { date: "2026-09-01", hour: 15, title: "Project sync", durationMinutes: 90, eventMode: "all-day", location: "Room 7", notes: "Bring estimates" },
       updatedAt: "2026-07-15T00:00:00Z",
     };
     localStorage.setItem("sentinel", "unchanged");

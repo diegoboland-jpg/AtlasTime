@@ -15,6 +15,7 @@ const planner: PlannerState = {
   hour: 12,
   title: "Project sync",
   durationMinutes: 60,
+  eventMode: "timed",
   location: "Zoom",
   notes: "Review launch readiness.",
 };
@@ -29,7 +30,6 @@ function renderHandoff() {
       planner={planner}
       selectedInstant={new Date("2026-07-21T12:00:00Z")}
       onTitleChange={vi.fn()}
-      onDurationChange={vi.fn()}
       onLocationChange={vi.fn()}
       onNotesChange={vi.fn()}
     />,
