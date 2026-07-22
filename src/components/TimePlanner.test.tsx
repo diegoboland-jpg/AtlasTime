@@ -18,7 +18,7 @@ function renderPlanner(expanded: boolean) {
     <TimePlanner
       people={people}
       dateValue="2026-07-17"
-      selectedHour={12}
+      selectedHour={12 + 37 / 60}
       durationMinutes={90}
       recommendation={hours[15]}
       hours={hours}
@@ -49,7 +49,9 @@ describe("progressive planner disclosure", () => {
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('type="date"');
     expect(markup).toContain("Best-scoring 90-minute window");
-    expect(markup).toContain("90 minutes");
+    expect(markup).toContain("Duration (minutes)");
+    expect(markup).toContain('value="15"');
+    expect(markup).toContain('value="12:37"');
     expect(markup).toContain("Scrollable 24-hour local-time comparison");
   });
 });

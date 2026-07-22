@@ -53,6 +53,13 @@ describe("meeting scoring", () => {
     expect(scoreAtUtcHour([person()], "2026-07-15", 17, 90).available).toBe(0);
   });
 
+  it("supports minute-precise starts and custom durations", () => {
+    const exactStart = 17 + 50 / 60;
+    expect(scoreAtUtcHour([person()], "2026-07-15", exactStart, 10).available).toBe(1);
+    expect(scoreAtUtcHour([person()], "2026-07-15", exactStart, 15).available).toBe(0);
+    expect(formatUtcHour(14 + 37 / 60)).toBe("14:37 UTC");
+  });
+
   it("offers 30-minute candidate starts and supports half-hour zones", () => {
     const kolkata = person({ timeZone: "Asia/Kolkata", workStart: 9, workEnd: 10 });
     const scores = scoreHours([kolkata], "2026-01-15", 60);

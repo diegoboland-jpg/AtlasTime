@@ -71,7 +71,9 @@ function workingAtInstant(person: Person, instant: Date) {
 }
 
 export function meetingFitsWorkingHours(person: Person, start: Date, durationMinutes: number) {
-  for (let offset = 0; offset < durationMinutes; offset += 15) {
+  const offsets = Array.from({ length: Math.ceil(durationMinutes / 15) }, (_, index) => index * 15);
+  offsets.push(Math.max(0, durationMinutes - 1));
+  for (const offset of new Set(offsets)) {
     if (!workingAtInstant(person, new Date(start.getTime() + offset * 60_000))) return false;
   }
   return true;
@@ -95,7 +97,9 @@ export function scoreAtUtcHour(people: Person[], dateValue: string, utcHour: num
       return totalPenalty;
     }
     let worstDiscomfort = 0;
-    for (let offset = 0; offset < durationMinutes; offset += 15) {
+    const offsets = Array.from({ length: Math.ceil(durationMinutes / 15) }, (_, index) => index * 15);
+    offsets.push(Math.max(0, durationMinutes - 1));
+    for (const offset of new Set(offsets)) {
       worstDiscomfort = Math.max(
         worstDiscomfort,
         discomfortAtInstant(person, new Date(instant.getTime() + offset * 60_000)),

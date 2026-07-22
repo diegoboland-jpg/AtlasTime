@@ -30,6 +30,15 @@ export function TimePlanner({
   onDurationChange,
   onHourChange,
 }: TimePlannerProps) {
+  const exactStartMinutes = Math.round(selectedHour * 60) % (24 * 60);
+  const exactStartValue = `${String(Math.floor(exactStartMinutes / 60)).padStart(2, "0")}:${String(exactStartMinutes % 60).padStart(2, "0")}`;
+
+  function selectExactStart(value: string) {
+    const [hour, minute] = value.split(":").map(Number);
+    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return;
+    onHourChange(hour + minute / 60);
+  }
+
   return (
     <section className={`section planner ${expanded ? "expanded" : "collapsed"}`} id="planner" aria-labelledby="planner-heading">
       <div className="section-heading planner-disclosure-heading">
@@ -58,10 +67,31 @@ export function TimePlanner({
               <input type="date" value={dateValue} onChange={(event) => onDateChange(event.target.value)} />
             </label>
             <label className="date-field">
-              Duration
-              <select value={durationMinutes} onChange={(event) => onDurationChange(Number(event.target.value))}>
-                {[30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}
-              </select>
+              Duration (minutes)
+              <input
+                type="number"
+                min="1"
+                max="1440"
+                step="1"
+                list="duration-suggestions"
+                value={durationMinutes}
+                onChange={(event) => {
+                  const minutes = Number(event.target.value);
+                  if (Number.isInteger(minutes) && minutes >= 1 && minutes <= 1440) onDurationChange(minutes);
+                }}
+              />
+            </label>
+            <datalist id="duration-suggestions">
+              {[15, 30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes} />)}
+            </datalist>
+            <label className="date-field">
+              Exact UTC start
+              <input
+                type="time"
+                step="60"
+                value={exactStartValue}
+                onInput={(event) => selectExactStart(event.currentTarget.value)}
+              />
             </label>
           </div>
 

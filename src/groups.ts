@@ -9,7 +9,7 @@ const LEGACY_PEOPLE_STORAGE_KEY = "atlastime.people.v1";
 const LEGACY_PLANNER_STORAGE_KEY = "atlastime.planner.v1";
 const SHARE_PREFIX = "#share=";
 const MAX_SHARED_PEOPLE = 30;
-const ALLOWED_DURATIONS = [30, 45, 60, 90, 120];
+const MAX_DURATION_MINUTES = 24 * 60;
 
 function localDateInput() {
   const today = new Date();
@@ -26,11 +26,14 @@ function safePlanner(value: unknown): PlannerState {
     date: typeof candidate?.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate.date)
       ? candidate.date
       : localDateInput(),
-    hour: Number.isInteger(candidate?.hour) && candidate!.hour! >= 0 && candidate!.hour! <= 23
-      ? candidate!.hour!
+    hour: typeof candidate?.hour === "number" && Number.isFinite(candidate.hour) && candidate.hour >= 0 && candidate.hour < 24
+      ? Math.round(candidate.hour * 60) / 60
       : 12,
     title: typeof candidate?.title === "string" ? candidate.title.trim().slice(0, 120) : "",
-    durationMinutes: typeof candidate?.durationMinutes === "number" && ALLOWED_DURATIONS.includes(candidate.durationMinutes)
+    durationMinutes: typeof candidate?.durationMinutes === "number"
+      && Number.isInteger(candidate.durationMinutes)
+      && candidate.durationMinutes >= 1
+      && candidate.durationMinutes <= MAX_DURATION_MINUTES
       ? candidate.durationMinutes
       : 60,
     location: typeof candidate?.location === "string" ? candidate.location.trim().slice(0, 160) : "",

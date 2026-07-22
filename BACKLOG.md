@@ -4,6 +4,7 @@
 
 - [x] Score the complete selected duration instead of only the meeting start.
 - [x] Support 30, 45, 60, 90, and 120-minute meetings with 30-minute candidate starts.
+- [x] Allow manual one-minute start precision and any whole-minute duration from 1 minute through 24 hours.
 - [x] Rank complete shared-working-hour overlap above partial or outside-hours candidates.
 - [x] Show start/end dates and local times for every person in the recommendation.
 - [x] Cover half-hour zones and daylight-saving transitions with automated tests.

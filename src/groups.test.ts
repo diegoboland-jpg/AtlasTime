@@ -43,6 +43,19 @@ describe("saved groups", () => {
     expect(loadGroups()).toMatchObject({ groups, activeGroupId: "two" });
   });
 
+  it("preserves exact minute starts and custom durations", () => {
+    const exactHour = 14 + 37 / 60;
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "exact",
+      name: "Exact meeting",
+      people: [person],
+      planner: { date: "2026-07-22", hour: exactHour, title: "Quick check", durationMinutes: 15 },
+      updatedAt: "2026-07-22T00:00:00Z",
+    }]));
+
+    expect(loadGroups().groups[0].planner).toMatchObject({ hour: exactHour, durationMinutes: 15 });
+  });
+
   it("normalizes trusted country codes and drops invalid flag metadata", () => {
     const people = [
       { ...person, id: "valid", countryCode: "br" },
