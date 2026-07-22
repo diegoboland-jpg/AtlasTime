@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Clock3, Coffee, Moon, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
+import { Clock3, Coffee, Moon, Palette, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
 import { getCountryByTimeZone } from "../cities";
 import { countryCodeToFlag } from "../country";
 import { formatInZone, formatUtcHour, hourInZone } from "../time";
@@ -21,6 +21,14 @@ type MobileTimeOverviewProps = {
 };
 
 const RETURN_TO_NOW_MS = 20_000;
+const OVERVIEW_THEME_KEY = "atlastime-overview-theme";
+
+type OverviewTheme = "sky" | "midnight";
+
+function loadOverviewTheme(): OverviewTheme {
+  if (typeof window === "undefined") return "sky";
+  return window.localStorage.getItem(OVERVIEW_THEME_KEY) === "midnight" ? "midnight" : "sky";
+}
 
 function dayLabel(date: Date, timeZone: string) {
   return formatInZone(date, timeZone, {
@@ -59,6 +67,7 @@ export function MobileTimeOverview({
 }: MobileTimeOverviewProps) {
   const returnTimer = useRef<number | undefined>(undefined);
   const [returnPending, setReturnPending] = useState(false);
+  const [overviewTheme, setOverviewTheme] = useState<OverviewTheme>(loadOverviewTheme);
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const selectedHourLabel = formatUtcHour(selectedHour);
   const available = selectedScore?.available ?? 0;
@@ -71,6 +80,7 @@ export function MobileTimeOverview({
   const emptySlots = Math.max(0, 6 - people.length);
 
   useEffect(() => () => window.clearTimeout(returnTimer.current), []);
+  useEffect(() => window.localStorage.setItem(OVERVIEW_THEME_KEY, overviewTheme), [overviewTheme]);
 
   function scheduleReturnToNow(hour: number) {
     onHourChange(hour);
@@ -89,7 +99,7 @@ export function MobileTimeOverview({
   }
 
   return (
-    <section className="mobile-time-overview" aria-labelledby="mobile-overview-heading">
+    <section className={`mobile-time-overview theme-${overviewTheme}`} aria-labelledby="mobile-overview-heading">
       <article
         className={`mobile-current-time time-period-${overviewPeriod.key} ${returnPending ? "exploring" : ""}`}
         key={overviewInstant.toISOString()}
@@ -112,7 +122,21 @@ export function MobileTimeOverview({
           <span><Clock3 size={14} aria-hidden="true" /> At a glance</span>
           <h1 id="mobile-overview-heading">Everyone's time</h1>
         </div>
-        <strong>{hourLabel}</strong>
+        <div className="mobile-overview-heading-actions">
+          <strong>{hourLabel}</strong>
+          <label className="overview-theme-picker">
+            <Palette size={12} aria-hidden="true" />
+            <span className="sr-only">Everyone&apos;s time color theme</span>
+            <select
+              value={overviewTheme}
+              onChange={(event) => setOverviewTheme(event.target.value as OverviewTheme)}
+              aria-label="Everyone's time color theme"
+            >
+              <option value="sky">Sky</option>
+              <option value="midnight">Midnight</option>
+            </select>
+          </label>
+        </div>
       </div>
 
       <p id="mobile-time-strip-help" className="sr-only">
