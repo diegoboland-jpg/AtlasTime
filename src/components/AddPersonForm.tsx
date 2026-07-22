@@ -4,16 +4,18 @@ import type { CityOption } from "../cities";
 import { createId } from "../id";
 import { searchGlobalCities } from "../services/geocoding";
 import type { Person } from "../types";
+import type { ContactImportDraft } from "../contactImport";
 
 type AddPersonFormProps = {
   onAdd: (person: Person) => void;
   onCancel: () => void;
   initialPerson?: Person;
+  initialDraft?: ContactImportDraft;
 };
 
 type SearchStatus = "idle" | "loading" | "success" | "error";
 
-export function AddPersonForm({ onAdd, onCancel, initialPerson }: AddPersonFormProps) {
+export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: AddPersonFormProps) {
   const initialCity = initialPerson ? {
     label: [initialPerson.city, initialPerson.country].filter(Boolean).join(", "),
     city: initialPerson.city,
@@ -21,9 +23,10 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson }: AddPersonFormP
     countryCode: initialPerson.countryCode,
     timeZone: initialPerson.timeZone,
   } satisfies CityOption : undefined;
-  const [name, setName] = useState(initialPerson?.name ?? "");
-  const [email, setEmail] = useState(initialPerson?.email ?? "");
-  const [query, setQuery] = useState(initialCity?.label ?? "");
+  const [name, setName] = useState(initialPerson?.name ?? initialDraft?.name ?? "");
+  const [email, setEmail] = useState(initialPerson?.email ?? initialDraft?.email ?? "");
+  const draftLocation = [initialDraft?.city, initialDraft?.country].filter(Boolean).join(", ");
+  const [query, setQuery] = useState(initialCity?.label ?? draftLocation);
   const [results, setResults] = useState<CityOption[]>([]);
   const [selectedCity, setSelectedCity] = useState<CityOption | undefined>(initialCity);
   const [status, setStatus] = useState<SearchStatus>("idle");

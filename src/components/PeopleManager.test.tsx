@@ -27,6 +27,8 @@ describe("focused people management", () => {
     expect(markup).toContain("Your AtlasTime contacts");
     expect(markup).toContain("diego@example.com");
     expect(markup).toContain("In group");
+    expect(markup).toContain("Bring selected contacts into AtlasTime");
+    expect(markup).toContain("Import vCard / CSV");
     expect(markup).toContain("Diego");
     expect(markup).toContain("contact import will remain opt-in");
   });
