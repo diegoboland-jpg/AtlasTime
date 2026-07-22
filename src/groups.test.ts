@@ -124,6 +124,23 @@ describe("saved groups", () => {
 
     expect(loadGroups().groups[0].people[0]).toMatchObject({ country: "Spain", countryCode: "ES" });
   });
+
+  it("migrates optional contact links and valid email addresses safely", () => {
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "contacts",
+      name: "Contacts",
+      people: [
+        { ...person, contactId: "ana-contact", email: " ANA@Example.com " },
+        { ...person, id: "invalid-email", email: "not-an-email" },
+      ],
+      planner: { date: "2026-07-22", hour: 12 },
+      updatedAt: "2026-07-22T00:00:00Z",
+    }]));
+
+    const loaded = loadGroups().groups[0].people;
+    expect(loaded[0]).toMatchObject({ contactId: "ana-contact", email: "ana@example.com" });
+    expect(loaded[1].email).toBeUndefined();
+  });
 });
 
 describe("share links", () => {

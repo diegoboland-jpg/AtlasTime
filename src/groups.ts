@@ -1,6 +1,7 @@
 import { starterPeople } from "./data";
 import { getCityByPlace, getCountryByTimeZone } from "./cities";
 import { createId } from "./id";
+import { normalizeEmail } from "./contacts";
 import type { Person, PlannerState, SavedGroup, SharedGroupPayload } from "./types";
 
 const GROUPS_STORAGE_KEY = "atlastime.groups.v1";
@@ -71,9 +72,15 @@ function safePeople(value: unknown): Person[] {
     const countryCode = typeof candidate.countryCode === "string" && /^[A-Z]{2}$/i.test(candidate.countryCode)
       ? candidate.countryCode.toUpperCase()
       : knownCountry?.countryCode;
+    const email = normalizeEmail(candidate.email);
+    const contactId = typeof candidate.contactId === "string" && candidate.contactId.trim()
+      ? candidate.contactId.trim().slice(0, 120)
+      : undefined;
     return [{
       id: candidate.id!,
+      ...(contactId ? { contactId } : {}),
       name: candidate.name!,
+      ...(email ? { email } : {}),
       city: candidate.city!,
       ...(country ? { country } : {}),
       ...(countryCode ? { countryCode } : {}),

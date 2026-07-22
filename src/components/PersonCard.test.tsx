@@ -20,6 +20,7 @@ describe("person card delete control", () => {
         selectedInstant={new Date("2026-07-15T16:00:00Z")}
         onChange={vi.fn()}
         onRemove={vi.fn()}
+        onEdit={vi.fn()}
       />,
     );
 
@@ -35,6 +36,7 @@ describe("person card delete control", () => {
         selectedInstant={new Date("2026-07-15T16:00:00Z")}
         onChange={vi.fn()}
         onRemove={vi.fn()}
+        onEdit={vi.fn()}
       />,
     );
 

@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { formatInZone, hourInZone } from "../time";
 import type { Person } from "../types";
 
@@ -8,11 +8,12 @@ type PersonCardProps = {
   selectedInstant: Date;
   onChange: (person: Person) => void;
   onRemove: (id: string) => void;
+  onEdit: () => void;
 };
 
 const hourOptions = Array.from({ length: 24 }, (_, hour) => hour);
 
-export function PersonCard({ person, now, selectedInstant, onChange, onRemove }: PersonCardProps) {
+export function PersonCard({ person, now, selectedInstant, onChange, onRemove, onEdit }: PersonCardProps) {
   const localHour = hourInZone(now, person.timeZone);
   const working = localHour >= person.workStart && localHour < person.workEnd;
 
@@ -35,6 +36,7 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
       <div className="person-main">
         <h3 id={`person-${person.id}-name`}>{person.name}</h3>
         <p>{person.city || person.timeZone.replaceAll("_", " ")}</p>
+        {person.email && <a className="person-email" href={`mailto:${person.email}`}>{person.email}</a>}
         <span className={working ? "status online" : "status"}>
           {working ? "Working hours" : "Outside work hours"}
         </span>
@@ -52,16 +54,21 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove }:
         </span>
       </div>
 
-      <button
-        type="button"
-        className="icon-button remove"
-        data-card-action="delete"
-        onClick={() => onRemove(person.id)}
-        aria-label={`Remove ${person.name}`}
-        title={`Remove ${person.name}`}
-      >
-        <Trash2 size={16} />
-      </button>
+      <div className="person-card-actions">
+        <button type="button" className="icon-button edit-person" onClick={onEdit} aria-label={`Edit ${person.name}`} title={`Edit ${person.name}`}>
+          <Pencil size={15} />
+        </button>
+        <button
+          type="button"
+          className="icon-button remove"
+          data-card-action="delete"
+          onClick={() => onRemove(person.id)}
+          aria-label={`Remove ${person.name}`}
+          title={`Remove ${person.name}`}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
 
       <div className="selected-person-time">
         <span>Selected</span>

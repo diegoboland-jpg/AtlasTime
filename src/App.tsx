@@ -10,6 +10,7 @@ import { ShareImportBanner } from "./components/ShareImportBanner";
 import { TimePlanner } from "./components/TimePlanner";
 import { TimeSlider } from "./components/TimeSlider";
 import { clearShareHash, createShareLink, defaultPlanner, loadGroups, readSharedGroup, saveGroups } from "./groups";
+import { loadContacts, saveContacts, updateLinkedContactInGroups, upsertContact } from "./contacts";
 import { createId } from "./id";
 import { bestHour, dateAtUtcHour, formatInZone, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person, SavedGroup } from "./types";
@@ -27,6 +28,7 @@ function utcDateInput(date: Date) {
 
 export default function App() {
   const [workspace, setWorkspace] = useState(loadGroups);
+  const [contacts, setContacts] = useState(() => loadContacts(workspace.groups.flatMap((group) => group.people)));
   const [sharedPayload, setSharedPayload] = useState(readSharedGroup);
   const [now, setNow] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
@@ -42,6 +44,7 @@ export default function App() {
   const planner = activeGroup.planner;
 
   useEffect(() => saveGroups(workspace.groups, workspace.activeGroupId), [workspace]);
+  useEffect(() => saveContacts(contacts), [contacts]);
   useEffect(() => setPlannerExpanded(false), [workspace.activeGroupId]);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 15_000);
@@ -77,7 +80,17 @@ export default function App() {
   }
 
   function updatePerson(updated: Person) {
-    updateActiveGroup((group) => ({ ...group, people: group.people.map((person) => person.id === updated.id ? updated : person) }));
+    setWorkspace((current) => ({
+      ...current,
+      groups: updateLinkedContactInGroups(current.groups, current.activeGroupId, updated),
+    }));
+    setContacts((current) => upsertContact(current, updated));
+  }
+
+  function addPerson(person: Person) {
+    updateActiveGroup((group) => ({ ...group, people: [...group.people, person] }));
+    setContacts((current) => upsertContact(current, person));
+    setShowForm(false);
   }
 
   function clearRemovalTimer() {
@@ -166,7 +179,7 @@ export default function App() {
   }
 
   async function shareGroup() {
-    const approved = window.confirm("This link contains the group name, people or team names, locations, time zones, working hours, and any meeting title, location, or notes. Anyone with the link can read that information. Create it?");
+    const approved = window.confirm("This link contains the group name, people or team names, email addresses, locations, time zones, working hours, and any meeting title, location, or notes. Anyone with the link can read that information. Create it?");
     if (!approved) return;
     const link = createShareLink(activeGroup);
     try {
@@ -188,6 +201,7 @@ export default function App() {
       updatedAt: new Date().toISOString(),
     };
     setWorkspace((current) => ({ groups: [...current.groups, group], activeGroupId: group.id }));
+    setContacts((current) => group.people.reduce(upsertContact, current));
     setSharedPayload(null);
     clearShareHash();
   }
@@ -215,12 +229,13 @@ export default function App() {
           <PeopleManager
             groupName={activeGroup.name}
             people={people}
+            contacts={contacts}
             now={now}
             selectedInstant={selectedInstant}
             showForm={showForm}
             onBack={() => { setManagingPeople(false); setShowForm(false); }}
             onToggleForm={() => setShowForm((current) => !current)}
-            onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
+            onAdd={addPerson}
             onCancelAdd={() => setShowForm(false)}
             onChange={updatePerson}
             onRemove={removePerson}
