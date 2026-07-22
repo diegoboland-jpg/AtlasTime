@@ -317,8 +317,9 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .all-day-context li strong { font-size: 12px; color: #1d2e4c; }
 .all-day-context li span { color: #718099; font-size: 10px; }
 .time-control-field { position: relative; }
-.time-control-field input[type="time"] {
+.time-control-field input {
   min-width: 142px; min-height: 48px; height: 48px; padding: 6px 10px; line-height: normal;
+  font-variant-numeric: tabular-nums;
 }
 .next-day-note { position: absolute; right: 8px; top: 2px; color: #246bfd; font-size: 9px; }
 .time-control-help { align-self: end; max-width: 210px; margin: 0; color: #718099; font-size: 10px; line-height: 1.4; }

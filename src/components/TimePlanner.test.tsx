@@ -38,7 +38,7 @@ describe("progressive planner disclosure", () => {
     const markup = renderPlanner(false);
 
     expect(markup).toContain("Compare every hour when you need it");
-    expect(markup).toContain("Compare all hours");
+    expect(markup).toContain("Plan Humanly");
     expect(markup).toContain('aria-expanded="false"');
     expect(markup).not.toContain("Scrollable 24-hour local-time comparison");
     expect(markup).not.toContain('type="date"');
@@ -58,8 +58,10 @@ describe("progressive planner disclosure", () => {
     expect(markup).toContain('value="90" selected=""');
     expect(markup).toContain('value="12:37"');
     expect(markup).toContain('value="14:07"');
-    expect(markup).toContain('step="900"');
-    expect(markup).toContain("type any exact minute");
+    expect(markup).toContain('inputMode="numeric"');
+    expect(markup).toContain('type="text"');
+    expect(markup).not.toContain('type="time"');
+    expect(markup).toContain("type any exact time as HHMM");
     expect(markup).toContain("Scrollable 24-hour local-time comparison");
   });
 

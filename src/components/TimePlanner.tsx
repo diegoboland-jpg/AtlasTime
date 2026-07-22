@@ -2,6 +2,7 @@ import { CalendarDays, ChevronDown, ChevronUp, Clock3 } from "lucide-react";
 import { durationLabel } from "../meeting";
 import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
 import type { HourScore, Person } from "../types";
+import { ExactTimeInput } from "./ExactTimeInput";
 import { MobilePlannerComparison } from "./MobilePlannerComparison";
 
 const QUICK_DURATIONS = Array.from({ length: 16 }, (_, index) => (index + 1) * 30);
@@ -72,7 +73,7 @@ export function TimePlanner({
           aria-controls="planner-analysis"
           onClick={() => onExpandedChange(!expanded)}
         >
-          {expanded ? <><ChevronUp size={17} /> Hide comparison</> : <><ChevronDown size={17} /> Compare all hours</>}
+          {expanded ? <><ChevronUp size={17} /> Hide comparison</> : <><ChevronDown size={17} /> Plan Humanly</>}
         </button>
       </div>
 
@@ -96,22 +97,18 @@ export function TimePlanner({
               <>
                 <label className="date-field time-control-field">
                   Start (UTC)
-                  <input
-                    type="time"
-                    step="900"
+                  <ExactTimeInput
                     value={exactStartValue}
-                    aria-describedby="exact-time-help"
-                    onInput={(event) => selectExactStart(event.currentTarget.value)}
+                    describedBy="exact-time-help"
+                    onCommit={selectExactStart}
                   />
                 </label>
                 <label className="date-field time-control-field">
                   Finish (UTC)
-                  <input
-                    type="time"
-                    step="900"
+                  <ExactTimeInput
                     value={exactFinishValue}
-                    aria-describedby="exact-time-help"
-                    onInput={(event) => selectExactFinish(event.currentTarget.value)}
+                    describedBy="exact-time-help"
+                    onCommit={selectExactFinish}
                   />
                   {endsNextDay && <small className="next-day-note">Next day</small>}
                 </label>
@@ -128,7 +125,7 @@ export function TimePlanner({
                     <option value="custom">Custom finish</option>
                   </select>
                 </label>
-                <p className="time-control-help" id="exact-time-help">Use the controls in 15-minute steps, or type any exact minute. Duration: <strong>{durationLabel(durationMinutes)}</strong>.</p>
+                <p className="time-control-help" id="exact-time-help">Use ↑/↓ in 15-minute steps, or type any exact time as HHMM. Duration: <strong>{durationLabel(durationMinutes)}</strong>.</p>
               </>
             )}
           </div>
