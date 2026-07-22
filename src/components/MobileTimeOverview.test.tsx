@@ -3,11 +3,13 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { countryCodeToFlag } from "../country";
 import { MobileTimeOverview } from "./MobileTimeOverview";
 
 describe("mobile time overview", () => {
+  beforeEach(() => window.localStorage.clear());
+
   it("labels live device time and gives every tile a time-of-day state", () => {
     const markup = renderToStaticMarkup(
       <MobileTimeOverview
@@ -24,6 +26,9 @@ describe("mobile time overview", () => {
     );
 
     expect(markup).toContain("Everyone&#x27;s time");
+    expect(markup).toContain("theme-sky");
+    expect(markup).toContain("Everyone&#x27;s time color theme");
+    expect(markup).toContain('<option value="sky" selected="">Sky</option>');
     expect(markup).toContain("Current time");
     expect(markup).toContain("Your device time zone");
     expect(markup).toContain("Madrid team");
@@ -47,6 +52,38 @@ describe("mobile time overview", () => {
     expect(markup).toContain("🇪🇸");
     expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
     expect(markup).toContain('aria-label="Add a person, location, or team"');
+  });
+
+  it("remembers the preferred overview color theme", async () => {
+    const container = document.createElement("div");
+    const root = createRoot(container);
+
+    await act(async () => {
+      root.render(
+        <MobileTimeOverview
+          now={new Date("2026-07-16T12:00:00Z")}
+          selectedInstant={new Date("2026-07-16T14:00:00Z")}
+          selectedHour={14}
+          selectedScore={{ utcHour: 14, available: 0, total: 0, penalty: 0, score: 0 }}
+          people={[]}
+          onHourChange={vi.fn()}
+          onNow={vi.fn()}
+          onOpenPlanner={vi.fn()}
+          onAddEntry={vi.fn()}
+        />,
+      );
+    });
+
+    const picker = container.querySelector<HTMLSelectElement>('[aria-label="Everyone\'s time color theme"]')!;
+    await act(async () => {
+      picker.value = "midnight";
+      picker.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    expect(container.querySelector(".mobile-time-overview")?.classList.contains("theme-midnight")).toBe(true);
+    expect(window.localStorage.getItem("atlastime-overview-theme")).toBe("midnight");
+
+    await act(async () => root.unmount());
   });
 
   it("links the device-time card to slider exploration and restores it with Now", async () => {

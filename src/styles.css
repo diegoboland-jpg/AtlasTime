@@ -477,9 +477,11 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 
   .mobile-time-overview {
     display: grid; gap: 11px; margin: 0 -4px; padding: 13px;
-    border-radius: 22px; background: linear-gradient(145deg, #0d1830, #17366f); color: white;
-    box-shadow: 0 16px 34px rgba(13,24,48,.18);
+    border-radius: 22px; color: #0b3150;
+    box-shadow: 0 16px 34px rgba(25,111,162,.22); transition: background 240ms ease, color 240ms ease, box-shadow 240ms ease;
   }
+  .mobile-time-overview.theme-sky { background: linear-gradient(145deg, #dff5ff 0%, #86d3f7 54%, #4caee4 100%); }
+  .mobile-time-overview.theme-midnight { background: linear-gradient(145deg, #0d1830, #17366f); color: white; box-shadow: 0 16px 34px rgba(13,24,48,.18); }
   .mobile-current-time {
     position: relative; overflow: hidden;
     display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px;
@@ -501,11 +503,21 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .mobile-current-time em { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #718099; font-size: 9px; font-style: normal; }
   .mobile-overview-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
   .mobile-overview-heading span {
-    display: flex; align-items: center; gap: 5px; color: #9ebaff; font-size: 9px; font-weight: 850;
+    display: flex; align-items: center; gap: 5px; color: #154f78; font-size: 9px; font-weight: 850;
     letter-spacing: .12em; text-transform: uppercase;
   }
   .mobile-overview-heading h1 { margin: 3px 0 0; font-size: 21px; letter-spacing: -.03em; }
-  .mobile-overview-heading > strong { flex: none; color: #dbe6ff; font-size: 13px; }
+  .theme-midnight .mobile-overview-heading span { color: #9ebaff; }
+  .mobile-overview-heading-actions { flex: none; display: grid; justify-items: end; gap: 4px; }
+  .mobile-overview-heading-actions > strong { color: #0d3b5d; font-size: 13px; }
+  .theme-midnight .mobile-overview-heading-actions > strong { color: #dbe6ff; }
+  .overview-theme-picker { display: inline-flex; align-items: center; gap: 4px; color: #154f78; }
+  .overview-theme-picker select {
+    min-height: 30px; padding: 3px 24px 3px 8px; border: 1px solid rgba(13,59,93,.2); border-radius: 999px;
+    background: rgba(255,255,255,.72); color: #0d3b5d; font-size: 9px; font-weight: 800; box-shadow: none;
+  }
+  .theme-midnight .overview-theme-picker { color: #9ebaff; }
+  .theme-midnight .overview-theme-picker select { border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.1); color: white; }
   .mobile-time-strip {
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-height: 348px;
     overflow-y: auto; overscroll-behavior: contain; padding: 1px; scrollbar-width: none;
@@ -523,6 +535,13 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .compact-time-card.time-period-afternoon { background: linear-gradient(145deg, rgba(74,151,225,.34), rgba(44,91,155,.38)); border-color: rgba(142,200,255,.34); }
   .compact-time-card.time-period-dinner { background: linear-gradient(145deg, rgba(226,117,70,.34), rgba(112,66,126,.4)); border-color: rgba(255,166,125,.35); }
   .compact-time-card.time-period-evening { background: linear-gradient(145deg, rgba(117,86,172,.38), rgba(31,45,82,.58)); border-color: rgba(177,145,228,.34); }
+  .theme-sky .compact-time-card { color: #0b3150; box-shadow: 0 5px 14px rgba(18,91,135,.12); }
+  .theme-sky .compact-time-card.time-period-night { background: linear-gradient(145deg, rgba(218,226,255,.9), rgba(193,218,246,.82)); border-color: rgba(65,91,146,.22); }
+  .theme-sky .compact-time-card.time-period-morning { background: linear-gradient(145deg, rgba(255,243,199,.94), rgba(231,247,255,.86)); border-color: rgba(181,122,33,.22); }
+  .theme-sky .compact-time-card.time-period-lunch { background: linear-gradient(145deg, rgba(242,251,218,.92), rgba(218,246,235,.86)); border-color: rgba(67,126,83,.22); }
+  .theme-sky .compact-time-card.time-period-afternoon { background: linear-gradient(145deg, rgba(235,249,255,.94), rgba(200,232,250,.86)); border-color: rgba(39,112,163,.22); }
+  .theme-sky .compact-time-card.time-period-dinner { background: linear-gradient(145deg, rgba(255,229,211,.94), rgba(244,221,239,.86)); border-color: rgba(159,80,62,.22); }
+  .theme-sky .compact-time-card.time-period-evening { background: linear-gradient(145deg, rgba(237,229,255,.94), rgba(211,223,248,.86)); border-color: rgba(91,70,145,.22); }
   .compact-time-card > .compact-place-rotator, .compact-time-card > strong, .compact-time-card > p, .compact-time-card > em { position: relative; z-index: 1; }
   .country-flag-backdrop {
     position: absolute; z-index: 0; inset: 0 auto 0 0; width: 35%; display: grid; place-items: center;
@@ -578,8 +597,14 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
     --scene-line: rgba(255,255,255,.98); --scene-fill: #ffd267; --scene-land: rgba(255,255,255,.36);
     --scene-land-soft: rgba(255,255,255,.2); --scene-surface: rgba(255,255,255,.76);
   }
+  .theme-sky .compact-time-card .time-period-scene {
+    --scene-line: rgba(20,73,109,.96); --scene-fill: #e49d18; --scene-land: rgba(30,102,145,.24);
+    --scene-land-soft: rgba(47,125,166,.15); --scene-surface: rgba(255,255,255,.82); filter: drop-shadow(0 2px 2px rgba(28,85,119,.15));
+  }
   .compact-place-rotator, .compact-time-card > strong { text-shadow: 0 1px 3px rgba(3,13,35,.65); }
+  .theme-sky .compact-place-rotator, .theme-sky .compact-time-card > strong { text-shadow: none; }
   .compact-time-card .time-period-badge { background: rgba(13,24,48,.62); backdrop-filter: blur(2px); }
+  .theme-sky .compact-time-card .time-period-badge { background: rgba(255,255,255,.58); }
   .compact-place-rotator { min-width: 0; height: 15px; overflow: hidden; }
   .compact-place-rotator span, .compact-place-rotator small {
     position: absolute; inset: 1px 0 auto; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -592,6 +617,8 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .compact-time-card p { display: flex; align-items: flex-start; flex-direction: column; gap: 3px; margin: 3px 0 0; color: #d2ddf2; font-size: 8px; font-weight: 700; line-height: 1.1; text-transform: uppercase; }
   .compact-time-card em { margin-top: 2px; color: #aebddb; font-size: 8px; font-style: normal; line-height: 1.2; }
   .compact-time-card em.working { color: #7ce0b7; font-weight: 800; }
+  .theme-sky .compact-place-rotator small, .theme-sky .compact-time-card p, .theme-sky .compact-time-card em { color: #315f7e; }
+  .theme-sky .compact-time-card em.working { color: #0a6b4b; }
   .time-period-badge { display: inline-flex !important; align-items: center; gap: 3px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 999px; opacity: .9; font-size: 7px; font-style: normal; font-weight: 850; letter-spacing: .03em; line-height: 1.1; text-transform: uppercase; }
   .add-time-slot { min-width: 0; min-height: 110px; }
   .add-time-slot button {
@@ -601,6 +628,9 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   }
   .add-time-slot button:hover { border-color: #bcd0ff; background: rgba(255,255,255,.08); color: white; }
   .add-time-slot button svg { color: #8eb0ff; }
+  .theme-sky .add-time-slot button { border-color: rgba(13,76,116,.34); background: rgba(255,255,255,.34); color: #174f74; }
+  .theme-sky .add-time-slot button:hover { border-color: rgba(13,76,116,.58); background: rgba(255,255,255,.56); color: #0b3150; }
+  .theme-sky .add-time-slot button svg { color: #176ea2; }
   .mobile-planner-shortcut {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
     padding: 5px 0 0; color: #b9c8e5; font-size: 9px;
@@ -609,6 +639,8 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
     min-height: 44px; padding: 6px 11px; border: 1px solid #7286aa; border-radius: 9px;
     background: transparent; color: white; font-size: 9px; font-weight: 850; cursor: pointer;
   }
+  .theme-sky .mobile-planner-shortcut { color: #174f74; }
+  .theme-sky .mobile-planner-shortcut button { border-color: rgba(13,76,116,.42); background: rgba(255,255,255,.34); color: #0d3b5d; }
   .mobile-overview-slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; }
   .mobile-overview-slider label { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; font-size: 10px; font-weight: 800; }
   .mobile-overview-slider label small { color: #b9c8e5; font-size: 9px; font-weight: 650; }
@@ -617,6 +649,9 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
     min-height: 44px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px;
     border: 1px solid #7286aa; border-radius: 9px; background: #263d67; color: white; font-size: 10px; font-weight: 800;
   }
+  .theme-sky .mobile-overview-slider label small, .theme-sky .mobile-return-note { color: #174f74; }
+  .theme-sky .mobile-overview-slider input { accent-color: #0d6da3; }
+  .theme-sky .mobile-overview-slider button { border-color: rgba(13,76,116,.42); background: rgba(255,255,255,.48); color: #0d3b5d; }
   .mobile-return-note { grid-column: 1 / -1; margin: -2px 0 0; color: #9fb1d2; font-size: 8px; }
   .mobile-overview-slider {
     position: fixed; z-index: 50; right: max(12px, env(safe-area-inset-right)); bottom: max(10px, env(safe-area-inset-bottom));
@@ -639,7 +674,7 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .mobile-current-time span, .mobile-current-time small, .mobile-current-time em { font-size: 11px; }
   .mobile-overview-heading { grid-column: 2; }
   .mobile-overview-heading h1 { font-size: 26px; }
-  .mobile-overview-heading > strong { font-size: 15px; }
+  .mobile-overview-heading-actions > strong { font-size: 15px; }
   .mobile-time-strip { grid-column: 2; grid-template-columns: repeat(3, minmax(0, 1fr)); max-height: 228px; }
   .mobile-planner-shortcut { grid-column: 1 / -1; font-size: 11px; }
   .mobile-overview-slider { max-width: 760px; padding: 13px 16px; }
