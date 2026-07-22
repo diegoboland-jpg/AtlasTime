@@ -6,7 +6,7 @@
 - [x] Move detailed person/location editing into a dedicated people-management view.
 - [x] Add a light rolodex-style card entrance while respecting reduced-motion preferences.
 - [x] Remove the phone planner's duplicate hour picker and rely on the floating 24-hour slider, Now, recommendation, and exact-time field.
-- [x] Keep participant comparisons as compact rows with larger, centered local meeting ranges.
+- [x] Keep participant comparisons as short three-column rows: identity, duration-aware local start/end, and a static time-of-day scene with contextual status.
 - [x] Hide the raw invitation text behind an optional preview disclosure.
 - [x] Present `.ics` as the universal Apple, Windows, and other-calendar handoff alongside prefilled Google and Outlook drafts.
 - [ ] Validate the focused workspace and compact local-time rows on physical Android, iPhone, and installed Windows PWAs.

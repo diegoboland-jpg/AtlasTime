@@ -15,7 +15,9 @@ describe("responsive accessibility safeguards", () => {
 
   it("keeps the compact phone grid while simplifying detailed planner rows", () => {
     expect(styles).toContain("grid-template-columns: repeat(2, minmax(0, 1fr))");
-    expect(styles).toContain(".mobile-person-planning { display: grid; justify-items: start; gap: 3px; }");
+    expect(styles).toContain("grid-template-columns: minmax(98px, .85fr) minmax(138px, 1.35fr) 64px");
+    expect(styles).toContain(".mobile-person-period .time-period-scene * { animation: none; }");
+    expect(styles).toMatch(/@media \(max-width: 360px\) \{[\s\S]*?\.mobile-person-time \{ grid-template-columns: 78px minmax\(0, 1fr\) 48px/);
   });
 
   it("uses the shared animated overview as the desktop PWA experience", () => {

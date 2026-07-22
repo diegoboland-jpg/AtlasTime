@@ -622,20 +622,30 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .mobile-planner-comparison { display: grid; gap: 13px; }
   .mobile-person-times { display: grid; gap: 8px; }
   .mobile-person-time {
-    display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 3px 11px;
-    min-height: 88px; padding: 9px 12px; border: 1px solid #e1e7f0; border-radius: 14px; background: white;
+    display: grid; grid-template-columns: minmax(98px, .85fr) minmax(138px, 1.35fr) 64px; align-items: center; gap: 8px;
+    min-height: 78px; padding: 8px 10px; overflow: hidden; border: 1px solid #e1e7f0; border-radius: 14px; background: white;
   }
-  .mobile-person-initial { grid-row: 1 / 4; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: #e8efff; color: #246bfd; font-size: 12px; font-weight: 850; }
-  .mobile-person-identity, .mobile-person-planning { min-width: 0; }
-  .mobile-person-identity strong, .mobile-person-identity small, .mobile-person-planning strong, .mobile-person-planning small { display: block; }
-  .mobile-person-identity strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
-  .mobile-person-identity small { margin-top: 1px; overflow: hidden; color: #8490a4; font-size: 10.5px; text-overflow: ellipsis; white-space: nowrap; }
-  .mobile-person-planning { display: grid; justify-items: start; gap: 3px; }
-  .mobile-person-planning small { flex: none; padding: 3px 8px; border-radius: 999px; background: #e7f7f0; color: #187953; font-size: 9px; font-weight: 850; }
-  .mobile-person-planning strong { min-width: 0; color: #33415a; font-size: clamp(11px, 3.2vw, 13px); line-height: 1.25; white-space: nowrap; }
-  .mobile-person-time em { grid-column: 2; justify-self: start; padding: 3px 8px; border-radius: 999px; font-size: 9px; font-style: normal; font-weight: 800; }
-  .mobile-person-time em.working { background: #e7f7f0; color: #187953; }
-  .mobile-person-time em.outside { background: #fff0f2; color: #a23a4d; }
+  .mobile-person-profile { min-width: 0; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 8px; }
+  .mobile-person-initial { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: #e8efff; color: #246bfd; font-size: 11px; font-weight: 850; }
+  .mobile-person-identity { min-width: 0; display: grid; justify-items: start; gap: 1px; }
+  .mobile-person-identity strong, .mobile-person-identity small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mobile-person-identity strong { font-size: 11px; }
+  .mobile-person-identity small { color: #8490a4; font-size: 8px; }
+  .planning-tag { margin-top: 2px; padding: 2px 6px; border-radius: 999px; background: #e7f7f0; color: #187953; font-size: 7px; font-style: normal; font-weight: 850; }
+  .mobile-person-range { min-width: 0; display: grid; gap: 4px; animation: tile-time-change 180ms ease-out; }
+  .mobile-person-range > span { min-width: 0; display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 5px; }
+  .mobile-person-range small { padding: 3px 5px; border-radius: 999px; background: #dfe9fb; color: #31558f; font-size: 7px; font-weight: 850; text-align: center; }
+  .mobile-person-range strong { min-width: 0; overflow: hidden; color: #52617a; font-size: clamp(8px, 2.45vw, 10px); line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .mobile-person-period { min-width: 0; display: grid; justify-items: center; gap: 3px; }
+  .mobile-person-period .time-period-scene.compact { position: static; width: 50px; height: 34px; opacity: .9; filter: none; }
+  .mobile-person-period .time-period-scene * { animation: none; }
+  .mobile-person-period em { max-width: 64px; padding: 2px 5px; border-radius: 999px; font-size: 7px; font-style: normal; font-weight: 850; line-height: 1.15; text-align: center; white-space: nowrap; }
+  .mobile-person-period em.working { background: #e7f7f0; color: #187953; }
+  .mobile-person-period em.outside { background: #eef1f7; color: #59667d; }
+  .mobile-person-period em.period-night, .mobile-person-period em.period-evening { background: #e9edff; color: #4d5d9a; }
+  .mobile-person-period em.period-morning { background: #fff2ce; color: #8e5b17; }
+  .mobile-person-period em.period-lunch, .mobile-person-period em.period-dinner { background: #fff0df; color: #8e432e; }
+  .mobile-person-period em.period-afternoon { background: #e2f3ff; color: #2674ab; }
   .mobile-planner-empty { margin: 0; padding: 24px; border: 1px dashed #bdc8da; border-radius: 14px; color: #68758e; font-size: 11px; text-align: center; }
   .timeline-wrap, .timeline-note { display: none; }
   .slider-panel { grid-template-columns: 1fr; gap: 12px; }
@@ -671,6 +681,11 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 @media (max-width: 360px) {
   .mobile-current-time .time-period-scene { right: 72px; width: 78px; height: 54px; opacity: .78; }
   .time-period-scene.compact { right: -3px; width: 74px; height: 47px; opacity: .62; }
+  .mobile-person-time { grid-template-columns: 78px minmax(0, 1fr) 48px; gap: 6px; padding-inline: 8px; }
+  .mobile-person-profile { grid-template-columns: 30px minmax(0, 1fr); gap: 6px; }
+  .mobile-person-initial { width: 30px; height: 30px; }
+  .mobile-person-range > span { grid-template-columns: 31px minmax(0, 1fr); gap: 4px; }
+  .mobile-person-period .time-period-scene.compact { width: 44px; height: 31px; }
 }
 
 @media (max-width: 280px) {
