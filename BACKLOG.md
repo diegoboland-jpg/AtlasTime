@@ -2,9 +2,11 @@
 
 ## v0.31: human-friendly durations and all-day events
 
-- [x] Replace the minutes-first duration control with quick choices in 30-minute increments.
+- [x] Replace the minutes-first duration control with editable UTC start and finish times.
+- [x] Let time controls advance in 15-minute steps while accepting any manually typed minute.
+- [x] Keep quick meeting-length choices in 30-minute increments and derive duration automatically from Start and Finish.
 - [x] Label quick choices naturally as `30 min`, `1 hour`, `1 hour 30 min`, `2 hours`, and so on.
-- [x] Preserve a Custom option for exact whole-minute durations such as 15, 47, or 125 minutes.
+- [x] Preserve arbitrary whole-minute durations through the editable Finish time, including values such as 15, 47, or 125 minutes.
 - [x] Add a true All-day event mode based on local calendar dates rather than treating it as a 1,440-minute timed meeting.
 - [x] Export all-day events with date-only calendar semantics in `.ics`, Google Calendar, and Outlook drafts.
 - [x] Hide hour-based availability scoring when an all-day event is selected, while preserving participant date context.

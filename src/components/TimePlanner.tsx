@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import { CalendarDays, ChevronDown, ChevronUp, Clock3 } from "lucide-react";
 import { durationLabel } from "../meeting";
-import { dateAtUtcHour, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
+import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
 import type { HourScore, Person } from "../types";
 import { MobilePlannerComparison } from "./MobilePlannerComparison";
 
@@ -38,17 +37,24 @@ export function TimePlanner({
   onEventModeChange,
   onHourChange,
 }: TimePlannerProps) {
-  const [customDuration, setCustomDuration] = useState(!QUICK_DURATIONS.includes(durationMinutes));
   const allDay = eventMode === "all-day";
   const exactStartMinutes = Math.round(selectedHour * 60) % (24 * 60);
   const exactStartValue = `${String(Math.floor(exactStartMinutes / 60)).padStart(2, "0")}:${String(exactStartMinutes % 60).padStart(2, "0")}`;
-
-  useEffect(() => setCustomDuration(!QUICK_DURATIONS.includes(durationMinutes)), [durationMinutes]);
+  const finishTotalMinutes = exactStartMinutes + durationMinutes;
+  const finishClockMinutes = finishTotalMinutes % (24 * 60);
+  const exactFinishValue = `${String(Math.floor(finishClockMinutes / 60)).padStart(2, "0")}:${String(finishClockMinutes % 60).padStart(2, "0")}`;
+  const endsNextDay = finishTotalMinutes >= 24 * 60;
 
   function selectExactStart(value: string) {
     const [hour, minute] = value.split(":").map(Number);
     if (!Number.isInteger(hour) || !Number.isInteger(minute)) return;
     onHourChange(hour + minute / 60);
+  }
+
+  function selectExactFinish(value: string) {
+    const [hour, minute] = value.split(":").map(Number);
+    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return;
+    onDurationChange(durationBetweenUtcTimes(selectedHour, hour + minute / 60));
   }
 
   return (
@@ -88,48 +94,41 @@ export function TimePlanner({
             </label>
             {!allDay && (
               <>
+                <label className="date-field time-control-field">
+                  Start (UTC)
+                  <input
+                    type="time"
+                    step="900"
+                    value={exactStartValue}
+                    aria-describedby="exact-time-help"
+                    onInput={(event) => selectExactStart(event.currentTarget.value)}
+                  />
+                </label>
+                <label className="date-field time-control-field">
+                  Finish (UTC)
+                  <input
+                    type="time"
+                    step="900"
+                    value={exactFinishValue}
+                    aria-describedby="exact-time-help"
+                    onInput={(event) => selectExactFinish(event.currentTarget.value)}
+                  />
+                  {endsNextDay && <small className="next-day-note">Next day</small>}
+                </label>
                 <label className="date-field">
-                  Duration
+                  Quick length
                   <select
-                    value={customDuration ? "custom" : durationMinutes}
+                    value={QUICK_DURATIONS.includes(durationMinutes) ? durationMinutes : "custom"}
                     onChange={(event) => {
-                      if (event.target.value === "custom") {
-                        setCustomDuration(true);
-                        return;
-                      }
-                      setCustomDuration(false);
+                      if (event.target.value === "custom") return;
                       onDurationChange(Number(event.target.value));
                     }}
                   >
                     {QUICK_DURATIONS.map((minutes) => <option key={minutes} value={minutes}>{durationLabel(minutes)}</option>)}
-                    <option value="custom">Custom...</option>
+                    <option value="custom">Custom finish</option>
                   </select>
                 </label>
-                {customDuration && (
-                  <label className="date-field">
-                    Exact minutes
-                    <input
-                      type="number"
-                      min="1"
-                      max="1440"
-                      step="1"
-                      value={durationMinutes}
-                      onChange={(event) => {
-                        const minutes = Number(event.target.value);
-                        if (Number.isInteger(minutes) && minutes >= 1 && minutes <= 1440) onDurationChange(minutes);
-                      }}
-                    />
-                  </label>
-                )}
-                <label className="date-field">
-                  Exact UTC start
-                  <input
-                    type="time"
-                    step="60"
-                    value={exactStartValue}
-                    onInput={(event) => selectExactStart(event.currentTarget.value)}
-                  />
-                </label>
+                <p className="time-control-help" id="exact-time-help">Use the controls in 15-minute steps, or type any exact minute. Duration: <strong>{durationLabel(durationMinutes)}</strong>.</p>
               </>
             )}
           </div>

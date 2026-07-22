@@ -51,10 +51,15 @@ describe("progressive planner disclosure", () => {
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('type="date"');
     expect(markup).toContain("Best-scoring 1 hour 30 min window");
-    expect(markup).toContain(">Duration<");
+    expect(markup).toContain("Start (UTC)");
+    expect(markup).toContain("Finish (UTC)");
+    expect(markup).toContain("Quick length");
     expect(markup).toContain('value="30"');
     expect(markup).toContain('value="90" selected=""');
     expect(markup).toContain('value="12:37"');
+    expect(markup).toContain('value="14:07"');
+    expect(markup).toContain('step="900"');
+    expect(markup).toContain("type any exact minute");
     expect(markup).toContain("Scrollable 24-hour local-time comparison");
   });
 
@@ -65,6 +70,7 @@ describe("progressive planner disclosure", () => {
     expect(markup).toContain("Hourly availability scoring is paused");
     expect(markup).not.toContain("Best-scoring");
     expect(markup).not.toContain("Scrollable 24-hour local-time comparison");
-    expect(markup).not.toContain("Exact UTC start");
+    expect(markup).not.toContain("Start (UTC)");
+    expect(markup).not.toContain("Finish (UTC)");
   });
 });
