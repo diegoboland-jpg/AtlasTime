@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ExternalLink, Globe2, MessageCircle, Phone, Plus, Users, Video } from "lucide-react";
-import { AddPersonForm } from "./components/AddPersonForm";
+import { ExternalLink, Globe2, MessageCircle, Phone, Settings2, Users, Video } from "lucide-react";
 import { GroupManager } from "./components/GroupManager";
 import { MeetingHandoff } from "./components/MeetingHandoff";
 import { MobileTimeOverview } from "./components/MobileTimeOverview";
-import { PersonCard } from "./components/PersonCard";
+import { PeopleManager } from "./components/PeopleManager";
 import { PwaInstall } from "./components/PwaInstall";
 import { PwaUpdateNotice } from "./components/PwaUpdateNotice";
 import { ShareImportBanner } from "./components/ShareImportBanner";
@@ -31,6 +30,7 @@ export default function App() {
   const [sharedPayload, setSharedPayload] = useState(readSharedGroup);
   const [now, setNow] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
+  const [managingPeople, setManagingPeople] = useState(false);
   const [plannerExpanded, setPlannerExpanded] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
   const [pendingPersonRemoval, setPendingPersonRemoval] = useState<PendingPersonRemoval | null>(null);
@@ -139,6 +139,7 @@ export default function App() {
   }
 
   function openAddEntry() {
+    setManagingPeople(true);
     setShowForm(true);
     window.requestAnimationFrame(() => document.getElementById("add-entry-form")?.scrollIntoView({ behavior: "smooth", block: "center" }));
   }
@@ -201,7 +202,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.29 duration-aware planning</span>
+          <span className="mvp-badge">v0.30 focused workspace</span>
         </div>
       </header>
 
@@ -209,6 +210,23 @@ export default function App() {
 
       <main id="main-content" tabIndex={-1}>
         {sharedPayload && <ShareImportBanner payload={sharedPayload} onImport={importSharedGroup} onDismiss={() => { setSharedPayload(null); clearShareHash(); }} />}
+
+        {managingPeople ? (
+          <PeopleManager
+            groupName={activeGroup.name}
+            people={people}
+            now={now}
+            selectedInstant={selectedInstant}
+            showForm={showForm}
+            onBack={() => { setManagingPeople(false); setShowForm(false); }}
+            onToggleForm={() => setShowForm((current) => !current)}
+            onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
+            onCancelAdd={() => setShowForm(false)}
+            onChange={updatePerson}
+            onRemove={removePerson}
+          />
+        ) : (
+          <>
 
         <MobileTimeOverview
           now={now}
@@ -246,44 +264,20 @@ export default function App() {
           onShare={shareGroup}
         />
 
-        <section className="section">
+        <section className="section people-summary-section">
           <div className="section-heading">
             <div>
               <p className="section-kicker"><Users size={16} /> PEOPLE</p>
-              <h2>Who or what needs to connect?</h2>
+              <h2>{people.length} {people.length === 1 ? "entry" : "entries"} in this group</h2>
             </div>
-            <button className="primary-button" onClick={() => showForm ? setShowForm(false) : openAddEntry()} aria-expanded={showForm} aria-controls="add-entry-form">
-              <Plus size={18} /> Add person, location, or team
+            <button className="secondary-button" onClick={() => setManagingPeople(true)}>
+              <Settings2 size={18} /> Manage people
             </button>
           </div>
-
-          {showForm && (
-            <div id="add-entry-form">
-              <AddPersonForm
-                onAdd={(person) => { updateActiveGroup((group) => ({ ...group, people: [...group.people, person] })); setShowForm(false); }}
-                onCancel={() => setShowForm(false)}
-              />
-            </div>
-          )}
-
-          <div className="people-grid" aria-label={`Entries in ${activeGroup.name}`}>
-            {people.map((person) => (
-              <PersonCard
-                key={person.id}
-                person={person}
-                now={now}
-                selectedInstant={selectedInstant}
-                onChange={updatePerson}
-                onRemove={removePerson}
-              />
-            ))}
-            {people.length === 0 && (
-              <div className="empty-state">
-                <Users size={28} aria-hidden="true" />
-                <h3>This group is ready.</h3>
-                <p>Add a person, location, or team to compare local times.</p>
-              </div>
-            )}
+          <div className="people-summary-list" aria-label={`People in ${activeGroup.name}`}>
+            {people.slice(0, 6).map((person) => <span key={person.id}>{person.name}</span>)}
+            {people.length > 6 && <span>+{people.length - 6} more</span>}
+            {people.length === 0 && <button type="button" onClick={openAddEntry}>+ Add the first entry</button>}
           </div>
         </section>
 
@@ -331,6 +325,8 @@ export default function App() {
           </div>
           <p className="selected-summary">Selected instant: <strong>{selectedInstant.toUTCString()}</strong></p>
         </section>
+          </>
+        )}
       </main>
 
       {pendingPersonRemoval && (
@@ -348,7 +344,7 @@ export default function App() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v0.29</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.30</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

@@ -13,10 +13,11 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toMatch(/@media \(hover: none\) \{[\s\S]*?\.hour-cell \{ min-height: 44px/);
   });
 
-  it("keeps the compact phone grid while reflowing detailed planner rows", () => {
-    expect(styles).toMatch(/@media \(max-width: 420px\)/);
+  it("keeps the compact phone grid while simplifying detailed planner rows", () => {
     expect(styles).toContain("grid-template-columns: repeat(2, minmax(0, 1fr))");
-    expect(styles).toContain(".mobile-person-local-time { grid-column: 2; text-align: left; }");
+    expect(styles).toContain("grid-template-columns: minmax(98px, .85fr) minmax(138px, 1.35fr) 64px");
+    expect(styles).toContain(".mobile-person-period .time-period-scene * { animation: none; }");
+    expect(styles).toMatch(/@media \(max-width: 360px\) \{[\s\S]*?\.mobile-person-time \{ grid-template-columns: 78px minmax\(0, 1fr\) 48px/);
   });
 
   it("uses the shared animated overview as the desktop PWA experience", () => {

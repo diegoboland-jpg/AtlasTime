@@ -126,9 +126,6 @@ export function TimePlanner({
             dateValue={dateValue}
             selectedHour={selectedHour}
             durationMinutes={durationMinutes}
-            recommendation={recommendation}
-            hours={hours}
-            onHourChange={onHourChange}
           />
 
           <div className="timeline-wrap" role="region" aria-label="Scrollable 24-hour local-time comparison" tabIndex={0}>

@@ -1,5 +1,32 @@
 # AtlasTime backlog
 
+## v0.31: human-friendly durations and all-day events
+
+- [ ] Replace the minutes-first duration control with quick choices in 30-minute increments.
+- [ ] Label quick choices naturally as `30 min`, `1 hour`, `1 h 30`, `2 hours`, and so on.
+- [ ] Preserve a Custom option for exact whole-minute durations such as 15, 47, or 125 minutes.
+- [ ] Add a true All-day event mode based on local calendar dates rather than treating it as a 1,440-minute timed meeting.
+- [ ] Export all-day events with date-only calendar semantics in `.ics`, Google Calendar, and Outlook drafts.
+- [ ] Hide hour-based availability scoring when an all-day event is selected, while preserving participant date context.
+- [ ] Persist, share, migrate, and test the selected timed-versus-all-day mode without breaking existing saved groups.
+
+## v0.30: focused workspace
+
+- [x] Keep the primary screen focused on the compact Everyone's Time overview and meeting planning.
+- [x] Move detailed person/location editing into a dedicated people-management view.
+- [x] Add a light rolodex-style card entrance while respecting reduced-motion preferences.
+- [x] Remove the phone planner's duplicate hour picker and rely on the floating 24-hour slider, Now, recommendation, and exact-time field.
+- [x] Keep participant comparisons as short three-column rows: identity, duration-aware local start/end, and a static time-of-day scene with contextual status.
+- [x] Hide the raw invitation text behind an optional preview disclosure.
+- [x] Present `.ics` as the universal Apple, Windows, and other-calendar handoff alongside prefilled Google and Outlook drafts.
+- [ ] Validate the focused workspace and compact local-time rows on physical Android, iPhone, and installed Windows PWAs.
+
+### Future connected people workspace
+
+- Add opt-in Google Contacts and Outlook Contacts import only after privacy, authorization, duplicate matching, and disconnect behavior are designed.
+- Let users select imported contacts with checkboxes and enrich missing locations before adding them to a group.
+- Preserve manual person, team, and location-only entries without requiring an account or contact synchronization.
+
 ## v0.29: duration-aware recommendations
 
 - [x] Score the complete selected duration instead of only the meeting start.
