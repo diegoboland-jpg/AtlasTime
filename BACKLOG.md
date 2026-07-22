@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v0.31: human-friendly durations and all-day events
+
+- [ ] Replace the minutes-first duration control with quick choices in 30-minute increments.
+- [ ] Label quick choices naturally as `30 min`, `1 hour`, `1 h 30`, `2 hours`, and so on.
+- [ ] Preserve a Custom option for exact whole-minute durations such as 15, 47, or 125 minutes.
+- [ ] Add a true All-day event mode based on local calendar dates rather than treating it as a 1,440-minute timed meeting.
+- [ ] Export all-day events with date-only calendar semantics in `.ics`, Google Calendar, and Outlook drafts.
+- [ ] Hide hour-based availability scoring when an all-day event is selected, while preserving participant date context.
+- [ ] Persist, share, migrate, and test the selected timed-versus-all-day mode without breaking existing saved groups.
+
 ## v0.30: focused workspace
 
 - [x] Keep the primary screen focused on the compact Everyone's Time overview and meeting planning.
