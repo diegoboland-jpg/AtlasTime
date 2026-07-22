@@ -1,10 +1,12 @@
 import { useState, type CSSProperties } from "react";
 import { ArrowLeft, ContactRound, Mail, Plus, Users } from "lucide-react";
 import { personFromContact } from "../contacts";
+import type { ContactImportDraft } from "../contactImport";
 import { createId } from "../id";
 import type { ContactRecord, Person } from "../types";
 import { AddPersonForm } from "./AddPersonForm";
 import { PersonCard } from "./PersonCard";
+import { ContactImportPanel } from "./ContactImportPanel";
 
 type Props = {
   groupName: string;
@@ -36,11 +38,13 @@ export function PeopleManager({
   onRemove,
 }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [importDraft, setImportDraft] = useState<ContactImportDraft | null>(null);
   const editingPerson = people.find((person) => person.id === editingId);
   const activeContactIds = new Set(people.map((person) => person.contactId ?? person.id));
 
   function closeForm() {
     setEditingId(null);
+    setImportDraft(null);
     onCancelAdd();
   }
 
@@ -53,7 +57,7 @@ export function PeopleManager({
         <button
           type="button"
           className="primary-button"
-          onClick={() => { setEditingId(null); onToggleForm(); }}
+          onClick={() => { setEditingId(null); setImportDraft(null); onToggleForm(); }}
           aria-expanded={showForm}
           aria-controls="add-entry-form"
         >
@@ -95,15 +99,23 @@ export function PeopleManager({
         </div>
       </section>
 
-      {(showForm || editingPerson) && (
+      <ContactImportPanel onComplete={(draft) => {
+        setEditingId(null);
+        setImportDraft(draft);
+        onCancelAdd();
+      }} />
+
+      {(showForm || editingPerson || importDraft) && (
         <div id="add-entry-form" className="people-manager-form">
           <AddPersonForm
-            key={editingPerson?.id ?? "new-contact"}
+            key={editingPerson?.id ?? importDraft?.id ?? "new-contact"}
             initialPerson={editingPerson}
+            initialDraft={importDraft ?? undefined}
             onAdd={(person) => {
               if (editingPerson) onChange(person);
               else onAdd(person);
               setEditingId(null);
+              setImportDraft(null);
             }}
             onCancel={closeForm}
           />
@@ -119,7 +131,7 @@ export function PeopleManager({
               selectedInstant={selectedInstant}
               onChange={onChange}
               onRemove={onRemove}
-              onEdit={() => { setEditingId(person.id); onCancelAdd(); }}
+              onEdit={() => { setEditingId(person.id); setImportDraft(null); onCancelAdd(); }}
             />
           </div>
         ))}

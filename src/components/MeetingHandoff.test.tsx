@@ -83,6 +83,8 @@ describe("meeting handoff sharing", () => {
     expect(container.textContent).toContain("Google Calendar draft");
     expect(container.textContent).toContain("Outlook Calendar draft");
     expect(container.textContent).toContain("Apple / device calendar (.ics)");
+    expect(container.textContent).toContain("Calendar connections");
+    expect(container.textContent).toContain("Draft-only mode");
     expect(container.textContent).toContain("1 calendar invitee ready");
     expect(container.textContent).toContain("ana@example.com");
     const google = new URL(container.querySelector<HTMLAnchorElement>('a[href*="calendar.google.com"]')!.href);

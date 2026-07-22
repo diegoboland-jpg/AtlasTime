@@ -123,6 +123,15 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           <pre className="meeting-summary" aria-label="Meeting summary preview">{summary}</pre>
         </details>
 
+        <details className="calendar-connection-preview">
+          <summary>Calendar connections <span>Draft-only mode</span></summary>
+          <p>No calendar account is authorized yet. The next connected phase will request explicit, revocable access only when you choose Connect.</p>
+          <div>
+            <span><strong>Google Calendar</strong><em>Not connected</em></span>
+            <span><strong>Outlook Calendar</strong><em>Planned after Google validation</em></span>
+          </div>
+        </details>
+
         <div className="handoff-actions">
           <button type="button" className="primary-button" onClick={shareInvite}>
             <Share2 size={17} /> {shareStatus || "Share invite"}

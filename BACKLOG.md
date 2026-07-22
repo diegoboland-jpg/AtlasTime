@@ -14,7 +14,7 @@
 ## v1.1: optional connected calendars
 
 - [x] Add a local AtlasTime contact directory with optional email addresses and editable current/travel locations.
-- [ ] Import user-selected names and email addresses through the device contact picker when supported, with manual and vCard/CSV fallbacks.
+- [x] Import user-selected names, emails, and available city hints through the one-off device Contact Picker when supported, with manual and vCard/CSV fallbacks.
 - [x] Keep local details editable inside AtlasTime and explain that PWA edits never modify a phone or account source contact.
 - [x] Migrate saved groups and shared snapshots safely when optional contact email fields are introduced.
 - [ ] Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
