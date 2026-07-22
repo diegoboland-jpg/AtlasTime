@@ -47,7 +47,7 @@ describe("progressive planner disclosure", () => {
   it("renders date, recommendation, and comparison only when expanded", () => {
     const markup = renderPlanner(true);
 
-    expect(markup).toContain("Hide comparison");
+    expect(markup).toContain("Hide planner");
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('type="date"');
     expect(markup).toContain("Best-scoring 1 hour 30 min window");
