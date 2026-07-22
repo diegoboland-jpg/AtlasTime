@@ -4,7 +4,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ## Current release
 
-**Version:** 0.30
+**Version:** 1.0.0 release candidate
 
 ### Implemented
 
@@ -19,12 +19,19 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Save multiple groups locally
 - Set editable start and finish times, use quick 30-minute meeting lengths, type any exact minute, or create a true all-day event
 - Add meeting title, location, and notes
+- Create prefilled Google Calendar and Outlook event drafts
+- Export complete `.ics` events for Apple and device calendars
+- Plan exact start and finish times, including all-day events
 - Create portable share links with an explicit privacy warning
 - Import shared groups without overwriting local data
 - Install as a PWA and return to saved data offline
 - Use recent cached places when network city search is unavailable
 - Launch WhatsApp, Zoom, Telegram, or Viber
 - Use keyboard-accessible city autocomplete and reduced-motion/forced-color support
+
+### v1.0 boundary
+
+AtlasTime v1.0 completes the local-first cross-time-zone planner. It plans, compares, shares, and exports meetings without requiring an account or reading a calendar. Direct authorized calendar creation, contact synchronization, invitations, and shared cloud workspaces remain post-v1.0 work.
 
 ## Important privacy model
 
@@ -58,6 +65,8 @@ npm run preview
 
 ## Product documentation
 
+- [v1.0 Changelog](CHANGELOG.md)
+- [v1.0 Acceptance Checklist](docs/V1_RELEASE_CHECKLIST.md)
 - [UX Specification](docs/UX_SPECIFICATION.md)
 - [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)
 - [Data and API Design](docs/DATA_AND_API_DESIGN.md)

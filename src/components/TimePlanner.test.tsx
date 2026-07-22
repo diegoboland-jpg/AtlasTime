@@ -47,10 +47,14 @@ describe("progressive planner disclosure", () => {
   it("renders date, recommendation, and comparison only when expanded", () => {
     const markup = renderPlanner(true);
 
-    expect(markup).toContain("Hide comparison");
+    expect(markup).toContain("Hide planner");
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('type="date"');
-    expect(markup).toContain("Best-scoring 1 hour 30 min window");
+    expect(markup).toContain("Selected 1 hour 30 min window");
+    expect(markup).toContain("12:37 UTC");
+    expect(markup).toContain("Selected meeting time and my local time");
+    expect(markup).toContain("My time");
+    expect(markup).toContain("planner-sticky-recommendation");
     expect(markup).toContain("Start (UTC)");
     expect(markup).toContain("Finish (UTC)");
     expect(markup).toContain("Quick length");

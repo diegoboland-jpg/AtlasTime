@@ -1,6 +1,6 @@
 # AtlasTime mobile-device testing
 
-AtlasTime v0.11 is an installable progressive web app preview. It can still be used as a normal responsive website.
+AtlasTime v1.0 is an installable progressive web app and can also be used as a normal responsive website.
 
 ## Start a phone-accessible preview on Windows
 
@@ -36,11 +36,12 @@ If Vite does not print a reachable Network address, run `ipconfig`, find the act
 - Edit working hours and move the 24-hour slider.
 - Confirm the delete control never overlaps **Now**, the live time, or the date.
 - Try a long participant name and long city name.
-- Copy meeting details and download the `.ics` file.
+- Enter exact Start and Finish times and test an all-day event.
+- Confirm Google and Outlook open prefilled drafts and download the Apple/device `.ics` event.
 - Install AtlasTime, launch it from the home screen, and confirm it opens without browser controls.
 - After one online load, turn on airplane mode and confirm the saved group and planner reopen.
 - Test at least one iPhone/Safari and one Android/Chrome device before calling the layout production-ready.
 
 ## Important limitation
 
-The Vite development server is for local testing only. Do not expose it directly to the public internet. This phase creates an installable PWA, not a native App Store or Play Store package. Installation and offline behavior remain provisional until verified on physical iPhone and Android devices.
+The Vite development server is for local testing only. Do not expose it directly to the public internet. AtlasTime is an installable PWA, not a native App Store or Play Store package. Installation and offline behavior still require physical-device validation for each supported browser and operating system.

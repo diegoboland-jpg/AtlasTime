@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronDown, ChevronUp, Clock3 } from "lucide-react";
 import { durationLabel } from "../meeting";
-import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
+import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours, scoreAtUtcHour } from "../time";
 import type { HourScore, Person } from "../types";
 import { ExactTimeInput } from "./ExactTimeInput";
 import { MobilePlannerComparison } from "./MobilePlannerComparison";
@@ -45,6 +45,17 @@ export function TimePlanner({
   const finishClockMinutes = finishTotalMinutes % (24 * 60);
   const exactFinishValue = `${String(Math.floor(finishClockMinutes / 60)).padStart(2, "0")}:${String(finishClockMinutes % 60).padStart(2, "0")}`;
   const endsNextDay = finishTotalMinutes >= 24 * 60;
+  const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const devicePerson: Person = {
+    id: "current-device",
+    name: "My time",
+    city: deviceTimeZone.split("/").pop()?.replaceAll("_", " ") || deviceTimeZone,
+    timeZone: deviceTimeZone,
+    workStart: 0,
+    workEnd: 24,
+  };
+  const selectedScore = scoreAtUtcHour(people, dateValue, selectedHour, durationMinutes);
+  const selectedIsRecommendation = recommendation !== null && Math.abs(selectedHour - recommendation.utcHour) < 0.001;
 
   function selectExactStart(value: string) {
     const [hour, minute] = value.split(":").map(Number);
@@ -73,7 +84,7 @@ export function TimePlanner({
           aria-controls="planner-analysis"
           onClick={() => onExpandedChange(!expanded)}
         >
-          {expanded ? <><ChevronUp size={17} /> Hide comparison</> : <><ChevronDown size={17} /> Plan Humanly</>}
+          {expanded ? <><ChevronUp size={17} /> Hide planner</> : <><ChevronDown size={17} /> Plan Humanly</>}
         </button>
       </div>
 
@@ -143,30 +154,29 @@ export function TimePlanner({
                 )}
               </div>
             </div>
-          ) : recommendation && (
-            <button
-              className="recommendation"
-              type="button"
-              onClick={() => onHourChange(recommendation.utcHour)}
-            >
-              <span className="recommendation-icon"><Clock3 size={24} /></span>
-              <span className="recommendation-copy">
-                <span>Best-scoring {durationLabel(durationMinutes)} window</span>
-                <strong>{formatUtcHour(recommendation.utcHour)}</strong>
-                <small>
-                  {recommendation.available} of {recommendation.total} people in working hours
-                  {recommendation.penalty > 0 ? ` - discomfort penalty ${recommendation.penalty}` : " - no discomfort penalty"}.
-                </small>
-              </span>
-              <span className="local-times">
-                {people.map((person) => (
-                  <span key={person.id}>
-                    <small>{person.name}</small>
-                    <strong>{localRangeLabel(dateValue, recommendation.utcHour, durationMinutes, person)}</strong>
-                  </span>
-                ))}
-              </span>
-            </button>
+          ) : (
+            <div className="planner-sticky-recommendation" aria-label="Selected meeting time and my local time">
+              <div className="recommendation" role="status">
+                <span className="recommendation-icon"><Clock3 size={24} /></span>
+                <span className="recommendation-copy">
+                  <span>{selectedIsRecommendation ? "Best-scoring" : "Selected"} {durationLabel(durationMinutes)} window</span>
+                  <strong>{formatUtcHour(selectedHour)}</strong>
+                  <small>
+                    {selectedScore.available} of {selectedScore.total} people in working hours
+                    {selectedScore.penalty > 0 ? ` - discomfort penalty ${selectedScore.penalty}` : " - no discomfort penalty"}.
+                  </small>
+                </span>
+              </div>
+              <aside className="my-time-recommendation" aria-label={`My time in ${deviceTimeZone}`}>
+                <span className="recommendation-icon"><Clock3 size={24} /></span>
+                <span className="my-time-copy">
+                  <span>My time</span>
+                  <strong>{formatInZone(dateAtUtcHour(dateValue, selectedHour), deviceTimeZone)}</strong>
+                  <small>{localRangeLabel(dateValue, selectedHour, durationMinutes, devicePerson)}</small>
+                  <em>{devicePerson.city}</em>
+                </span>
+              </aside>
+            </div>
           )}
 
           {!allDay && <MobilePlannerComparison

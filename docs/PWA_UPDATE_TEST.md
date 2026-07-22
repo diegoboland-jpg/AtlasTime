@@ -1,6 +1,6 @@
 # Testing an AtlasTime installed-app update
 
-Use this test after v0.23 is available on `main`. It confirms that an already installed Windows or phone PWA can discover and activate a newer release without losing saved groups.
+Use this test for every release candidate. It confirms that an already installed Windows or phone PWA can discover and activate a newer release without losing saved groups.
 
 ## Before starting
 
@@ -11,15 +11,15 @@ Use this test after v0.23 is available on `main`. It confirms that an already in
 ## Windows installed-PWA test
 
 1. Open CMD in the AtlasTime repository folder.
-2. Switch to the older `main` version before v0.23, then run `npm.cmd install`, `npm.cmd run build`, and `npm.cmd run preview:mobile`.
+2. Switch to the previously released version, then run `npm.cmd install`, `npm.cmd run build`, and `npm.cmd run preview:mobile`.
 3. Open the displayed address, normally `http://localhost:4173`, and install AtlasTime from Edge or Chrome.
 4. Open the installed AtlasTime window and create the `Update test` saved group.
-5. Leave the installed app open. In GitHub Desktop, fetch the latest `main` after v0.23 is merged.
+5. Leave the installed app open. In GitHub Desktop, fetch the release-candidate branch or the latest `main` after it is merged.
 6. In CMD, stop the preview with Ctrl+C, then run `npm.cmd install`, `npm.cmd run build`, and `npm.cmd run preview:mobile` again on the same address and port.
 7. Return to the installed AtlasTime window. If necessary, close and reopen it once or move away and return to it so the app checks for updates.
 8. Confirm that **A new AtlasTime version is ready** appears.
 9. Select **Update now**.
-10. Confirm the app reloads, shows v0.23, and still contains the `Update test` group.
+10. Confirm the app reloads, shows the expected new version, and still contains the `Update test` group.
 
 ## Phone test
 

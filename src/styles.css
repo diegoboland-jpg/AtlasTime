@@ -288,7 +288,8 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .work-hours label { display: grid; gap: 5px; color: #7b879e; font-size: 10px; font-weight: 750; }
 .work-hours select { min-height: 44px; padding: 6px 8px; }
 
-.planner { overflow: hidden; }
+.planner.collapsed { overflow: hidden; }
+.planner.expanded { overflow: visible; }
 .planner-disclosure-heading { align-items: center; }
 .planner-helper { max-width: 650px; margin: 8px 0 0; color: #718099; font-size: 13px; line-height: 1.5; }
 .planner-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
@@ -327,9 +328,23 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .recommendation {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px;
   background: #eaf1ff; border: 1px solid #cfddff; padding: 22px; border-radius: 18px; margin-bottom: 22px;
-  width: 100%; color: inherit; text-align: left; cursor: pointer;
+  width: 100%; color: inherit; text-align: left;
 }
-.recommendation:hover { border-color: #8fb0ff; box-shadow: 0 8px 22px rgba(36,107,253,.09); }
+.planner-sticky-recommendation {
+  position: sticky; z-index: 12; top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+  margin-bottom: 22px; padding: 8px; border-radius: 22px; background: rgba(245,247,251,.96);
+  box-shadow: 0 8px 24px rgba(23,32,51,.1); backdrop-filter: blur(12px);
+}
+.planner-sticky-recommendation .recommendation { grid-template-columns: auto minmax(0, 1fr); margin: 0; }
+.my-time-recommendation {
+  min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 18px;
+  padding: 22px; border: 1px solid #dfe5ef; border-radius: 18px; background: white; color: #172033;
+}
+.my-time-copy { min-width: 0; display: block; }
+.my-time-copy > span { display: block; color: #63708a; font-size: 12px; font-weight: 800; }
+.my-time-copy > strong { display: block; margin-top: 3px; font-size: 24px; }
+.my-time-copy > small, .my-time-copy > em { display: block; margin-top: 4px; color: #63708a; font-size: 11px; font-style: normal; line-height: 1.35; }
+.my-time-copy > em { overflow: hidden; color: #31558f; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
 .recommendation-icon { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 15px; background: white; color: #246bfd; }
 .recommendation-copy > span { display: block; color: #63708a; font-size: 12px; font-weight: 700; }
 .recommendation-copy > strong { display: block; font-size: 24px; margin-top: 3px; }
@@ -644,6 +659,13 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .recommendation { grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 16px; }
   .recommendation-icon { width: 44px; height: 44px; border-radius: 13px; }
   .recommendation .local-times { display: none; }
+  .planner-sticky-recommendation { top: 6px; gap: 8px; margin-inline: -4px; padding: 6px; border-radius: 17px; }
+  .planner-sticky-recommendation .recommendation, .my-time-recommendation { gap: 8px; padding: 12px 9px; border-radius: 13px; }
+  .planner-sticky-recommendation .recommendation-icon { width: 34px; height: 34px; border-radius: 10px; }
+  .planner-sticky-recommendation .recommendation-icon svg { width: 18px; height: 18px; }
+  .planner-sticky-recommendation .recommendation-copy > span, .my-time-copy > span { font-size: 8px; line-height: 1.2; }
+  .planner-sticky-recommendation .recommendation-copy > strong, .my-time-copy > strong { font-size: 18px; white-space: nowrap; }
+  .planner-sticky-recommendation .recommendation-copy > small, .my-time-copy > small, .my-time-copy > em { font-size: 8px; line-height: 1.25; }
   .mobile-planner-comparison { display: grid; gap: 13px; }
   .mobile-person-times { display: grid; gap: 8px; }
   .mobile-person-time {
@@ -748,6 +770,6 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
 }
 
 @media (forced-colors: active) {
-  .hour-cell.working, .hour-cell.selected, .recommendation, .selected-person-time, .compact-time-card, .undo-toast { border: 1px solid CanvasText; }
+  .hour-cell.working, .hour-cell.selected, .recommendation, .my-time-recommendation, .selected-person-time, .compact-time-card, .undo-toast { border: 1px solid CanvasText; }
   .time-period-scene, .country-flag-backdrop { display: none; }
 }
