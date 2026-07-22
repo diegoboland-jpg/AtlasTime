@@ -5,11 +5,11 @@
 - [x] Keep the primary screen focused on the compact Everyone's Time overview and meeting planning.
 - [x] Move detailed person/location editing into a dedicated people-management view.
 - [x] Add a light rolodex-style card entrance while respecting reduced-motion preferences.
-- [x] Replace the phone planner's horizontal hour carousel with a compact, vertically scrollable grid.
-- [x] Keep participant comparisons as thin rows beneath the chosen time.
+- [x] Remove the phone planner's duplicate hour picker and rely on the floating 24-hour slider, Now, recommendation, and exact-time field.
+- [x] Keep participant comparisons as compact rows with larger, centered local meeting ranges.
 - [x] Hide the raw invitation text behind an optional preview disclosure.
 - [x] Present `.ics` as the universal Apple, Windows, and other-calendar handoff alongside prefilled Google and Outlook drafts.
-- [ ] Validate the focused workspace and vertical time grid on physical Android, iPhone, and installed Windows PWAs.
+- [ ] Validate the focused workspace and compact local-time rows on physical Android, iPhone, and installed Windows PWAs.
 
 ### Future connected people workspace
 

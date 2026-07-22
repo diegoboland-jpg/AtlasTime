@@ -1,15 +1,11 @@
-import type { KeyboardEvent } from "react";
-import { dateAtUtcHour, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
-import type { HourScore, Person } from "../types";
+import { dateAtUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
+import type { Person } from "../types";
 
 type MobilePlannerComparisonProps = {
   people: Person[];
   dateValue: string;
   selectedHour: number;
   durationMinutes: number;
-  recommendation: HourScore | null;
-  hours: HourScore[];
-  onHourChange: (hour: number) => void;
 };
 
 export function MobilePlannerComparison({
@@ -17,66 +13,11 @@ export function MobilePlannerComparison({
   dateValue,
   selectedHour,
   durationMinutes,
-  recommendation,
-  hours,
-  onHourChange,
 }: MobilePlannerComparisonProps) {
   const selectedInstant = dateAtUtcHour(dateValue, selectedHour);
-  function handleHourKeys(event: KeyboardEvent<HTMLButtonElement>, hour: number) {
-    const currentIndex = hours.findIndex((candidate) => candidate.utcHour === hour);
-    const nextIndex = event.key === "ArrowRight"
-      ? Math.min(hours.length - 1, currentIndex + 1)
-      : event.key === "ArrowLeft"
-        ? Math.max(0, currentIndex - 1)
-        : event.key === "Home"
-          ? 0
-          : event.key === "End"
-            ? hours.length - 1
-            : null;
-
-    if (nextIndex === null) return;
-    event.preventDefault();
-    const nextHour = hours[nextIndex].utcHour;
-    const nextOption = event.currentTarget.parentElement?.querySelector<HTMLButtonElement>(`[data-utc-hour="${nextHour}"]`);
-    nextOption?.focus();
-    onHourChange(nextHour);
-  }
 
   return (
     <div className="mobile-planner-comparison" aria-label="Phone-friendly meeting-hour comparison">
-      <div className="mobile-planner-intro">
-        <div>
-          <span>Selected meeting hour</span>
-          <strong>{formatUtcHour(selectedHour)}</strong>
-        </div>
-        <small>Choose from the compact grid or use arrow keys, then compare everyone below.</small>
-      </div>
-
-      <div className="mobile-hour-grid" role="grid" aria-label="Choose a UTC meeting hour">
-        {hours.map((hour) => {
-          const selected = selectedHour === hour.utcHour;
-          const best = recommendation?.utcHour === hour.utcHour;
-          return (
-            <button
-              type="button"
-              role="gridcell"
-              className={`mobile-hour-option ${selected ? "selected" : ""} ${best ? "best" : ""}`}
-              key={hour.utcHour}
-              aria-pressed={selected}
-              aria-keyshortcuts="ArrowLeft ArrowRight Home End"
-              aria-label={`${formatUtcHour(hour.utcHour)}, ${hour.available} of ${hour.total} available for ${durationMinutes} minutes${best ? ", best-scoring start" : ""}`}
-              data-utc-hour={hour.utcHour}
-              onClick={() => onHourChange(hour.utcHour)}
-              onKeyDown={(event) => handleHourKeys(event, hour.utcHour)}
-            >
-              <span>{formatUtcHour(hour.utcHour).replace(" UTC", "")}</span>
-              <small>{hour.available}/{hour.total} free</small>
-              {best && <em>Best</em>}
-            </button>
-          );
-        })}
-      </div>
-
       <div className="mobile-person-times" aria-live="polite">
         {people.map((person) => {
           const working = meetingFitsWorkingHours(person, selectedInstant, durationMinutes);
@@ -87,9 +28,9 @@ export function MobilePlannerComparison({
                 <strong>{person.name}</strong>
                 <small>{person.city || person.timeZone.replaceAll("_", " ")}</small>
               </span>
-              <span className="mobile-person-local-time">
-                <strong>{formatInZone(selectedInstant, person.timeZone)}</strong>
-                <small>{localRangeLabel(dateValue, selectedHour, durationMinutes, person)}</small>
+              <span className="mobile-person-planning">
+                <small>Planning</small>
+                <strong>{localRangeLabel(dateValue, selectedHour, durationMinutes, person)}</strong>
               </span>
               <em className={working ? "working" : "outside"}>{working ? "Working hours" : "Outside hours"}</em>
             </article>
