@@ -62,10 +62,10 @@ export default function App() {
     });
   }, [restoredPersonFocusId]);
 
-  const hours = useMemo(() => scoreHours(people, planner.date), [people, planner.date]);
-  const recommendation = useMemo(() => bestHour(people, planner.date), [people, planner.date]);
+  const hours = useMemo(() => scoreHours(people, planner.date, planner.durationMinutes), [people, planner.date, planner.durationMinutes]);
+  const recommendation = useMemo(() => bestHour(people, planner.date, planner.durationMinutes), [people, planner.date, planner.durationMinutes]);
   const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
-  const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour), [people, planner.date, planner.hour]);
+  const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour, planner.durationMinutes), [people, planner.date, planner.hour, planner.durationMinutes]);
 
   function updateActiveGroup(update: (group: SavedGroup) => SavedGroup) {
     setWorkspace((current) => ({
@@ -201,7 +201,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v0.28 forgiving removal</span>
+          <span className="mvp-badge">v0.29 duration-aware planning</span>
         </div>
       </header>
 
@@ -298,11 +298,13 @@ export default function App() {
           people={people}
           dateValue={planner.date}
           selectedHour={planner.hour}
+          durationMinutes={planner.durationMinutes}
           recommendation={recommendation}
           hours={hours}
           expanded={plannerExpanded}
           onExpandedChange={setPlannerExpanded}
           onDateChange={(date) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date } }))}
+          onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
           onHourChange={selectHour}
         />
 
@@ -311,7 +313,6 @@ export default function App() {
           planner={planner}
           selectedInstant={selectedInstant}
           onTitleChange={(title) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, title } }))}
-          onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
           onLocationChange={(location) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, location } }))}
           onNotesChange={(notes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, notes } }))}
         />
@@ -347,7 +348,7 @@ export default function App() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v0.28</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v0.29</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
     </div>
   );
 }

@@ -9,19 +9,16 @@ type Props = {
   planner: PlannerState;
   selectedInstant: Date;
   onTitleChange: (title: string) => void;
-  onDurationChange: (durationMinutes: number) => void;
   onLocationChange: (location: string) => void;
   onNotesChange: (notes: string) => void;
 };
-
-const durations = [30, 45, 60, 90, 120];
 
 function safeFileName(title: string) {
   const normalized = title.trim().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
   return `${normalized || "atlastime-meeting"}.ics`;
 }
 
-export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onDurationChange, onLocationChange, onNotesChange }: Props) {
+export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
   const [shareStatus, setShareStatus] = useState("");
   const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, planner);
@@ -102,12 +99,6 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           <label>
             Meeting title
             <input value={planner.title} maxLength={120} placeholder="e.g. Weekly project sync" onChange={(event) => onTitleChange(event.target.value)} />
-          </label>
-          <label>
-            Duration
-            <select value={planner.durationMinutes} onChange={(event) => onDurationChange(Number(event.target.value))}>
-              {durations.map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}
-            </select>
           </label>
           <label>
             Meeting location or link

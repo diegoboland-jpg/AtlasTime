@@ -1,5 +1,5 @@
 import { CalendarDays, ChevronDown, ChevronUp, Clock3 } from "lucide-react";
-import { dateAtUtcHour, formatInZone, hourInZone, localLabel } from "../time";
+import { dateAtUtcHour, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
 import type { HourScore, Person } from "../types";
 import { MobilePlannerComparison } from "./MobilePlannerComparison";
 
@@ -7,11 +7,13 @@ type TimePlannerProps = {
   people: Person[];
   dateValue: string;
   selectedHour: number;
+  durationMinutes: number;
   recommendation: HourScore | null;
   hours: HourScore[];
   expanded: boolean;
   onExpandedChange: (expanded: boolean) => void;
   onDateChange: (date: string) => void;
+  onDurationChange: (duration: number) => void;
   onHourChange: (hour: number) => void;
 };
 
@@ -19,13 +21,24 @@ export function TimePlanner({
   people,
   dateValue,
   selectedHour,
+  durationMinutes,
   recommendation,
   hours,
   expanded,
   onExpandedChange,
   onDateChange,
+  onDurationChange,
   onHourChange,
 }: TimePlannerProps) {
+  const exactStartMinutes = Math.round(selectedHour * 60) % (24 * 60);
+  const exactStartValue = `${String(Math.floor(exactStartMinutes / 60)).padStart(2, "0")}:${String(exactStartMinutes % 60).padStart(2, "0")}`;
+
+  function selectExactStart(value: string) {
+    const [hour, minute] = value.split(":").map(Number);
+    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return;
+    onHourChange(hour + minute / 60);
+  }
+
   return (
     <section className={`section planner ${expanded ? "expanded" : "collapsed"}`} id="planner" aria-labelledby="planner-heading">
       <div className="section-heading planner-disclosure-heading">
@@ -53,6 +66,33 @@ export function TimePlanner({
               Date
               <input type="date" value={dateValue} onChange={(event) => onDateChange(event.target.value)} />
             </label>
+            <label className="date-field">
+              Duration (minutes)
+              <input
+                type="number"
+                min="1"
+                max="1440"
+                step="1"
+                list="duration-suggestions"
+                value={durationMinutes}
+                onChange={(event) => {
+                  const minutes = Number(event.target.value);
+                  if (Number.isInteger(minutes) && minutes >= 1 && minutes <= 1440) onDurationChange(minutes);
+                }}
+              />
+            </label>
+            <datalist id="duration-suggestions">
+              {[15, 30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes} />)}
+            </datalist>
+            <label className="date-field">
+              Exact UTC start
+              <input
+                type="time"
+                step="60"
+                value={exactStartValue}
+                onInput={(event) => selectExactStart(event.currentTarget.value)}
+              />
+            </label>
           </div>
 
           {recommendation && (
@@ -63,8 +103,8 @@ export function TimePlanner({
             >
               <span className="recommendation-icon"><Clock3 size={24} /></span>
               <span className="recommendation-copy">
-                <span>Best-scoring one-hour window</span>
-                <strong>{String(recommendation.utcHour).padStart(2, "0")}:00 UTC</strong>
+                <span>Best-scoring {durationMinutes}-minute window</span>
+                <strong>{formatUtcHour(recommendation.utcHour)}</strong>
                 <small>
                   {recommendation.available} of {recommendation.total} people in working hours
                   {recommendation.penalty > 0 ? ` - discomfort penalty ${recommendation.penalty}` : " - no discomfort penalty"}.
@@ -74,7 +114,7 @@ export function TimePlanner({
                 {people.map((person) => (
                   <span key={person.id}>
                     <small>{person.name}</small>
-                    <strong>{localLabel(dateValue, recommendation.utcHour, person)}</strong>
+                    <strong>{localRangeLabel(dateValue, recommendation.utcHour, durationMinutes, person)}</strong>
                   </span>
                 ))}
               </span>
@@ -85,6 +125,7 @@ export function TimePlanner({
             people={people}
             dateValue={dateValue}
             selectedHour={selectedHour}
+            durationMinutes={durationMinutes}
             recommendation={recommendation}
             hours={hours}
             onHourChange={onHourChange}
@@ -99,9 +140,9 @@ export function TimePlanner({
                   key={hour.utcHour}
                   className={selectedHour === hour.utcHour ? "active" : ""}
                   onClick={() => onHourChange(hour.utcHour)}
-                  aria-label={`Select ${hour.utcHour}:00 UTC`}
+                  aria-label={`Select ${formatUtcHour(hour.utcHour)}`}
                 >
-                  {String(hour.utcHour).padStart(2, "0")}
+                  {formatUtcHour(hour.utcHour).replace(" UTC", "")}
                 </button>
               ))}
             </div>
@@ -114,18 +155,18 @@ export function TimePlanner({
                 </div>
                 {hours.map((hour) => {
                   const instant = dateAtUtcHour(dateValue, hour.utcHour);
-                  const localHour = hourInZone(instant, person.timeZone);
-                  const working = localHour >= person.workStart && localHour < person.workEnd;
+                  const working = meetingFitsWorkingHours(person, instant, durationMinutes);
+                  const localTime = formatInZone(instant, person.timeZone);
                   return (
                     <button
                       type="button"
                       className={`hour-cell ${working ? "working" : ""} ${selectedHour === hour.utcHour ? "selected" : ""}`}
                       key={hour.utcHour}
                       title={`${person.name}: ${formatInZone(instant, person.timeZone)}`}
-                      aria-label={`${person.name}: ${formatInZone(instant, person.timeZone)}, ${working ? "within" : "outside"} working hours. Select ${hour.utcHour}:00 UTC`}
+                      aria-label={`${person.name}: ${localRangeLabel(dateValue, hour.utcHour, durationMinutes, person)}, ${working ? "complete meeting within" : "part of meeting outside"} working hours. Select ${formatUtcHour(hour.utcHour)}`}
                       onClick={() => onHourChange(hour.utcHour)}
                     >
-                      {String(localHour).padStart(2, "0")}
+                      {localTime}
                     </button>
                   );
                 })}
@@ -134,7 +175,7 @@ export function TimePlanner({
           </div>
 
           <p className="timeline-note">
-            Click any UTC hour or local-time cell to select it. Green cells use each person&apos;s editable working hours; scoring also penalizes very early (before 07:00) and very late (21:00 or later) local times.
+            Choose any 30-minute UTC start or local-time cell. Green cells mean the complete {durationMinutes}-minute meeting fits that person&apos;s working hours; scoring also penalizes very early (before 07:00) and very late (21:00 or later) local times.
           </p>
         </div>
       )}
