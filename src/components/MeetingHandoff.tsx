@@ -128,7 +128,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             <Clipboard size={17} /> {copyStatus || "Copy details"}
           </button>
           <a className="secondary-button" href={googleCalendarUrl} target="_blank" rel="noreferrer">
-            Google Calendar <ExternalLink size={15} />
+            Google Calendar draft <ExternalLink size={15} />
           </a>
           <a className="secondary-button" href={outlookCalendarUrl} target="_blank" rel="noreferrer">
             Outlook Calendar <ExternalLink size={15} />
@@ -137,7 +137,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             <Download size={17} /> Any calendar (.ics)
           </button>
         </div>
-        <p className="handoff-privacy-note">Share invite opens your device's share sheet. You choose the app and recipient before anything leaves AtlasTime.</p>
+        <p className="handoff-privacy-note">Calendar buttons open a prefilled draft for you to review and save. If a mobile calendar app ignores the draft details, use Any calendar (.ics). AtlasTime never saves an event without your confirmation.</p>
       </div>
     </section>
   );

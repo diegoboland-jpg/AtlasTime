@@ -64,6 +64,7 @@ describe("meeting handoff", () => {
     const outlook = new URL(createOutlookCalendarUrl(event));
 
     expect(google.origin).toBe("https://calendar.google.com");
+    expect(google.pathname).toBe("/calendar/render");
     expect(google.searchParams.get("action")).toBe("TEMPLATE");
     expect(google.searchParams.get("dates")).toBe("20260715T233000Z/20260716T010000Z");
     expect(google.searchParams.get("text")).toBe(event.title);
@@ -97,6 +98,7 @@ describe("meeting handoff", () => {
     expect(calendar).toContain("DTSTART;VALUE=DATE:20260722\r\n");
     expect(calendar).toContain("DTEND;VALUE=DATE:20260723\r\n");
     expect(calendar).not.toContain("DTSTART:2026");
+    expect(google.pathname).toBe("/calendar/render");
     expect(google.searchParams.get("dates")).toBe("20260722/20260723");
     expect(outlook.searchParams.get("startdt")).toBe("2026-07-22");
     expect(outlook.searchParams.get("enddt")).toBe("2026-07-23");

@@ -159,7 +159,7 @@ export function createGoogleCalendarUrl({ title, start, durationMinutes, descrip
     details: description,
   });
   if (location?.trim()) params.set("location", location.trim());
-  return `https://calendar.google.com/calendar/r/eventedit?${params}`;
+  return `https://calendar.google.com/calendar/render?${params}`;
 }
 
 export function createOutlookCalendarUrl({ title, start, durationMinutes, description, location, allDay, date }: CalendarLinkEvent) {
