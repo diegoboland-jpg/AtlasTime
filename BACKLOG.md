@@ -1,5 +1,22 @@
 # AtlasTime backlog
 
+## v0.30: focused workspace
+
+- [x] Keep the primary screen focused on the compact Everyone's Time overview and meeting planning.
+- [x] Move detailed person/location editing into a dedicated people-management view.
+- [x] Add a light rolodex-style card entrance while respecting reduced-motion preferences.
+- [x] Replace the phone planner's horizontal hour carousel with a compact, vertically scrollable grid.
+- [x] Keep participant comparisons as thin rows beneath the chosen time.
+- [x] Hide the raw invitation text behind an optional preview disclosure.
+- [x] Present `.ics` as the universal Apple, Windows, and other-calendar handoff alongside prefilled Google and Outlook drafts.
+- [ ] Validate the focused workspace and vertical time grid on physical Android, iPhone, and installed Windows PWAs.
+
+### Future connected people workspace
+
+- Add opt-in Google Contacts and Outlook Contacts import only after privacy, authorization, duplicate matching, and disconnect behavior are designed.
+- Let users select imported contacts with checkboxes and enrich missing locations before adding them to a group.
+- Preserve manual person, team, and location-only entries without requiring an account or contact synchronization.
+
 ## v0.29: duration-aware recommendations
 
 - [x] Score the complete selected duration instead of only the meeting start.

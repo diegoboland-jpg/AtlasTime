@@ -57,6 +57,10 @@ describe("forgiving person removal", () => {
     const root = createRoot(container);
     await act(async () => root.render(<App />));
 
+    const manage = [...container.querySelectorAll<HTMLButtonElement>("button")].find((button) => button.textContent?.includes("Manage people"));
+    expect(manage).toBeTruthy();
+    await act(async () => manage!.click());
+
     const remove = container.querySelector<HTMLButtonElement>('[aria-label="Remove Ana"]');
     expect(remove).toBeTruthy();
     await act(async () => remove!.click());
@@ -70,7 +74,7 @@ describe("forgiving person removal", () => {
     await act(async () => undo!.click());
     await flushAnimationFrame();
 
-    const restoredNames = [...container.querySelectorAll(".people-grid .person-card h3")].map((heading) => heading.textContent);
+    const restoredNames = [...container.querySelectorAll(".people-rolodex .person-card h3")].map((heading) => heading.textContent);
     expect(restoredNames).toEqual(["Ana", "Lee"]);
     expect(container.querySelector(".undo-toast")).toBeNull();
     expect(document.activeElement?.id).toBe("person-card-ana");

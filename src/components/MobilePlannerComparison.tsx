@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useLayoutEffect, useRef } from "react";
+import type { KeyboardEvent } from "react";
 import { dateAtUtcHour, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours } from "../time";
 import type { HourScore, Person } from "../types";
 
@@ -22,28 +22,6 @@ export function MobilePlannerComparison({
   onHourChange,
 }: MobilePlannerComparisonProps) {
   const selectedInstant = dateAtUtcHour(dateValue, selectedHour);
-  const hourScroller = useRef<HTMLDivElement | null>(null);
-  const selectedOption = useRef<HTMLButtonElement | null>(null);
-
-  useLayoutEffect(() => {
-    const scroller = hourScroller.current;
-    const option = selectedOption.current;
-    if (!scroller || !option) return;
-
-    const centerSelectedHour = () => {
-      scroller.scrollLeft = Math.max(0, option.offsetLeft - (scroller.clientWidth - option.clientWidth) / 2);
-    };
-    centerSelectedHour();
-    const frame = window.requestAnimationFrame(centerSelectedHour);
-    const handleResize = () => centerSelectedHour();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [selectedHour]);
-
   function handleHourKeys(event: KeyboardEvent<HTMLButtonElement>, hour: number) {
     const currentIndex = hours.findIndex((candidate) => candidate.utcHour === hour);
     const nextIndex = event.key === "ArrowRight"
@@ -71,20 +49,19 @@ export function MobilePlannerComparison({
           <span>Selected meeting hour</span>
           <strong>{formatUtcHour(selectedHour)}</strong>
         </div>
-        <small>Swipe or use arrow keys, then compare everyone below.</small>
+        <small>Choose from the compact grid or use arrow keys, then compare everyone below.</small>
       </div>
 
-      <div className="mobile-hour-scroller" role="list" aria-label="Choose a UTC meeting hour" ref={hourScroller}>
+      <div className="mobile-hour-grid" role="grid" aria-label="Choose a UTC meeting hour">
         {hours.map((hour) => {
           const selected = selectedHour === hour.utcHour;
           const best = recommendation?.utcHour === hour.utcHour;
           return (
             <button
               type="button"
-              role="listitem"
+              role="gridcell"
               className={`mobile-hour-option ${selected ? "selected" : ""} ${best ? "best" : ""}`}
               key={hour.utcHour}
-              ref={selected ? selectedOption : undefined}
               aria-pressed={selected}
               aria-keyshortcuts="ArrowLeft ArrowRight Home End"
               aria-label={`${formatUtcHour(hour.utcHour)}, ${hour.available} of ${hour.total} available for ${durationMinutes} minutes${best ? ", best-scoring start" : ""}`}

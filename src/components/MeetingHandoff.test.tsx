@@ -73,4 +73,14 @@ describe("meeting handoff sharing", () => {
     expect(container.textContent).toContain("Copied instead");
     root.unmount();
   });
+
+  it("keeps the raw invitation collapsed and offers a universal calendar file", () => {
+    const { container, root } = renderHandoff();
+
+    const disclosure = container.querySelector<HTMLDetailsElement>(".meeting-summary-disclosure");
+    expect(disclosure?.open).toBe(false);
+    expect(disclosure?.querySelector("summary")?.textContent).toContain("Preview copied invitation details");
+    expect(container.textContent).toContain("Any calendar (.ics)");
+    root.unmount();
+  });
 });

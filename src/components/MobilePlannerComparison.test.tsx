@@ -38,6 +38,8 @@ describe("mobile planner comparison", () => {
     expect(markup).toContain("Madrid team");
     expect(markup).toContain("Working hours");
     expect(markup).toContain('aria-keyshortcuts="ArrowLeft ArrowRight Home End"');
+    expect(markup).toContain('class="mobile-hour-grid"');
+    expect(markup).not.toContain("mobile-hour-scroller");
     expect(markup.match(/mobile-hour-option/g)).toHaveLength(24);
   });
 
@@ -84,41 +86,4 @@ describe("mobile planner comparison", () => {
     container.remove();
   });
 
-  it("centers the selected hour after the first layout", async () => {
-    const hours = Array.from({ length: 24 }, (_, utcHour) => ({ utcHour, available: 1, total: 1, penalty: 0, score: 12 }));
-    const container = document.createElement("div");
-    const root = createRoot(container);
-    Object.defineProperty(HTMLElement.prototype, "offsetLeft", {
-      configurable: true,
-      get() { return Number(this.getAttribute("data-utc-hour") ?? 0) * 84; },
-    });
-    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
-      configurable: true,
-      get() { return this.classList.contains("mobile-hour-scroller") ? 320 : 76; },
-    });
-    const requestFrame = vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
-      callback(0);
-      return 1;
-    });
-    const cancelFrame = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
-
-    await act(async () => {
-      root.render(
-        <MobilePlannerComparison
-          people={[]}
-          dateValue="2026-07-17"
-          selectedHour={12}
-          durationMinutes={60}
-          recommendation={hours[12]}
-          hours={hours}
-          onHourChange={vi.fn()}
-        />,
-      );
-    });
-
-    expect(container.querySelector<HTMLElement>(".mobile-hour-scroller")?.scrollLeft).toBe(886);
-    await act(async () => root.unmount());
-    requestFrame.mockRestore();
-    cancelFrame.mockRestore();
-  });
 });

@@ -110,7 +110,10 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           </label>
         </div>
 
-        <pre className="meeting-summary" aria-label="Meeting summary preview">{summary}</pre>
+        <details className="meeting-summary-disclosure">
+          <summary>Preview copied invitation details</summary>
+          <pre className="meeting-summary" aria-label="Meeting summary preview">{summary}</pre>
+        </details>
 
         <div className="handoff-actions">
           <button type="button" className="primary-button" onClick={shareInvite}>
@@ -126,7 +129,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             Outlook Calendar <ExternalLink size={15} />
           </a>
           <button type="button" className="secondary-button" onClick={downloadCalendarFile}>
-            <Download size={17} /> Download .ics
+            <Download size={17} /> Any calendar (.ics)
           </button>
         </div>
         <p className="handoff-privacy-note">Share invite opens your device's share sheet. You choose the app and recipient before anything leaves AtlasTime.</p>
