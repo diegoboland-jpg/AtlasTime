@@ -45,6 +45,15 @@ export function TimePlanner({
   const finishClockMinutes = finishTotalMinutes % (24 * 60);
   const exactFinishValue = `${String(Math.floor(finishClockMinutes / 60)).padStart(2, "0")}:${String(finishClockMinutes % 60).padStart(2, "0")}`;
   const endsNextDay = finishTotalMinutes >= 24 * 60;
+  const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const devicePerson: Person = {
+    id: "current-device",
+    name: "My time",
+    city: deviceTimeZone.split("/").pop()?.replaceAll("_", " ") || deviceTimeZone,
+    timeZone: deviceTimeZone,
+    workStart: 0,
+    workEnd: 24,
+  };
 
   function selectExactStart(value: string) {
     const [hour, minute] = value.split(":").map(Number);
@@ -144,29 +153,32 @@ export function TimePlanner({
               </div>
             </div>
           ) : recommendation && (
-            <button
-              className="recommendation"
-              type="button"
-              onClick={() => onHourChange(recommendation.utcHour)}
-            >
-              <span className="recommendation-icon"><Clock3 size={24} /></span>
-              <span className="recommendation-copy">
-                <span>Best-scoring {durationLabel(durationMinutes)} window</span>
-                <strong>{formatUtcHour(recommendation.utcHour)}</strong>
-                <small>
-                  {recommendation.available} of {recommendation.total} people in working hours
-                  {recommendation.penalty > 0 ? ` - discomfort penalty ${recommendation.penalty}` : " - no discomfort penalty"}.
-                </small>
-              </span>
-              <span className="local-times">
-                {people.map((person) => (
-                  <span key={person.id}>
-                    <small>{person.name}</small>
-                    <strong>{localRangeLabel(dateValue, recommendation.utcHour, durationMinutes, person)}</strong>
-                  </span>
-                ))}
-              </span>
-            </button>
+            <div className="planner-sticky-recommendation" aria-label="Recommended meeting time and my local time">
+              <button
+                className="recommendation"
+                type="button"
+                onClick={() => onHourChange(recommendation.utcHour)}
+              >
+                <span className="recommendation-icon"><Clock3 size={24} /></span>
+                <span className="recommendation-copy">
+                  <span>Best-scoring {durationLabel(durationMinutes)} window</span>
+                  <strong>{formatUtcHour(recommendation.utcHour)}</strong>
+                  <small>
+                    {recommendation.available} of {recommendation.total} people in working hours
+                    {recommendation.penalty > 0 ? ` - discomfort penalty ${recommendation.penalty}` : " - no discomfort penalty"}.
+                  </small>
+                </span>
+              </button>
+              <aside className="my-time-recommendation" aria-label={`My time in ${deviceTimeZone}`}>
+                <span className="recommendation-icon"><Clock3 size={24} /></span>
+                <span className="my-time-copy">
+                  <span>My time</span>
+                  <strong>{formatInZone(dateAtUtcHour(dateValue, recommendation.utcHour), deviceTimeZone)}</strong>
+                  <small>{localRangeLabel(dateValue, recommendation.utcHour, durationMinutes, devicePerson)}</small>
+                  <em>{devicePerson.city}</em>
+                </span>
+              </aside>
+            </div>
           )}
 
           {!allDay && <MobilePlannerComparison

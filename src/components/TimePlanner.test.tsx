@@ -51,6 +51,9 @@ describe("progressive planner disclosure", () => {
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('type="date"');
     expect(markup).toContain("Best-scoring 1 hour 30 min window");
+    expect(markup).toContain("Recommended meeting time and my local time");
+    expect(markup).toContain("My time");
+    expect(markup).toContain("planner-sticky-recommendation");
     expect(markup).toContain("Start (UTC)");
     expect(markup).toContain("Finish (UTC)");
     expect(markup).toContain("Quick length");
