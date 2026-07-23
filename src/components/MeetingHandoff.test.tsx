@@ -74,7 +74,7 @@ describe("meeting handoff sharing", () => {
     root.unmount();
   });
 
-  it("keeps the raw invitation collapsed and offers a universal calendar file", () => {
+  it("keeps the raw invitation collapsed and offers reviewed calendar handoffs", () => {
     const { container, root } = renderHandoff();
 
     const disclosure = container.querySelector<HTMLDetailsElement>(".meeting-summary-disclosure");
@@ -84,13 +84,36 @@ describe("meeting handoff sharing", () => {
     expect(container.textContent).toContain("Outlook Calendar draft");
     expect(container.textContent).toContain("Apple / device calendar (.ics)");
     expect(container.textContent).toContain("Calendar connections");
-    expect(container.textContent).toContain("Draft-only mode");
-    expect(container.textContent).toContain("1 calendar invitee ready");
+    expect(container.textContent).toContain("Safe handoff mode");
+    expect(container.textContent).toContain("1 of 1 included");
     expect(container.textContent).toContain("ana@example.com");
-    const google = new URL(container.querySelector<HTMLAnchorElement>('a[href*="calendar.google.com"]')!.href);
-    const outlook = new URL(container.querySelector<HTMLAnchorElement>('a[href*="outlook.office.com"]')!.href);
-    expect(google.searchParams.get("add")).toBe("ana@example.com");
-    expect(outlook.searchParams.get("requiredAttendees")).toBe("ana@example.com");
+    expect([...container.querySelectorAll("button")].some((button) => button.textContent?.includes("Google Calendar draft"))).toBe(true);
+    expect([...container.querySelectorAll("button")].some((button) => button.textContent?.includes("Outlook Calendar draft"))).toBe(true);
+    root.unmount();
+  });
+
+  it("lets the organizer exclude invitees and confirms before opening a calendar draft", async () => {
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+    const { container, root } = renderHandoff();
+
+    const clear = [...container.querySelectorAll("button")].find((button) => button.textContent === "Clear");
+    await act(async () => clear!.click());
+    expect(container.textContent).toContain("0 of 1 included");
+
+    const google = [...container.querySelectorAll("button")].find((button) => button.textContent?.includes("Google Calendar draft"));
+    await act(async () => google!.click());
+    const dialog = container.querySelector('[role="dialog"]');
+    expect(dialog?.textContent).toContain("Continue to Google Calendar?");
+    expect(dialog?.textContent).toContain("None included");
+    expect(open).not.toHaveBeenCalled();
+
+    const confirm = [...dialog!.querySelectorAll("button")].find((button) => button.textContent === "Open Google draft");
+    await act(async () => confirm!.click());
+    expect(open).toHaveBeenCalledTimes(1);
+    const openedUrl = new URL(String(open.mock.calls[0][0]));
+    expect(openedUrl.origin).toBe("https://calendar.google.com");
+    expect(openedUrl.searchParams.has("add")).toBe(false);
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
     root.unmount();
   });
 });

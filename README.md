@@ -21,6 +21,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Add meeting title, location, and notes
 - Create prefilled Google Calendar and Outlook event drafts
 - Export complete `.ics` events for Apple and device calendars
+- Choose calendar invitees individually and review the final handoff before anything opens or downloads
 - Plan exact start and finish times, including all-day events
 - Create portable share links with an explicit privacy warning
 - Import shared groups without overwriting local data
@@ -31,7 +32,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ### v1.0 boundary
 
-AtlasTime v1.0 completes the local-first cross-time-zone planner. It plans, compares, shares, and exports meetings without requiring an account or reading a calendar. Direct authorized calendar creation, contact synchronization, invitations, and shared cloud workspaces remain post-v1.0 work.
+AtlasTime v1.0 completes the local-first cross-time-zone planner. It plans, compares, shares, and exports meetings without requiring an account or reading a calendar. v1.1 now adds a local contact directory, consent-based contact imports, invitee selection, and a final calendar-handoff review. Direct authorized calendar creation, contact synchronization, invitations, and shared cloud workspaces remain connected work.
 
 ## Important privacy model
 

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarPlus, Clipboard, Download, ExternalLink, Share2 } from "lucide-react";
-import { calendarAttendees, createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, meetingSummary } from "../meeting";
+import { calendarAttendees, createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, durationLabel, meetingSummary } from "../meeting";
 import { createId } from "../id";
 import type { Person, PlannerState } from "../types";
+import { CalendarHandoffDialog } from "./CalendarHandoffDialog";
+import { CalendarInviteeSelector } from "./CalendarInviteeSelector";
 
 type Props = {
   people: Person[];
@@ -21,10 +23,13 @@ function safeFileName(title: string) {
 export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange, onLocationChange, onNotesChange }: Props) {
   const [copyStatus, setCopyStatus] = useState("");
   const [shareStatus, setShareStatus] = useState("");
+  const availableAttendees = useMemo(() => calendarAttendees(people), [people]);
+  const [selectedEmails, setSelectedEmails] = useState(() => availableAttendees.map(({ email }) => email));
+  const [pendingHandoff, setPendingHandoff] = useState<"google" | "outlook" | "ics" | null>(null);
   const allDay = planner.eventMode === "all-day";
   const summary = meetingSummary(planner.title, selectedInstant, planner.durationMinutes, people, { ...planner, allDay });
   const shareData = createMeetingShareData(planner.title, summary);
-  const attendees = calendarAttendees(people);
+  const attendees = availableAttendees.filter(({ email }) => selectedEmails.includes(email));
   const calendarLinkEvent = {
     title: planner.title,
     start: selectedInstant,
@@ -37,6 +42,11 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
   };
   const googleCalendarUrl = createGoogleCalendarUrl(calendarLinkEvent);
   const outlookCalendarUrl = createOutlookCalendarUrl(calendarLinkEvent);
+
+  useEffect(() => {
+    const available = new Set(availableAttendees.map(({ email }) => email));
+    setSelectedEmails((current) => current.filter((email) => available.has(email)));
+  }, [availableAttendees]);
 
   async function copySummary() {
     try {
@@ -92,6 +102,22 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
     window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
+  function confirmCalendarHandoff() {
+    if (pendingHandoff === "google") window.open(googleCalendarUrl, "_blank", "noopener,noreferrer");
+    if (pendingHandoff === "outlook") window.open(outlookCalendarUrl, "_blank", "noopener,noreferrer");
+    if (pendingHandoff === "ics") downloadCalendarFile();
+    setPendingHandoff(null);
+  }
+
+  const handoffDetails = pendingHandoff ? {
+    google: { destination: "Google Calendar", confirmLabel: "Open Google draft" },
+    outlook: { destination: "Outlook Calendar", confirmLabel: "Open Outlook draft" },
+    ics: { destination: "your device calendar", confirmLabel: "Download calendar file" },
+  }[pendingHandoff] : null;
+  const timing = allDay
+    ? `All day on ${planner.date}`
+    : `${selectedInstant.toUTCString()} · ${durationLabel(planner.durationMinutes)}`;
+
   return (
     <section className="section handoff" aria-labelledby="handoff-heading">
       <div className="section-heading">
@@ -124,13 +150,15 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
         </details>
 
         <details className="calendar-connection-preview">
-          <summary>Calendar connections <span>Draft-only mode</span></summary>
-          <p>No calendar account is authorized yet. The next connected phase will request explicit, revocable access only when you choose Connect.</p>
+          <summary>Calendar connections <span>Safe handoff mode</span></summary>
+          <p>No calendar account is authorized yet. Secure persistent Google authorization requires a configured OAuth client and backend token exchange. Drafts and calendar files remain available without signing in.</p>
           <div>
             <span><strong>Google Calendar</strong><em>Not connected</em></span>
             <span><strong>Outlook Calendar</strong><em>Planned after Google validation</em></span>
           </div>
         </details>
+
+        <CalendarInviteeSelector attendees={availableAttendees} selectedEmails={selectedEmails} onChange={setSelectedEmails} />
 
         <div className="handoff-actions">
           <button type="button" className="primary-button" onClick={shareInvite}>
@@ -139,21 +167,29 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           <button type="button" className="secondary-button" onClick={copySummary}>
             <Clipboard size={17} /> {copyStatus || "Copy details"}
           </button>
-          <a className="secondary-button" href={googleCalendarUrl} target="_blank" rel="noreferrer">
+          <button type="button" className="secondary-button" onClick={() => setPendingHandoff("google")}>
             Google Calendar draft <ExternalLink size={15} />
-          </a>
-          <a className="secondary-button" href={outlookCalendarUrl} target="_blank" rel="noreferrer">
+          </button>
+          <button type="button" className="secondary-button" onClick={() => setPendingHandoff("outlook")}>
             Outlook Calendar draft <ExternalLink size={15} />
-          </a>
-          <button type="button" className="secondary-button" onClick={downloadCalendarFile}>
+          </button>
+          <button type="button" className="secondary-button" onClick={() => setPendingHandoff("ics")}>
             <Download size={17} /> Apple / device calendar (.ics)
           </button>
         </div>
-        {attendees.length > 0 && (
-          <p className="handoff-attendees"><strong>{attendees.length} calendar {attendees.length === 1 ? "invitee" : "invitees"} ready:</strong> {attendees.map(({ email }) => email).join(", ")}</p>
-        )}
         <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Valid contact emails are included as invitees, but the calendar provider decides whether invitations are sent when you save. Apple and device calendars import the complete .ics event. AtlasTime never saves or sends anything without your confirmation.</p>
       </div>
+      {pendingHandoff && handoffDetails && (
+        <CalendarHandoffDialog
+          {...handoffDetails}
+          eventTitle={planner.title}
+          timing={timing}
+          location={planner.location}
+          attendees={attendees}
+          onCancel={() => setPendingHandoff(null)}
+          onConfirm={confirmCalendarHandoff}
+        />
+      )}
     </section>
   );
 }
