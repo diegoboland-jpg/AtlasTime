@@ -21,10 +21,18 @@
 - [ ] Create connected events only after showing a final AtlasTime confirmation.
 - [ ] Start with the user's primary calendar and the narrowest practical event permission.
 - [x] Add valid AtlasTime contact emails to Google/Outlook drafts and `.ics` attendees while leaving invitation sending under the calendar provider's confirmation.
-- [ ] Let the organizer explicitly include or exclude individual invitees before connected event creation.
+- [x] Let the organizer explicitly include or exclude individual invitees before calendar handoff or connected event creation.
+- [x] Require a structured final AtlasTime review before opening a provider draft or downloading a calendar file.
 - [ ] Provide clear connection status, failure recovery, disconnect, and access revocation.
 - [x] Keep calendar drafts and `.ics` export fully usable without signing in.
 - [ ] Add Microsoft/Outlook authorization only after the Google flow is validated.
+
+### Secure Google connection decision
+
+- Google recommends the authorization-code model for stronger security and offline access, but the browser must send the code to a backend that validates it, exchanges it, and protects the refresh token.
+- AtlasTime will not place a client secret or refresh token in the PWA. The connected flow therefore needs a small production HTTPS service plus a configured Google OAuth client before the remaining authorization items can be completed.
+- The first connected scope should be the narrowest event-creation scope accepted during provider validation, and no free/busy scope is requested until v1.2.
+- Draft links, `.ics`, invitee choice, and final review remain fully usable without a connection.
 
 ## v1.2: consent-based availability
 
