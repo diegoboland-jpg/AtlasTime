@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarPlus, Clipboard, Download, ExternalLink, Share2 } from "lucide-react";
 import { calendarAttendees, createGoogleCalendarUrl, createIcsEvent, createMeetingShareData, createOutlookCalendarUrl, durationLabel, meetingSummary } from "../meeting";
 import { createId } from "../id";
+import { connectedGoogleCalendarEvent } from "../services/googleCalendar";
 import type { Person, PlannerState } from "../types";
 import { CalendarHandoffDialog } from "./CalendarHandoffDialog";
 import { CalendarInviteeSelector } from "./CalendarInviteeSelector";
+import { GoogleCalendarConnection } from "./GoogleCalendarConnection";
 
 type Props = {
   people: Person[];
@@ -118,6 +120,17 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
     ? `All day on ${planner.date}`
     : `${selectedInstant.toUTCString()} · ${durationLabel(planner.durationMinutes)}`;
 
+  const connectedCalendarEvent = connectedGoogleCalendarEvent({
+    title: planner.title,
+    description: summary,
+    location: planner.location,
+    attendees,
+    allDay,
+    date: planner.date,
+    start: selectedInstant,
+    durationMinutes: planner.durationMinutes,
+  });
+
   return (
     <section className="section handoff" aria-labelledby="handoff-heading">
       <div className="section-heading">
@@ -149,14 +162,13 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           <pre className="meeting-summary" aria-label="Meeting summary preview">{summary}</pre>
         </details>
 
-        <details className="calendar-connection-preview">
-          <summary>Calendar connections <span>Safe handoff mode</span></summary>
-          <p>No calendar account is authorized yet. Secure persistent Google authorization requires a configured OAuth client and backend token exchange. Drafts and calendar files remain available without signing in.</p>
-          <div>
-            <span><strong>Google Calendar</strong><em>Not connected</em></span>
-            <span><strong>Outlook Calendar</strong><em>Planned after Google validation</em></span>
-          </div>
-        </details>
+        <GoogleCalendarConnection
+          event={connectedCalendarEvent}
+          eventTitle={planner.title}
+          timing={timing}
+          location={planner.location}
+          attendees={attendees}
+        />
 
         <CalendarInviteeSelector attendees={availableAttendees} selectedEmails={selectedEmails} onChange={setSelectedEmails} />
 

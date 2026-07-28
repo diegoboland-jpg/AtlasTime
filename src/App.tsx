@@ -216,7 +216,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.0 release candidate</span>
+          <span className="mvp-badge">v1.1 connected calendars</span>
         </div>
       </header>
 
@@ -334,7 +334,7 @@ export default function App() {
           <div>
             <p className="section-kicker"><Phone size={16} /> CONNECT</p>
             <h2>Move from planning to calling.</h2>
-            <p>These shortcuts only open each provider. AtlasTime does not create meetings or connect calendars yet.</p>
+            <p>These shortcuts open each calling provider. The optional Google Calendar connection is managed separately in Handoff.</p>
           </div>
           <div className="launch-grid">
             <a href="https://wa.me/" target="_blank" rel="noreferrer"><MessageCircle /> WhatsApp <ExternalLink size={15} /></a>
@@ -363,7 +363,7 @@ export default function App() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.0</span><span>Groups stay in this browser. Share links contain a portable copy.</span></footer>
+      <footer><span>AtlasTime v1.1</span><span>Planning stays local. Calendar connection is optional.</span></footer>
     </div>
   );
 }

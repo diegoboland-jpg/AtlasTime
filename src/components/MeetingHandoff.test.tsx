@@ -2,7 +2,7 @@
 
 import { act } from "react";
 import { createRoot } from "react-dom/client";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Person, PlannerState } from "../types";
 import { MeetingHandoff } from "./MeetingHandoff";
 
@@ -38,8 +38,18 @@ function renderHandoff() {
 }
 
 describe("meeting handoff sharing", () => {
+  beforeEach(() => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      provider: "google",
+      connected: false,
+      scope: null,
+      connectedAt: null,
+    }), { status: 200, headers: { "content-type": "application/json" } })));
+  });
+
   afterEach(() => {
     document.body.replaceChildren();
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -83,8 +93,8 @@ describe("meeting handoff sharing", () => {
     expect(container.textContent).toContain("Google Calendar draft");
     expect(container.textContent).toContain("Outlook Calendar draft");
     expect(container.textContent).toContain("Apple / device calendar (.ics)");
-    expect(container.textContent).toContain("Calendar connections");
-    expect(container.textContent).toContain("Safe handoff mode");
+    expect(container.textContent).toContain("Google Calendar");
+    expect(container.textContent).toContain("Checking connection");
     expect(container.textContent).toContain("1 of 1 included");
     expect(container.textContent).toContain("ana@example.com");
     expect([...container.querySelectorAll("button")].some((button) => button.textContent?.includes("Google Calendar draft"))).toBe(true);

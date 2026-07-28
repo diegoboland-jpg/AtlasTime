@@ -18,14 +18,14 @@
 - [x] Keep local details editable inside AtlasTime and explain that PWA edits never modify a phone or account source contact.
 - [x] Migrate saved groups and shared snapshots safely when optional contact email fields are introduced.
 - [x] Add a same-origin Google Calendar gateway with state/PKCE validation, encrypted HttpOnly refresh-token storage, same-origin mutation checks, event insertion, and revocation.
-- [ ] Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
-- [ ] Wire the PWA connection UI to the gateway and validate it with production Google OAuth credentials.
-- [ ] Create connected events only after showing a final AtlasTime confirmation.
-- [ ] Start with the user's primary calendar and the narrowest practical event permission.
+- [x] Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
+- [x] Wire the PWA connection UI to the gateway; production Google OAuth credential validation remains outstanding.
+- [x] Create connected events only after showing a final AtlasTime confirmation.
+- [x] Start with the user's primary calendar and the narrowest practical event permission.
 - [x] Add valid AtlasTime contact emails to Google/Outlook drafts and `.ics` attendees while leaving invitation sending under the calendar provider's confirmation.
 - [x] Let the organizer explicitly include or exclude individual invitees before calendar handoff or connected event creation.
 - [x] Require a structured final AtlasTime review before opening a provider draft or downloading a calendar file.
-- [ ] Provide clear connection status, failure recovery, disconnect, and access revocation.
+- [x] Provide clear connection status, failure recovery, disconnect, and access revocation.
 - [x] Keep calendar drafts and `.ics` export fully usable without signing in.
 - [ ] Add Microsoft/Outlook authorization only after the Google flow is validated.
 
