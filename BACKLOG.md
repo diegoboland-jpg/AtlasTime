@@ -17,7 +17,9 @@
 - [x] Import user-selected names, emails, and available city hints through the one-off device Contact Picker when supported, with manual and vCard/CSV fallbacks.
 - [x] Keep local details editable inside AtlasTime and explain that PWA edits never modify a phone or account source contact.
 - [x] Migrate saved groups and shared snapshots safely when optional contact email fields are introduced.
+- [x] Add a same-origin Google Calendar gateway with state/PKCE validation, encrypted HttpOnly refresh-token storage, same-origin mutation checks, event insertion, and revocation.
 - [ ] Add explicit Google Calendar authorization using the production-safe OAuth authorization-code flow.
+- [ ] Wire the PWA connection UI to the gateway and validate it with production Google OAuth credentials.
 - [ ] Create connected events only after showing a final AtlasTime confirmation.
 - [ ] Start with the user's primary calendar and the narrowest practical event permission.
 - [x] Add valid AtlasTime contact emails to Google/Outlook drafts and `.ics` attendees while leaving invitation sending under the calendar provider's confirmation.
@@ -30,7 +32,7 @@
 ### Secure Google connection decision
 
 - Google recommends the authorization-code model for stronger security and offline access, but the browser must send the code to a backend that validates it, exchanges it, and protects the refresh token.
-- AtlasTime will not place a client secret or refresh token in the PWA. The connected flow therefore needs a small production HTTPS service plus a configured Google OAuth client before the remaining authorization items can be completed.
+- AtlasTime will not place a client secret or refresh token in the PWA. A portable Node gateway now implements the server boundary; deployment still needs a production HTTPS origin and configured Google OAuth client before the remaining authorization items can be completed.
 - The first connected scope should be the narrowest event-creation scope accepted during provider validation, and no free/busy scope is requested until v1.2.
 - Draft links, `.ics`, invitee choice, and final review remain fully usable without a connection.
 

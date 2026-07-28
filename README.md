@@ -56,6 +56,14 @@ npm run dev
 
 Open the local address shown by Vite, normally `http://localhost:5173`.
 
+The optional Google Calendar gateway is disabled unless all server-only variables in `.env.example` are configured. After building, it can serve the PWA and same-origin API together:
+
+```bash
+npm run preview:connected
+```
+
+Never put the Google client secret or token-encryption key in a `VITE_*` variable.
+
 ## Build and test
 
 ```bash
@@ -85,8 +93,9 @@ These documents define intended MVP behavior where the prototype and product spe
 - Browser localStorage
 - Vitest
 - Progressive Web App service worker
+- Optional same-origin Node gateway for Google Calendar authorization and event creation
 
-The MVP intentionally has no application server, cloud database, account, calendar authorization, or contact permission.
+The default v1.0 experience remains a local PWA with no application server, cloud database, or account. The optional v1.1 Google Calendar gateway runs only when server-side credentials are configured; it never bundles secrets into the browser app.
 
 ## Roadmap
 
