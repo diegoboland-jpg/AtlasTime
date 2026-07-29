@@ -1,9 +1,10 @@
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
-import { extname, join, resolve, sep } from "node:path";
+import { extname, join } from "node:path";
 import { loadEnvFile } from "node:process";
 import { fileURLToPath } from "node:url";
 import { createGoogleCalendarGateway } from "./googleCalendarGateway.mjs";
+import { resolveStaticPath } from "./staticPath.mjs";
 
 try {
   loadEnvFile(fileURLToPath(new URL("../.env", import.meta.url)));
@@ -62,9 +63,7 @@ async function writeResponse(response, nodeResponse) {
 }
 
 async function serveStatic(pathname, response) {
-  const decoded = decodeURIComponent(pathname);
-  const requested = resolve(dist, `.${decoded}`);
-  let file = requested === dist || requested.startsWith(`${dist}${sep}`) ? requested : join(dist, "index.html");
+  let file = resolveStaticPath(dist, pathname) ?? join(dist, "index.html");
   if (file === dist) file = join(dist, "index.html");
   try {
     if ((await stat(file)).isDirectory()) file = join(file, "index.html");
