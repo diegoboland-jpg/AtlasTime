@@ -1,5 +1,26 @@
 # AtlasTime changelog
 
+## 1.1.0 — connected-calendar preview
+
+AtlasTime 1.1 preserves the local-first planner while adding an optional, explicitly authorized Google Calendar path.
+
+### Connected Google Calendar
+
+- Connect through an OAuth authorization-code flow protected by state and PKCE.
+- Keep client secrets and refresh tokens out of the browser bundle.
+- Show clear unavailable, disconnected, connected, failure, and recovery states.
+- Review the complete event and selected invitees before direct creation.
+- Create the event on the user's primary calendar and open the resulting Google event.
+- Revoke provider access and clear AtlasTime's connection cookie on disconnect.
+- Keep Google and Outlook drafts plus `.ics` export available without signing in.
+
+### Developer setup
+
+- Serve the PWA and Google Calendar gateway from one origin.
+- Configure credentials through server-only environment variables.
+- Follow the illustrated local Google Cloud setup and validation guide.
+- Defer calendar reading and free/busy permission to the separate v1.2 consent decision.
+
 ## 1.0.0 — release candidate
 
 AtlasTime 1.0 completes the local-first humane meeting planner.

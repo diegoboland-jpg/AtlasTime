@@ -4,7 +4,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ## Current release
 
-**Version:** 1.0.0 release candidate
+**Version:** 1.1.0 connected-calendar preview
 
 ### Implemented
 
@@ -22,6 +22,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Create prefilled Google Calendar and Outlook event drafts
 - Export complete `.ics` events for Apple and device calendars
 - Choose calendar invitees individually and review the final handoff before anything opens or downloads
+- Optionally connect Google Calendar through a same-origin secure gateway and create the reviewed event directly
 - Plan exact start and finish times, including all-day events
 - Create portable share links with an explicit privacy warning
 - Import shared groups without overwriting local data
@@ -32,7 +33,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ### v1.0 boundary
 
-AtlasTime v1.0 completes the local-first cross-time-zone planner. It plans, compares, shares, and exports meetings without requiring an account or reading a calendar. v1.1 now adds a local contact directory, consent-based contact imports, invitee selection, and a final calendar-handoff review. Direct authorized calendar creation, contact synchronization, invitations, and shared cloud workspaces remain connected work.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. It plans, compares, shares, and exports meetings without requiring an account or reading a calendar. v1.1 adds a local contact directory, consent-based contact imports, invitee selection, final calendar review, and optional direct Google event creation. Calendar reading, contact synchronization, Microsoft authorization, and shared cloud workspaces remain future work.
 
 ## Important privacy model
 
@@ -76,6 +77,7 @@ npm run preview
 
 - [v1.0 Changelog](CHANGELOG.md)
 - [v1.0 Acceptance Checklist](docs/V1_RELEASE_CHECKLIST.md)
+- [Google Calendar connection guide](docs/GOOGLE_CALENDAR_CONNECTION.md)
 - [UX Specification](docs/UX_SPECIFICATION.md)
 - [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)
 - [Data and API Design](docs/DATA_AND_API_DESIGN.md)

@@ -1,4 +1,4 @@
-const CACHE_NAME = "atlastime-v1.0.0";
+const CACHE_NAME = "atlastime-v1.1.2";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/atlas-icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -20,7 +20,11 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
-  if (request.method !== "GET" || url.origin !== self.location.origin) return;
+  if (
+    request.method !== "GET"
+    || url.origin !== self.location.origin
+    || url.pathname.startsWith("/api/")
+  ) return;
 
   if (request.mode === "navigate") {
     event.respondWith(

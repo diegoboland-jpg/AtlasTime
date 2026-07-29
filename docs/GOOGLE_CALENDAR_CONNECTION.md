@@ -32,6 +32,96 @@ AtlasTime's local PWA intentionally contains no OAuth client secret and stores n
 5. A unique 32-byte base64url encryption key stored in the deployment secret manager.
 6. Provider testing with a primary calendar and the narrow event permission before Microsoft authorization begins.
 
+## Click-by-click local test setup
+
+> Do not paste the Google client secret or the AtlasTime encryption key into an issue, pull request, screenshot, or chat. They belong only in your local `.env` file or a deployment secret manager.
+
+![Google Cloud click map for enabling Calendar API, configuring the test audience and creating the Web OAuth client](images/google-calendar-click-map.svg)
+
+### 1. Create or select the Google Cloud project
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/).
+2. Click the project selector in the top bar.
+3. Choose an existing AtlasTime project or click **New project**, name it `AtlasTime`, and click **Create**.
+4. Confirm the AtlasTime project is selected before continuing.
+
+### 2. Enable Google Calendar API
+
+1. Click **☰ Menu**.
+2. Click **APIs & Services** → **Library**.
+3. Search for `Google Calendar API`.
+4. Open **Google Calendar API** and click **Enable**.
+
+### 3. Configure the consent screen for testing
+
+1. Open **☰ Menu** → **Google Auth Platform**.
+2. If Google shows **Get started**, click it.
+3. Under **Branding**, use `AtlasTime` as the app name and choose your support email.
+4. Under **Audience**, choose **External** and keep the app in **Testing**.
+5. Under **Test users**, click **Add users** and add the Google account that will test AtlasTime.
+6. Under **Data Access**, click **Add or remove scopes** and add only:
+
+   `https://www.googleapis.com/auth/calendar.events.owned`
+
+This scope lets AtlasTime create and manage events it owns. It does not read the rest of the calendar and does not provide free/busy access.
+
+### 4. Create the Web OAuth client
+
+1. Open **Google Auth Platform** → **Clients**.
+2. Click **Create client**.
+3. Choose **Web application**.
+4. Name it `AtlasTime local test`.
+5. Under **Authorized JavaScript origins**, add:
+
+   `http://localhost:4173`
+
+6. Under **Authorized redirect URIs**, add:
+
+   `http://localhost:4173/api/google-calendar/callback`
+
+7. Click **Create**.
+8. Copy the Client ID and Client secret to a private temporary note. Never commit either value.
+
+### 5. Configure AtlasTime locally
+
+In Windows CMD, from the AtlasTime project folder:
+
+```bat
+copy .env.example .env
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"
+notepad .env
+```
+
+In Notepad, keep the two local URLs and fill in the three private values:
+
+```dotenv
+ATLASTIME_APP_ORIGIN=http://localhost:4173
+GOOGLE_OAUTH_CLIENT_ID=PASTE_YOUR_CLIENT_ID
+GOOGLE_OAUTH_CLIENT_SECRET=PASTE_YOUR_CLIENT_SECRET
+GOOGLE_OAUTH_REDIRECT_URI=http://localhost:4173/api/google-calendar/callback
+GOOGLE_TOKEN_ENCRYPTION_KEY=PASTE_THE_GENERATED_KEY
+```
+
+Save and close Notepad. The `.env` file is ignored by Git.
+
+### 6. Run and test the connected flow
+
+```bat
+npm.cmd run preview:connected
+```
+
+1. Open `http://localhost:4173`.
+2. Plan a meeting and scroll to **Handoff**.
+3. Under **Google Calendar**, click **Connect Google Calendar**.
+4. Choose the Google account you added as a test user and approve the single Calendar permission.
+5. Return to AtlasTime and confirm the panel says **Connected**.
+6. Select the intended invitees.
+7. Click **Create Google event**, review the final dialog, then click **Create Google event** again.
+8. Click **Open created event** and verify the title, start, finish, notes, location, and invitees.
+9. Return to AtlasTime and click **Disconnect** to verify revocation and local cleanup.
+
+While the OAuth app remains in Google's Testing mode, authorizations that include Calendar access expire after seven days. This is expected during development.
+
 Generate a development encryption key without writing it into source control:
 
 ```bash
