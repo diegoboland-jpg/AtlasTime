@@ -1,6 +1,7 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from "node:crypto";
 
 const GOOGLE_SCOPE = "https://www.googleapis.com/auth/calendar.events.owned";
+const GOOGLE_AVAILABILITY_SCOPE = "https://www.googleapis.com/auth/calendar.events.freebusy";
 const STATE_COOKIE = "atlastime_google_oauth";
 const TOKEN_COOKIE = "atlastime_google_calendar";
 const MAX_BODY_BYTES = 64 * 1024;
@@ -124,6 +125,31 @@ function calendarEvent(value) {
   };
 }
 
+function availabilityQuery(value) {
+  if (!value || typeof value !== "object") return null;
+  const timeMin = new Date(value.timeMin);
+  const timeMax = new Date(value.timeMax);
+  if (!Number.isFinite(timeMin.getTime()) || !Number.isFinite(timeMax.getTime())) return null;
+  if (timeMax <= timeMin || timeMax.getTime() - timeMin.getTime() > 7 * 86_400_000) return null;
+  const requested = Array.isArray(value.calendarIds) ? value.calendarIds : ["primary"];
+  const calendarIds = [...new Set(requested
+    .map((id) => stringValue(id, 254))
+    .filter((id) => id === "primary" || validEmail(id))
+    .slice(0, 20))];
+  if (!calendarIds.length) return null;
+  return {
+    timeMin: timeMin.toISOString(),
+    timeMax: timeMax.toISOString(),
+    timeZone: "UTC",
+    calendarExpansionMax: 20,
+    items: calendarIds.map((id) => ({ id })),
+  };
+}
+
+function hasScope(record, scope) {
+  return typeof record?.scope === "string" && record.scope.split(/\s+/).includes(scope);
+}
+
 async function limitedJson(request) {
   const contentLength = Number(request.headers.get("content-length") ?? 0);
   if (contentLength > MAX_BODY_BYTES) throw new Error("body_too_large");
@@ -181,17 +207,18 @@ export function createGoogleCalendarGateway(options) {
     const cookies = parseCookies(request);
 
     if (request.method === "GET" && path === "/api/google-calendar/connect") {
+      const availability = url.searchParams.get("availability") === "1";
       const state = randomBytes(24).toString("base64url");
       const verifier = randomBytes(48).toString("base64url");
       const challenge = createHash("sha256").update(verifier).digest("base64url");
       const returnTo = normalizeReturnTo(url.searchParams.get("returnTo"), normalizedOrigin);
-      const stateValue = crypt.seal({ state, verifier, returnTo, createdAt: Date.now() });
+      const stateValue = crypt.seal({ state, verifier, returnTo, availability, createdAt: Date.now() });
       const authorization = new URL(authorizationEndpoint);
       authorization.search = new URLSearchParams({
         client_id: clientId,
         redirect_uri: redirectUri,
         response_type: "code",
-        scope: GOOGLE_SCOPE,
+        scope: availability ? `${GOOGLE_SCOPE} ${GOOGLE_AVAILABILITY_SCOPE}` : GOOGLE_SCOPE,
         access_type: "offline",
         include_granted_scopes: "true",
         prompt: "consent",
@@ -243,11 +270,17 @@ export function createGoogleCalendarGateway(options) {
         tokenResponse = { ok: false };
         tokenPayload = {};
       }
-      if (!tokenResponse.ok || !tokenPayload.refresh_token) {
+      const existingRecord = cookies[TOKEN_COOKIE] ? crypt.open(cookies[TOKEN_COOKIE]) : null;
+      const refreshToken = tokenPayload.refresh_token ?? existingRecord?.refreshToken;
+      if (!tokenResponse.ok || !refreshToken) {
         return new Response(null, { status: 302, headers: { location: withCalendarResult(returnTo, "error", "token_exchange_failed"), "set-cookie": clearState } });
       }
 
-      const tokenValue = crypt.seal({ refreshToken: tokenPayload.refresh_token, scope: tokenPayload.scope ?? GOOGLE_SCOPE, connectedAt: Date.now() });
+      const tokenValue = crypt.seal({
+        refreshToken,
+        scope: tokenPayload.scope ?? existingRecord?.scope ?? GOOGLE_SCOPE,
+        connectedAt: existingRecord?.connectedAt ?? Date.now(),
+      });
       const headers = new Headers({ location: withCalendarResult(returnTo, "connected") });
       headers.append("set-cookie", clearState);
       headers.append("set-cookie", cookie(TOKEN_COOKIE, tokenValue, { maxAge: 60 * 60 * 24 * 30, path: "/api/google-calendar", secure }));
@@ -260,6 +293,7 @@ export function createGoogleCalendarGateway(options) {
         provider: "google",
         connected: Boolean(record?.refreshToken),
         scope: record?.scope ?? null,
+        availabilityGranted: hasScope(record, GOOGLE_AVAILABILITY_SCOPE),
         connectedAt: record?.connectedAt ?? null,
       });
     }
@@ -306,8 +340,52 @@ export function createGoogleCalendarGateway(options) {
       }
     }
 
+    if (request.method === "POST" && path === "/api/google-calendar/freebusy") {
+      if (!verifyMutation(request)) return json({ error: "forbidden" }, { status: 403 });
+      const record = cookies[TOKEN_COOKIE] ? crypt.open(cookies[TOKEN_COOKIE]) : null;
+      if (!record?.refreshToken) return json({ error: "not_connected" }, { status: 401 });
+      if (!hasScope(record, GOOGLE_AVAILABILITY_SCOPE)) return json({ error: "availability_permission_required" }, { status: 403 });
+      let query;
+      try {
+        query = availabilityQuery(await limitedJson(request));
+      } catch {
+        return json({ error: "invalid_request" }, { status: 400 });
+      }
+      if (!query) return json({ error: "invalid_availability_query" }, { status: 400 });
+
+      try {
+        const accessToken = await exchangeRefreshToken(record.refreshToken);
+        const response = await fetchImpl(`${calendarApiEndpoint}/freeBusy`, {
+          method: "POST",
+          headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+          body: JSON.stringify(query),
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) return json({ error: "availability_lookup_failed" }, { status: 502 });
+        const calendars = query.items.map(({ id }) => {
+          const result = payload.calendars?.[id];
+          const unavailable = !result || (Array.isArray(result.errors) && result.errors.length > 0);
+          return {
+            id,
+            status: unavailable ? "unavailable" : "available",
+            busy: unavailable ? [] : (Array.isArray(result.busy) ? result.busy : []).flatMap((period) => {
+              const start = new Date(period?.start);
+              const end = new Date(period?.end);
+              return Number.isFinite(start.getTime()) && Number.isFinite(end.getTime()) && end > start
+                ? [{ start: start.toISOString(), end: end.toISOString() }]
+                : [];
+            }),
+          };
+        });
+        return json({ timeMin: query.timeMin, timeMax: query.timeMax, calendars });
+      } catch {
+        return json({ error: "authorization_expired" }, { status: 401 });
+      }
+    }
+
     return json({ error: "not_found" }, { status: 404 });
   };
 }
 
 export const googleCalendarScope = GOOGLE_SCOPE;
+export const googleCalendarAvailabilityScope = GOOGLE_AVAILABILITY_SCOPE;

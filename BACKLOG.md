@@ -38,11 +38,13 @@
 
 ## v1.2: consent-based availability
 
-- Read the organizer's Google or Microsoft free/busy data only after explicit calendar authorization.
-- Query invitee free/busy only when the organizer is permitted to see that calendar; an email address alone never grants access.
-- Show busy blocks without exposing event titles or private details.
-- Combine calendar conflicts with AtlasTime working hours, time-of-day discomfort, and travel locations.
-- Explain unavailable or permission-denied calendars without treating them as free.
+- [x] Read the organizer's Google free/busy data only after a separate, explicit calendar authorization.
+- [ ] Add the same consent-based availability path for Microsoft after its authorization flow exists.
+- [x] Query only the primary organizer calendar in the first release; an invitee email alone never grants access.
+- [ ] Query invitee free/busy only when Google confirms the organizer is permitted to see that calendar.
+- [x] Show busy blocks without exposing event titles or private details.
+- [ ] Combine calendar conflicts directly with AtlasTime recommendation scoring after physical validation of the availability display.
+- [x] Explain unavailable or permission-denied calendars without treating them as free.
 
 ## v0.31: human-friendly durations and all-day events
 

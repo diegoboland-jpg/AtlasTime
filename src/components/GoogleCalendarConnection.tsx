@@ -132,7 +132,7 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
       if (error instanceof GoogleCalendarError && ["not_connected", "authorization_expired"].includes(error.code)) {
         setView({
           kind: "ready",
-          status: { provider: "google", connected: false, scope: null, connectedAt: null },
+          status: { provider: "google", connected: false, scope: null, availabilityGranted: false, connectedAt: null },
         });
       }
     } finally {
