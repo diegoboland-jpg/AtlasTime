@@ -98,4 +98,33 @@ describe("connected Google Calendar UI", () => {
     expect(container.querySelector("button")).toBeNull();
     root.unmount();
   });
+
+  it("does not claim a completed connection until status verifies the saved session", async () => {
+    window.history.replaceState(null, "", "/?calendar=connected");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response({
+      provider: "google",
+      connected: false,
+      scope: null,
+      connectedAt: null,
+    })));
+    const container = document.createElement("div");
+    document.body.append(container);
+    const root = createRoot(container);
+
+    await act(async () => root.render(
+      <GoogleCalendarConnection
+        event={event}
+        eventTitle="Project sync"
+        timing="Tue, 21 Jul 2026 12:00:00 GMT Â· 1 hour"
+        location="Zoom"
+        attendees={event.attendees}
+      />,
+    ));
+
+    expect(container.textContent).toContain("could not verify the saved connection");
+    expect(container.textContent).not.toContain("Google Calendar connected.");
+    expect(container.querySelector(".calendar-connection-message.error")).not.toBeNull();
+    expect([...container.querySelectorAll("button")].some((button) => button.textContent === "Connect Google Calendar")).toBe(true);
+    root.unmount();
+  });
 });

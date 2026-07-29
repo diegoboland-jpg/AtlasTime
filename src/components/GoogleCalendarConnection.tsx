@@ -26,6 +26,11 @@ type ViewState =
   | { kind: "unavailable" }
   | { kind: "error"; message: string };
 
+type Notice = {
+  message: string;
+  kind: "success" | "error";
+};
+
 function connectionResult() {
   const url = new URL(window.location.href);
   const result = url.searchParams.get("calendar");
@@ -35,8 +40,11 @@ function connectionResult() {
   url.searchParams.delete("reason");
   window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
   return result === "connected"
-    ? "Google Calendar connected."
-    : `Google Calendar was not connected${reason ? ` (${reason.replaceAll("_", " ")})` : ""}.`;
+    ? { result: "connected" as const }
+    : {
+        result: "error" as const,
+        message: `Google Calendar was not connected${reason ? ` (${reason.replaceAll("_", " ")})` : ""}.`,
+      };
 }
 
 function errorMessage(error: unknown) {
@@ -48,21 +56,42 @@ function errorMessage(error: unknown) {
 
 export function GoogleCalendarConnection({ event, eventTitle, timing, location, attendees }: Props) {
   const [view, setView] = useState<ViewState>({ kind: "loading" });
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<Notice | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState<"create" | "disconnect" | null>(null);
   const [createdLink, setCreatedLink] = useState("");
 
   useEffect(() => {
-    setNotice(connectionResult() ?? "");
+    const result = connectionResult();
     let active = true;
     getGoogleCalendarStatus()
-      .then((status) => active && setView({ kind: "ready", status }))
+      .then((status) => {
+        if (!active) return;
+        setView({ kind: "ready", status });
+        if (result?.result === "connected") {
+          setNotice(status.connected
+            ? { message: "Google Calendar connected.", kind: "success" }
+            : {
+                message: "Google returned successfully, but AtlasTime could not verify the saved connection. Connect again.",
+                kind: "error",
+              });
+        } else if (result?.result === "error") {
+          setNotice({ message: result.message, kind: "error" });
+        }
+      })
       .catch((error) => {
         if (!active) return;
         const unavailable = error instanceof GoogleCalendarError
           && (error.code === "calendar_gateway_not_configured" || error.code === "gateway_unavailable");
         setView(unavailable ? { kind: "unavailable" } : { kind: "error", message: errorMessage(error) });
+        if (result) {
+          setNotice({
+            message: result.result === "error"
+              ? result.message
+              : "Google returned successfully, but AtlasTime could not verify the saved connection.",
+            kind: "error",
+          });
+        }
       });
     return () => { active = false; };
   }, []);
@@ -73,14 +102,14 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
 
   async function disconnect() {
     setBusy("disconnect");
-    setNotice("");
+    setNotice(null);
     setCreatedLink("");
     try {
       const status = await disconnectGoogleCalendar();
       setView({ kind: "ready", status });
-      setNotice("Google Calendar disconnected.");
+      setNotice({ message: "Google Calendar disconnected.", kind: "success" });
     } catch (error) {
-      setNotice(errorMessage(error));
+      setNotice({ message: errorMessage(error), kind: "error" });
     } finally {
       setBusy(null);
     }
@@ -89,14 +118,17 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
   async function createEvent() {
     setConfirming(false);
     setBusy("create");
-    setNotice("");
+    setNotice(null);
     setCreatedLink("");
     try {
       const created = await createGoogleCalendarEvent(event);
       setCreatedLink(created.htmlLink ?? "");
-      setNotice("Event created in Google Calendar. Invitations were handed to Google for delivery.");
+      setNotice({
+        message: "Event created in Google Calendar. Invitations were handed to Google for delivery.",
+        kind: "success",
+      });
     } catch (error) {
-      setNotice(errorMessage(error));
+      setNotice({ message: errorMessage(error), kind: "error" });
       if (error instanceof GoogleCalendarError && ["not_connected", "authorization_expired"].includes(error.code)) {
         setView({
           kind: "ready",
@@ -134,7 +166,11 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
       </p>
 
       {view.kind === "error" && <p className="calendar-connection-message error" role="status">{view.message}</p>}
-      {notice && <p className="calendar-connection-message" role="status">{notice}</p>}
+      {notice && (
+        <p className={`calendar-connection-message${notice.kind === "error" ? " error" : ""}`} role="status">
+          {notice.message}
+        </p>
+      )}
       {createdLink && (
         <a className="calendar-created-link" href={createdLink} target="_blank" rel="noreferrer">
           Open created event <ExternalLink size={14} />

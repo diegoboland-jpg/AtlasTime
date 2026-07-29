@@ -33,5 +33,6 @@ describe("PWA update lifecycle", () => {
     expect(serviceWorker).toContain('event.data?.type === "SKIP_WAITING"');
     expect(serviceWorker).toContain("self.skipWaiting()");
     expect(serviceWorker).toContain("self.clients.claim()");
+    expect(serviceWorker).toContain('url.pathname.startsWith("/api/")');
   });
 });
