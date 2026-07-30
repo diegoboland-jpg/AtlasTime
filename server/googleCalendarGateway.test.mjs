@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createGoogleCalendarGateway, googleCalendarScope } from "./googleCalendarGateway.mjs";
+import { createGoogleCalendarGateway, googleCalendarAvailabilityScope, googleCalendarScope } from "./googleCalendarGateway.mjs";
 
 const config = {
   clientId: "client-id.apps.googleusercontent.com",
@@ -21,8 +21,8 @@ function cookieValue(response, name) {
   return match?.split(";", 1)[0];
 }
 
-async function authorize(gateway, returnTo = "/planner") {
-  const connect = await gateway(new Request(`https://atlas.example/api/google-calendar/connect?returnTo=${encodeURIComponent(returnTo)}`));
+async function authorize(gateway, returnTo = "/planner", availability = false) {
+  const connect = await gateway(new Request(`https://atlas.example/api/google-calendar/connect?returnTo=${encodeURIComponent(returnTo)}${availability ? "&availability=1" : ""}`));
   const authorization = new URL(connect.headers.get("location"));
   const stateCookie = cookieValue(connect, "atlastime_google_oauth");
   const callback = await gateway(new Request(`https://atlas.example/api/google-calendar/callback?code=authorization-code&state=${authorization.searchParams.get("state")}`, {
@@ -31,12 +31,15 @@ async function authorize(gateway, returnTo = "/planner") {
   return { connect, authorization, callback, tokenCookie: cookieValue(callback, "atlastime_google_calendar") };
 }
 
-function googleFetch() {
+function googleFetch({ availability = false } = {}) {
   return vi.fn(async (url, options = {}) => {
     if (url === config.tokenEndpoint) {
       const grantType = options.body.get("grant_type");
       if (grantType === "authorization_code") {
-        return new Response(JSON.stringify({ refresh_token: "refresh-secret", scope: googleCalendarScope }), {
+        return new Response(JSON.stringify({
+          refresh_token: "refresh-secret",
+          scope: availability ? `${googleCalendarScope} ${googleCalendarAvailabilityScope}` : googleCalendarScope,
+        }), {
           status: 200,
           headers: { "content-type": "application/json" },
         });
@@ -51,6 +54,14 @@ function googleFetch() {
         status: 200,
         headers: { "content-type": "application/json" },
       });
+    }
+    if (url === `${config.calendarApiEndpoint}/freeBusy`) {
+      return new Response(JSON.stringify({
+        calendars: {
+          primary: { busy: [{ start: "2026-07-29T13:00:00Z", end: "2026-07-29T14:30:00Z" }] },
+          "ana@example.com": { errors: [{ reason: "notFound" }] },
+        },
+      }), { status: 200, headers: { "content-type": "application/json" } });
     }
     if (url === config.revokeEndpoint) return new Response("", { status: 200 });
     return new Response("", { status: 404 });
@@ -113,8 +124,58 @@ describe("Google Calendar gateway", () => {
     }));
     const payload = await status.json();
 
-    expect(payload).toMatchObject({ provider: "google", connected: true, scope: googleCalendarScope });
+    expect(payload).toMatchObject({ provider: "google", connected: true, scope: googleCalendarScope, availabilityGranted: false });
     expect(JSON.stringify(payload)).not.toContain("refresh-secret");
+  });
+
+  it("requests availability only after explicit consent and returns sanitized busy blocks", async () => {
+    const fetchImpl = googleFetch({ availability: true });
+    const gateway = createGoogleCalendarGateway({ ...config, fetchImpl });
+    const { authorization, tokenCookie } = await authorize(gateway, "/planner", true);
+    expect(authorization.searchParams.get("scope")).toContain(googleCalendarAvailabilityScope);
+
+    fetchImpl.mockClear();
+    const response = await gateway(new Request("https://atlas.example/api/google-calendar/freebusy", {
+      method: "POST",
+      headers: {
+        cookie: tokenCookie,
+        origin: config.appOrigin,
+        "x-atlastime-csrf": "1",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        timeMin: "2026-07-29T00:00:00Z",
+        timeMax: "2026-07-30T00:00:00Z",
+        calendarIds: ["primary", "ana@example.com"],
+      }),
+    }));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      timeMin: "2026-07-29T00:00:00.000Z",
+      timeMax: "2026-07-30T00:00:00.000Z",
+      calendars: [
+        { id: "primary", status: "available", busy: [{ start: "2026-07-29T13:00:00.000Z", end: "2026-07-29T14:30:00.000Z" }] },
+        { id: "ana@example.com", status: "unavailable", busy: [] },
+      ],
+    });
+  });
+
+  it("refuses availability lookup before the extra permission is granted", async () => {
+    const gateway = createGoogleCalendarGateway({ ...config, fetchImpl: googleFetch() });
+    const { tokenCookie } = await authorize(gateway);
+    const response = await gateway(new Request("https://atlas.example/api/google-calendar/freebusy", {
+      method: "POST",
+      headers: {
+        cookie: tokenCookie,
+        origin: config.appOrigin,
+        "x-atlastime-csrf": "1",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ timeMin: "2026-07-29T00:00:00Z", timeMax: "2026-07-30T00:00:00Z" }),
+    }));
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({ error: "availability_permission_required" });
   });
 
   it("requires same-origin CSRF proof before creating an event", async () => {

@@ -63,7 +63,7 @@ AtlasTime's local PWA intentionally contains no OAuth client secret and stores n
 
    `https://www.googleapis.com/auth/calendar.events.owned`
 
-This scope lets AtlasTime create and manage events it owns. It does not read the rest of the calendar and does not provide free/busy access.
+This scope lets AtlasTime create and manage events it owns. It does not read the rest of the calendar. AtlasTime requests the separate `https://www.googleapis.com/auth/calendar.events.freebusy` scope only when the user chooses **Enable occupied/free access** in the planner. The free/busy response contains time ranges, not event titles or descriptions.
 
 ### 4. Create the Web OAuth client
 
@@ -136,6 +136,7 @@ The production reverse proxy or hosting platform must terminate HTTPS and pass t
 - `GET /api/google-calendar/callback` validates and completes the server-side exchange.
 - `GET /api/google-calendar/status` returns only connection state and granted scope.
 - `POST /api/google-calendar/events` creates the final confirmed event.
+- `POST /api/google-calendar/freebusy` returns sanitized occupied/free ranges after the additional explicit permission.
 - `POST /api/google-calendar/disconnect` revokes provider access and clears local token state.
 
 Mutation requests must be same-origin and include `X-AtlasTime-CSRF: 1`. Tokens and client secrets are never returned to the PWA.

@@ -1,5 +1,14 @@
 # AtlasTime changelog
 
+## 1.2.0 — consent-based availability
+
+- Add a separate, explicit Google permission for occupied/free availability.
+- Read only busy intervals from the organizer's primary calendar; event titles, descriptions, and locations never enter AtlasTime.
+- Visualize the selected UTC day in 48 half-hour blocks and warn when the selected meeting overlaps an occupied period.
+- Treat permission-denied or unavailable calendars as unknown, never as free.
+- Keep direct event creation, drafts, and `.ics` handoff working independently.
+- Align the All-day event control with the Date, Start, and Finish controls.
+
 ## 1.1.0 — connected-calendar preview
 
 AtlasTime 1.1 preserves the local-first planner while adding an optional, explicitly authorized Google Calendar path.

@@ -341,9 +341,30 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .time-slider-section + .planner { padding-top: 42px; }
 .date-field input, .date-field select { min-width: 156px; }
 .all-day-field {
-  display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px;
+  box-sizing: border-box; display: flex; align-items: center; gap: 10px; min-height: 48px; height: 48px; padding: 6px 12px;
   border: 1px solid #dfe5ef; border-radius: 12px; background: white; color: #26344d; cursor: pointer;
 }
+.calendar-availability {
+  display: grid; gap: 12px; padding: 16px; border: 1px solid #d7e2f5; border-radius: 16px; background: #f8fbff;
+}
+.calendar-availability-heading { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; }
+.calendar-availability-heading > span { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: #e6f0ff; color: #246bfd; }
+.calendar-availability-heading strong, .calendar-availability-heading small { display: block; }
+.calendar-availability-heading small { margin-top: 2px; color: #718099; font-size: 10px; }
+.calendar-availability > p, .availability-consent p { margin: 0; color: #5f7090; font-size: 12px; }
+.availability-consent { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.availability-consent p { display: flex; align-items: center; gap: 6px; }
+.availability-strip { display: grid; grid-template-columns: repeat(48, minmax(3px, 1fr)); gap: 2px; min-height: 30px; }
+.availability-strip span { border-radius: 3px; background: #dff4e9; }
+.availability-strip span.busy { background: #f6c7cf; }
+.availability-strip span.selected { outline: 2px solid #246bfd; outline-offset: 1px; }
+.availability-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; color: #718099; font-size: 10px; }
+.availability-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.availability-legend i { width: 10px; height: 10px; border-radius: 3px; background: #dff4e9; }
+.availability-legend i.busy { background: #f6c7cf; }
+.availability-legend strong { margin-left: auto; }
+.availability-legend .clear { color: #16845b; }
+.availability-legend .conflict { color: #b22f45; }
 .all-day-field input { width: 18px; height: 18px; margin: 0; accent-color: #246bfd; }
 .all-day-field span { display: grid; gap: 2px; }
 .all-day-field strong { font-size: 12px; }

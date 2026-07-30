@@ -4,6 +4,7 @@ import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, lo
 import type { HourScore, Person } from "../types";
 import { ExactTimeInput } from "./ExactTimeInput";
 import { MobilePlannerComparison } from "./MobilePlannerComparison";
+import { CalendarAvailability } from "./CalendarAvailability";
 
 const QUICK_DURATIONS = Array.from({ length: 16 }, (_, index) => (index + 1) * 30);
 
@@ -185,6 +186,12 @@ export function TimePlanner({
               selectedHour={selectedHour}
               durationMinutes={durationMinutes}
             />}
+
+          {!allDay && <CalendarAvailability
+            dateValue={dateValue}
+            selectedHour={selectedHour}
+            durationMinutes={durationMinutes}
+          />}
 
           {!allDay && <div className="timeline-wrap" role="region" aria-label="Scrollable 24-hour local-time comparison" tabIndex={0}>
             <div className="timeline-labels">

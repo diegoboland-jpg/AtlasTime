@@ -4,7 +4,19 @@ export type GoogleCalendarStatus = {
   provider: "google";
   connected: boolean;
   scope: string | null;
+  availabilityGranted: boolean;
   connectedAt: number | null;
+};
+
+export type GoogleCalendarBusyPeriod = { start: string; end: string };
+export type GoogleCalendarAvailability = {
+  timeMin: string;
+  timeMax: string;
+  calendars: Array<{
+    id: string;
+    status: "available" | "unavailable";
+    busy: GoogleCalendarBusyPeriod[];
+  }>;
 };
 
 export type GoogleCalendarEvent = {
@@ -66,8 +78,12 @@ async function request<T>(path: string, init?: RequestInit) {
   return payload as T;
 }
 
-export function googleCalendarConnectUrl(returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+export function googleCalendarConnectUrl(
+  returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`,
+  availability = false,
+) {
   const query = new URLSearchParams({ returnTo });
+  if (availability) query.set("availability", "1");
   return `/api/google-calendar/connect?${query}`;
 }
 
@@ -90,6 +106,17 @@ export function createGoogleCalendarEvent(event: GoogleCalendarEvent) {
       "X-AtlasTime-CSRF": "1",
     },
     body: JSON.stringify(event),
+  });
+}
+
+export function getGoogleCalendarAvailability(timeMin: string, timeMax: string, calendarIds = ["primary"]) {
+  return request<GoogleCalendarAvailability>("/api/google-calendar/freebusy", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "X-AtlasTime-CSRF": "1",
+    },
+    body: JSON.stringify({ timeMin, timeMax, calendarIds }),
   });
 }
 
