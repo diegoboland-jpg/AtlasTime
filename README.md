@@ -4,7 +4,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ## Current release
 
-**Version:** 1.2.0 consent-based availability
+**Version:** 1.3.0 availability requests
 
 ### Implemented
 
@@ -33,7 +33,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ### v1.0 boundary
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory, invitee selection, final calendar review, and optional direct Google event creation. v1.2 adds a separate opt-in Google availability permission and shows only occupied/free blocks while planning; AtlasTime never reads event titles or descriptions.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory, invitee selection, final calendar review, and optional direct Google event creation. v1.2 added separate opt-in Google availability and busy/free visualization. v1.3 adds phone-aware contacts and explicit SMS, WhatsApp, native-share, and copy handoffs for requesting busy/free access; AtlasTime never sends a request automatically.
 
 ## Important privacy model
 

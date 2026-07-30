@@ -42,4 +42,30 @@ describe("person card delete control", () => {
 
     expect(markup).toContain('data-card-action="delete"');
   });
+
+  it("offers availability requests only for contactable people", () => {
+    const contactable = renderToStaticMarkup(
+      <PersonCard
+        person={{ ...person, phone: "+55 11 99999-0000" }}
+        now={new Date("2026-07-15T15:00:00Z")}
+        selectedInstant={new Date("2026-07-15T16:00:00Z")}
+        onChange={vi.fn()}
+        onRemove={vi.fn()}
+        onEdit={vi.fn()}
+      />,
+    );
+    expect(contactable).toContain("Request availability");
+
+    const locationOnly = renderToStaticMarkup(
+      <PersonCard
+        person={person}
+        now={new Date("2026-07-15T15:00:00Z")}
+        selectedInstant={new Date("2026-07-15T16:00:00Z")}
+        onChange={vi.fn()}
+        onRemove={vi.fn()}
+        onEdit={vi.fn()}
+      />,
+    );
+    expect(locationOnly).not.toContain("Request availability");
+  });
 });

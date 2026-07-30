@@ -9,6 +9,20 @@ export function normalizeEmail(value?: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email.slice(0, 254) : undefined;
 }
 
+export function normalizePhone(value?: string) {
+  const raw = value?.trim() ?? "";
+  if (!raw) return undefined;
+  const leadingPlus = raw.startsWith("+");
+  const digits = raw.replaceAll(/\D/g, "").slice(0, 18);
+  return digits.length >= 7 ? `${leadingPlus ? "+" : ""}${digits}` : undefined;
+}
+
+function availabilityStatus(value: unknown): Person["availabilityRequestStatus"] {
+  return ["not-requested", "requested", "shared", "declined", "expired", "blocked"].includes(String(value))
+    ? value as Person["availabilityRequestStatus"]
+    : undefined;
+}
+
 function validTimeZone(value: unknown): value is string {
   if (typeof value !== "string") return false;
   try {
@@ -35,11 +49,16 @@ function safeContact(value: unknown): ContactRecord | null {
     ? candidate.countryCode.toUpperCase()
     : knownCountry?.countryCode;
   const email = normalizeEmail(candidate.email);
+  const phone = normalizePhone(candidate.phone);
+  const requestStatus = availabilityStatus(candidate.availabilityRequestStatus);
 
   return {
     id: candidate.id,
     name: candidate.name.trim().slice(0, 120),
     ...(email ? { email } : {}),
+    ...(phone ? { phone } : {}),
+    ...(requestStatus ? { availabilityRequestStatus: requestStatus } : {}),
+    ...(typeof candidate.availabilityRequestedAt === "string" ? { availabilityRequestedAt: candidate.availabilityRequestedAt } : {}),
     city: candidate.city.trim().slice(0, 120),
     ...(country ? { country } : {}),
     ...(countryCode ? { countryCode } : {}),
@@ -52,10 +71,14 @@ function safeContact(value: unknown): ContactRecord | null {
 
 export function contactFromPerson(person: Person): ContactRecord {
   const email = normalizeEmail(person.email);
+  const phone = normalizePhone(person.phone);
   return {
     id: person.contactId ?? person.id,
     name: person.name,
     ...(email ? { email } : {}),
+    ...(phone ? { phone } : {}),
+    ...(person.availabilityRequestStatus ? { availabilityRequestStatus: person.availabilityRequestStatus } : {}),
+    ...(person.availabilityRequestedAt ? { availabilityRequestedAt: person.availabilityRequestedAt } : {}),
     city: person.city,
     ...(person.country ? { country: person.country } : {}),
     ...(person.countryCode ? { countryCode: person.countryCode } : {}),
@@ -72,6 +95,9 @@ export function personFromContact(contact: ContactRecord, id: string): Person {
     contactId: contact.id,
     name: contact.name,
     ...(contact.email ? { email: contact.email } : {}),
+    ...(contact.phone ? { phone: contact.phone } : {}),
+    ...(contact.availabilityRequestStatus ? { availabilityRequestStatus: contact.availabilityRequestStatus } : {}),
+    ...(contact.availabilityRequestedAt ? { availabilityRequestedAt: contact.availabilityRequestedAt } : {}),
     city: contact.city,
     ...(contact.country ? { country: contact.country } : {}),
     ...(contact.countryCode ? { countryCode: contact.countryCode } : {}),

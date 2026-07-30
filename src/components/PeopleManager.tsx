@@ -83,7 +83,7 @@ export function PeopleManager({
             return (
               <article key={contact.id}>
                 <span className="contact-directory-avatar" aria-hidden="true">{contact.name.slice(0, 1).toUpperCase()}</span>
-                <span><strong>{contact.name}</strong><small>{contact.email ?? "No email yet"} · {contact.city}</small></span>
+                <span><strong>{contact.name}</strong><small>{contact.email ?? contact.phone ?? "No email or phone yet"} · {contact.city}</small></span>
                 <button
                   type="button"
                   className="secondary-button"

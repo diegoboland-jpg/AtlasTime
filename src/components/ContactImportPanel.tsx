@@ -2,7 +2,7 @@ import { useId, useState, type ChangeEvent } from "react";
 import { ContactRound, FileUp, Smartphone, X } from "lucide-react";
 import { draftsFromDeviceContacts, parseCsvContacts, parseVCardContacts, type ContactImportDraft } from "../contactImport";
 
-type DeviceContact = { name?: string[]; email?: string[]; address?: Array<{ city?: string; country?: string }> };
+type DeviceContact = { name?: string[]; email?: string[]; tel?: string[]; address?: Array<{ city?: string; country?: string }> };
 type ContactsNavigator = Navigator & {
   contacts?: {
     getProperties(): Promise<string[]>;
@@ -36,7 +36,7 @@ export function ContactImportPanel({ onComplete }: Props) {
     setStatus("");
     try {
       const supported = await contactsApi.getProperties();
-      const requested = ["name", "email", "address"].filter((property) => supported.includes(property));
+      const requested = ["name", "email", "tel", "address"].filter((property) => supported.includes(property));
       if (!requested.includes("name")) {
         setStatus("This device cannot share contact names with AtlasTime.");
         return;
@@ -94,7 +94,7 @@ export function ContactImportPanel({ onComplete }: Props) {
         <div className="contact-import-drafts" aria-label="Contacts waiting for a timezone">
           {drafts.map((draft) => (
             <article key={draft.id}>
-              <span><strong>{draft.name}</strong><small>{draft.email ?? "No email shared"}{draft.city ? ` · ${draft.city}` : " · Location needed"}</small></span>
+              <span><strong>{draft.name}</strong><small>{draft.email ?? draft.phone ?? "No contact detail shared"}{draft.city ? ` · ${draft.city}` : " · Location needed"}</small></span>
               <button type="button" className="primary-button" onClick={() => onComplete(draft)}>Complete</button>
               <button type="button" className="icon-button" aria-label={`Dismiss ${draft.name}`} onClick={() => setDrafts((current) => current.filter(({ id }) => id !== draft.id))}>
                 <X size={15} />
