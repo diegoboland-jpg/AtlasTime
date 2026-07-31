@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Globe2, MessageCircle, Phone, Settings2, Users, Video } from "lucide-react";
 import { GroupManager } from "./components/GroupManager";
+import { AvailabilityConsentPage } from "./components/AvailabilityConsentPage";
 import { MeetingHandoff } from "./components/MeetingHandoff";
 import { MobileTimeOverview } from "./components/MobileTimeOverview";
 import { PeopleManager } from "./components/PeopleManager";
@@ -26,7 +27,7 @@ function utcDateInput(date: Date) {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
-export default function App() {
+function PlannerApp() {
   const [workspace, setWorkspace] = useState(loadGroups);
   const [contacts, setContacts] = useState(() => loadContacts(workspace.groups.flatMap((group) => group.people)));
   const [sharedPayload, setSharedPayload] = useState(readSharedGroup);
@@ -216,7 +217,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.3 availability requests</span>
+          <span className="mvp-badge">v1.4 secure sharing</span>
         </div>
       </header>
 
@@ -363,8 +364,13 @@ export default function App() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.3</span><span>Availability requests remain explicit and recipient-controlled.</span></footer>
+      <footer><span>AtlasTime v1.4</span><span>Busy/free sharing uses private, expiring, revocable links.</span></footer>
     </div>
   );
+}
+
+export default function App() {
+  const availabilityMatch = window.location.pathname.match(/^\/availability\/([A-Za-z0-9_-]{43})$/);
+  return availabilityMatch ? <AvailabilityConsentPage token={availabilityMatch[1]} /> : <PlannerApp />;
 }
 

@@ -1,5 +1,15 @@
 # AtlasTime changelog
 
+## 1.4.0 — secure availability sharing
+
+- Generate cryptographically random seven-day availability links and persist only hashed public tokens.
+- Keep a separate local management key for organizer-only result access and revocation.
+- Add a minimal recipient consent page that reveals no contact details beyond the intended display name and requested time window.
+- Let recipients explicitly authorize Google availability and submit sanitized busy/free intervals only.
+- Keep event titles, descriptions, locations, attendees, and OAuth tokens out of availability-request records.
+- Validate submitted intervals against the requested window and hide them from the public link.
+- Persist local server records outside source control; production deployment still requires durable encrypted storage and HTTPS.
+
 ## 1.3.0 — availability requests
 
 - Store optional phone numbers in the local contact directory and import them from selected device contacts, vCards, or CSV files.
