@@ -5,6 +5,7 @@ export type ContactImportDraft = {
   id: string;
   name: string;
   email?: string;
+  phone?: string;
   city?: string;
   country?: string;
 };
@@ -18,7 +19,7 @@ function unescapeVCard(value: string) {
     .trim();
 }
 
-function makeDraft(name: string, email?: string, city?: string, country?: string): ContactImportDraft | null {
+function makeDraft(name: string, email?: string, city?: string, country?: string, phone?: string): ContactImportDraft | null {
   const normalizedName = name.trim().slice(0, 120);
   if (!normalizedName) return null;
   const validEmail = normalizeEmail(email);
@@ -26,6 +27,7 @@ function makeDraft(name: string, email?: string, city?: string, country?: string
     id: createId(),
     name: normalizedName,
     ...(validEmail ? { email: validEmail } : {}),
+    ...(phone?.trim() ? { phone: phone.trim().slice(0, 30) } : {}),
     ...(city?.trim() ? { city: city.trim().slice(0, 120) } : {}),
     ...(country?.trim() ? { country: country.trim().slice(0, 80) } : {}),
   };
@@ -50,8 +52,9 @@ export function parseVCardContacts(value: string) {
     const valueOf = (line?: string) => line ? unescapeVCard(line.slice(line.indexOf(":") + 1)) : "";
     const name = valueOf(field("FN")) || valueOf(field("N")).split(";").filter(Boolean).reverse().join(" ");
     const email = valueOf(field("EMAIL"));
+    const phone = valueOf(field("TEL"));
     const address = valueOf(field("ADR")).split(";");
-    const draft = makeDraft(name, email, address[3], address[6]);
+    const draft = makeDraft(name, email, address[3], address[6], phone);
     return draft ? [draft] : [];
   }));
 }
@@ -92,6 +95,7 @@ export function parseCsvContacts(value: string) {
   const firstNameIndex = indexOf("firstname", "givenname");
   const lastNameIndex = indexOf("lastname", "surname", "familyname");
   const emailIndex = indexOf("email", "emailaddress", "email1value");
+  const phoneIndex = indexOf("phone", "phonenumber", "mobile", "mobilephone", "tel", "telephone");
   const cityIndex = indexOf("city", "locality", "addresscity");
   const countryIndex = indexOf("country", "addresscountry");
 
@@ -99,15 +103,15 @@ export function parseCsvContacts(value: string) {
     const name = nameIndex >= 0
       ? row[nameIndex] ?? ""
       : [row[firstNameIndex] ?? "", row[lastNameIndex] ?? ""].filter(Boolean).join(" ");
-    const draft = makeDraft(name, row[emailIndex], row[cityIndex], row[countryIndex]);
+    const draft = makeDraft(name, row[emailIndex], row[cityIndex], row[countryIndex], row[phoneIndex]);
     return draft ? [draft] : [];
   }));
 }
 
-export function draftsFromDeviceContacts(contacts: Array<{ name?: string[]; email?: string[]; address?: Array<{ city?: string; country?: string }> }>) {
+export function draftsFromDeviceContacts(contacts: Array<{ name?: string[]; email?: string[]; tel?: string[]; address?: Array<{ city?: string; country?: string }> }>) {
   return dedupe(contacts.flatMap((contact) => {
     const address = contact.address?.[0];
-    const draft = makeDraft(contact.name?.[0] ?? "", contact.email?.[0], address?.city, address?.country);
+    const draft = makeDraft(contact.name?.[0] ?? "", contact.email?.[0], address?.city, address?.country, contact.tel?.[0]);
     return draft ? [draft] : [];
   }));
 }

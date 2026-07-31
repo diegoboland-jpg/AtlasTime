@@ -1,7 +1,7 @@
 import { starterPeople } from "./data";
 import { getCityByPlace, getCountryByTimeZone } from "./cities";
 import { createId } from "./id";
-import { normalizeEmail } from "./contacts";
+import { normalizeEmail, normalizePhone } from "./contacts";
 import type { Person, PlannerState, SavedGroup, SharedGroupPayload } from "./types";
 
 const GROUPS_STORAGE_KEY = "atlastime.groups.v1";
@@ -73,6 +73,10 @@ function safePeople(value: unknown): Person[] {
       ? candidate.countryCode.toUpperCase()
       : knownCountry?.countryCode;
     const email = normalizeEmail(candidate.email);
+    const phone = normalizePhone(candidate.phone);
+    const requestStatus = ["not-requested", "requested", "shared", "declined", "expired", "blocked"].includes(String(candidate.availabilityRequestStatus))
+      ? candidate.availabilityRequestStatus
+      : undefined;
     const contactId = typeof candidate.contactId === "string" && candidate.contactId.trim()
       ? candidate.contactId.trim().slice(0, 120)
       : undefined;
@@ -81,6 +85,9 @@ function safePeople(value: unknown): Person[] {
       ...(contactId ? { contactId } : {}),
       name: candidate.name!,
       ...(email ? { email } : {}),
+      ...(phone ? { phone } : {}),
+      ...(requestStatus ? { availabilityRequestStatus: requestStatus } : {}),
+      ...(typeof candidate.availabilityRequestedAt === "string" ? { availabilityRequestedAt: candidate.availabilityRequestedAt } : {}),
       city: candidate.city!,
       ...(country ? { country } : {}),
       ...(countryCode ? { countryCode } : {}),

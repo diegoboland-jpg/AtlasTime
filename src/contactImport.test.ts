@@ -12,6 +12,7 @@ describe("contact imports", () => {
       "VERSION:3.0",
       "FN:Ana García",
       "EMAIL;TYPE=INTERNET:ANA@example.com",
+      "TEL;TYPE=CELL:+34 600 123 456",
       "ADR;TYPE=HOME:;;Gran Via 1;Madrid;;28013;Spain",
       "END:VCARD",
       "BEGIN:VCARD",
@@ -21,33 +22,33 @@ describe("contact imports", () => {
     ].join("\r\n"));
 
     expect(details(result)).toEqual([
-      { name: "Ana García", email: "ana@example.com", city: "Madrid", country: "Spain" },
+      { name: "Ana García", email: "ana@example.com", phone: "+34 600 123 456", city: "Madrid", country: "Spain" },
       { name: "João Silva" },
     ]);
   });
 
   it("reads quoted CSV fields and common contact headers", () => {
     const result = parseCsvContacts([
-      "Full Name,Email Address,City,Country",
-      '"Doe, Jane",JANE@example.com,"New York",United States',
-      "No Email,,Lisbon,Portugal",
+      "Full Name,Email Address,Phone,City,Country",
+      '"Doe, Jane",JANE@example.com,+1 212 555 0100,"New York",United States',
+      "No Email,,+351 210 000 000,Lisbon,Portugal",
     ].join("\n"));
 
     expect(details(result)).toEqual([
-      { name: "Doe, Jane", email: "jane@example.com", city: "New York", country: "United States" },
-      { name: "No Email", city: "Lisbon", country: "Portugal" },
+      { name: "Doe, Jane", email: "jane@example.com", phone: "+1 212 555 0100", city: "New York", country: "United States" },
+      { name: "No Email", phone: "+351 210 000 000", city: "Lisbon", country: "Portugal" },
     ]);
   });
 
   it("normalizes one-off device picker results and removes duplicate emails", () => {
     const result = draftsFromDeviceContacts([
-      { name: ["Ana"], email: ["ana@example.com"], address: [{ city: "Madrid", country: "ES" }] },
+      { name: ["Ana"], email: ["ana@example.com"], tel: ["+34 600 123 456"], address: [{ city: "Madrid", country: "ES" }] },
       { name: ["Ana duplicate"], email: ["ANA@example.com"] },
       { name: ["Lee"], email: [] },
     ]);
 
     expect(details(result)).toEqual([
-      { name: "Ana", email: "ana@example.com", city: "Madrid", country: "ES" },
+      { name: "Ana", email: "ana@example.com", phone: "+34 600 123 456", city: "Madrid", country: "ES" },
       { name: "Lee" },
     ]);
   });

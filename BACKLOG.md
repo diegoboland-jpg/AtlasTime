@@ -1,5 +1,19 @@
 # AtlasTime backlog
 
+## v1.3: recipient-controlled availability requests
+
+- [x] Store optional phone numbers in local contacts and saved groups.
+- [x] Import phone numbers from user-selected device contacts, vCards, and CSV files.
+- [x] Add Request availability to contactable person cards.
+- [x] Prepare SMS, WhatsApp, native-share, and copy handoffs without sending automatically.
+- [x] Ask only for busy/free access and avoid event titles, descriptions, or locations.
+- [x] Record when a request handoff was prepared.
+- [ ] Replace provider instructions with a private, opaque, expiring AtlasTime consent link after secure HTTPS hosting exists.
+- [ ] Let recipients explicitly connect Google or Outlook and return busy/free blocks to the requesting group.
+- [ ] Add shared, declined, expired, blocked, and revoked state callbacks from the hosted consent service.
+- [ ] Add revocation controls and automatically exclude expired availability.
+- [ ] Validate SMS, WhatsApp, native share, and copy on Android, iPhone, and installed Windows.
+
 ## v1.0: local-first planner release
 
 - [x] Complete global place discovery, saved groups, humane-time scoring, exact durations, and all-day planning.

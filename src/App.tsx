@@ -216,7 +216,7 @@ export default function App() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.2 calendar availability</span>
+          <span className="mvp-badge">v1.3 availability requests</span>
         </div>
       </header>
 
@@ -363,7 +363,7 @@ export default function App() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.2</span><span>Planning stays local. Calendar availability is optional.</span></footer>
+      <footer><span>AtlasTime v1.3</span><span>Availability requests remain explicit and recipient-controlled.</span></footer>
     </div>
   );
 }

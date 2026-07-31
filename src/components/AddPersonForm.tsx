@@ -25,6 +25,7 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
   } satisfies CityOption : undefined;
   const [name, setName] = useState(initialPerson?.name ?? initialDraft?.name ?? "");
   const [email, setEmail] = useState(initialPerson?.email ?? initialDraft?.email ?? "");
+  const [phone, setPhone] = useState(initialPerson?.phone ?? initialDraft?.phone ?? "");
   const draftLocation = [initialDraft?.city, initialDraft?.country].filter(Boolean).join(", ");
   const [query, setQuery] = useState(initialCity?.label ?? draftLocation);
   const [results, setResults] = useState<CityOption[]>([]);
@@ -104,6 +105,9 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
       contactId: initialPerson?.contactId ?? createId(),
       name: name.trim(),
       ...(email.trim() ? { email: email.trim().toLowerCase() } : {}),
+      ...(phone.trim() ? { phone: phone.trim() } : {}),
+      ...(initialPerson?.availabilityRequestStatus ? { availabilityRequestStatus: initialPerson.availabilityRequestStatus } : {}),
+      ...(initialPerson?.availabilityRequestedAt ? { availabilityRequestedAt: initialPerson.availabilityRequestedAt } : {}),
       city: selectedCity.city,
       country: selectedCity.country,
       countryCode: selectedCity.countryCode,
@@ -126,6 +130,18 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
           placeholder="e.g. Olesya, Madrid office, or Design team"
           autoFocus
           required
+        />
+      </label>
+
+      <label htmlFor={`${nameId}-phone`}>
+        Mobile number <span className="optional-label">Optional</span>
+        <input
+          id={`${nameId}-phone`}
+          type="tel"
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          placeholder="+55 11 99999 9999"
+          autoComplete="tel"
         />
       </label>
 

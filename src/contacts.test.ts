@@ -24,6 +24,24 @@ describe("local contact directory", () => {
     expect(normalizeEmail("not-an-email")).toBeUndefined();
   });
 
+  it("preserves phone and availability-request state in the local directory", () => {
+    const contact = contactFromPerson({
+      ...person,
+      phone: " +55 (11) 99999-0000 ",
+      availabilityRequestStatus: "requested",
+      availabilityRequestedAt: "2026-07-30T08:00:00.000Z",
+    });
+    expect(contact).toMatchObject({
+      phone: "+5511999990000",
+      availabilityRequestStatus: "requested",
+      availabilityRequestedAt: "2026-07-30T08:00:00.000Z",
+    });
+    expect(personFromContact(contact, "entry")).toMatchObject({
+      phone: "+5511999990000",
+      availabilityRequestStatus: "requested",
+    });
+  });
+
   it("seeds old group entries and persists them independently", () => {
     const contacts = loadContacts([person]);
     expect(contacts).toHaveLength(1);

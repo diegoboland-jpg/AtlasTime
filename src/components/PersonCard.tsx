@@ -1,6 +1,8 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { CalendarPlus2, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { formatInZone, hourInZone } from "../time";
 import type { Person } from "../types";
+import { AvailabilityRequestDialog } from "./AvailabilityRequestDialog";
 
 type PersonCardProps = {
   person: Person;
@@ -14,8 +16,10 @@ type PersonCardProps = {
 const hourOptions = Array.from({ length: 24 }, (_, hour) => hour);
 
 export function PersonCard({ person, now, selectedInstant, onChange, onRemove, onEdit }: PersonCardProps) {
+  const [showAvailabilityRequest, setShowAvailabilityRequest] = useState(false);
   const localHour = hourInZone(now, person.timeZone);
   const working = localHour >= person.workStart && localHour < person.workEnd;
+  const requestStatus = person.availabilityRequestStatus ?? "not-requested";
 
   function changeWorkHours(field: "workStart" | "workEnd", value: number) {
     const next = { ...person, [field]: value };
@@ -37,6 +41,7 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
         <h3 id={`person-${person.id}-name`}>{person.name}</h3>
         <p>{person.city || person.timeZone.replaceAll("_", " ")}</p>
         {person.email && <a className="person-email" href={`mailto:${person.email}`}>{person.email}</a>}
+        {person.phone && <a className="person-phone" href={`tel:${person.phone}`}>{person.phone}</a>}
         <span className={working ? "status online" : "status"}>
           {working ? "Working hours" : "Outside work hours"}
         </span>
@@ -107,6 +112,30 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
           </select>
         </label>
       </div>
+      {(person.email || person.phone) && (
+        <div className="availability-request-row">
+          <div>
+            <strong>Calendar availability</strong>
+            <span className={`availability-request-status ${requestStatus}`}>
+              {requestStatus === "requested" ? "Request prepared" : requestStatus.replace("-", " ")}
+            </span>
+          </div>
+          <button type="button" className="secondary-button" onClick={() => setShowAvailabilityRequest(true)}>
+            <CalendarPlus2 size={16} /> {requestStatus === "requested" ? "Send again" : "Request availability"}
+          </button>
+        </div>
+      )}
+      {showAvailabilityRequest && (
+        <AvailabilityRequestDialog
+          person={person}
+          onClose={() => setShowAvailabilityRequest(false)}
+          onRequested={() => onChange({
+            ...person,
+            availabilityRequestStatus: "requested",
+            availabilityRequestedAt: new Date().toISOString(),
+          })}
+        />
+      )}
     </article>
   );
 }

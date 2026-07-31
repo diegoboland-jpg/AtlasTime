@@ -3,6 +3,9 @@ export type Person = {
   contactId?: string;
   name: string;
   email?: string;
+  phone?: string;
+  availabilityRequestStatus?: "not-requested" | "requested" | "shared" | "declined" | "expired" | "blocked";
+  availabilityRequestedAt?: string;
   city: string;
   country?: string;
   countryCode?: string;
@@ -15,6 +18,9 @@ export type ContactRecord = {
   id: string;
   name: string;
   email?: string;
+  phone?: string;
+  availabilityRequestStatus?: Person["availabilityRequestStatus"];
+  availabilityRequestedAt?: string;
   city: string;
   country?: string;
   countryCode?: string;

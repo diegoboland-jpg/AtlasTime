@@ -1,5 +1,14 @@
 # AtlasTime changelog
 
+## 1.3.0 — availability requests
+
+- Store optional phone numbers in the local contact directory and import them from selected device contacts, vCards, or CSV files.
+- Add a clear Request availability action for contactable people.
+- Prepare recipient-controlled SMS, WhatsApp, native-share, and copy handoffs without sending anything automatically.
+- Request only busy/free sharing and link to the provider's official instructions; no event titles or details are requested.
+- Record the local request state so users can see that a handoff was prepared.
+- Keep private expiring consent links, response callbacks, revocation, and Outlook availability for the hosted follow-up.
+
 ## 1.2.0 — consent-based availability
 
 - Add a separate, explicit Google permission for occupied/free availability.
