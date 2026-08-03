@@ -4,6 +4,7 @@ import { extname, join } from "node:path";
 import { loadEnvFile } from "node:process";
 import { fileURLToPath } from "node:url";
 import { createGoogleCalendarGateway } from "./googleCalendarGateway.mjs";
+import { createAvailabilityRequestGateway, createFileAvailabilityRequestStore } from "./availabilityRequestGateway.mjs";
 import { resolveStaticPath } from "./staticPath.mjs";
 
 try {
@@ -23,6 +24,10 @@ const gateway = missing.length ? null : createGoogleCalendarGateway({
   redirectUri: process.env.GOOGLE_OAUTH_REDIRECT_URI,
   appOrigin,
   encryptionKey: process.env.GOOGLE_TOKEN_ENCRYPTION_KEY,
+});
+const availabilityRequests = createAvailabilityRequestGateway({
+  appOrigin,
+  store: createFileAvailabilityRequestStore(fileURLToPath(new URL("../.data/availability-requests.json", import.meta.url))),
 });
 
 const contentTypes = {
@@ -86,6 +91,9 @@ async function serveStatic(pathname, response) {
 createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", appOrigin);
+    if (url.pathname.startsWith("/api/availability-requests")) {
+      return writeResponse(await availabilityRequests(await requestFromNode(request)), response);
+    }
     if (url.pathname.startsWith("/api/google-calendar/")) {
       if (!gateway) {
         return writeResponse(new Response(JSON.stringify({ error: "calendar_gateway_not_configured", missing }), {

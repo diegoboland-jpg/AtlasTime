@@ -21,7 +21,8 @@ describe("availability request handoff", () => {
   });
 
   it("prefills SMS and WhatsApp without automatically sending either message", () => {
-    expect(smsAvailabilityUrl(person)).toMatch(/^sms:\+5511999990000\?body=/);
-    expect(whatsappAvailabilityUrl(person)).toMatch(/^https:\/\/wa\.me\/5511999990000\?text=/);
+    const secureUrl = "https://atlas.example/availability/private-token";
+    expect(decodeURIComponent(smsAvailabilityUrl(person, secureUrl))).toContain(secureUrl);
+    expect(decodeURIComponent(whatsappAvailabilityUrl(person, secureUrl))).toContain(secureUrl);
   });
 });

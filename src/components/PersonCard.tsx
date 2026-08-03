@@ -128,11 +128,21 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
       {showAvailabilityRequest && (
         <AvailabilityRequestDialog
           person={person}
+          selectedInstant={selectedInstant}
           onClose={() => setShowAvailabilityRequest(false)}
           onRequested={() => onChange({
             ...person,
             availabilityRequestStatus: "requested",
             availabilityRequestedAt: new Date().toISOString(),
+          })}
+          onRevoked={() => onChange({
+            ...person,
+            availabilityRequestStatus: "not-requested",
+            availabilityRequestedAt: undefined,
+          })}
+          onStatusChange={(availabilityRequestStatus) => onChange({
+            ...person,
+            availabilityRequestStatus,
           })}
         />
       )}

@@ -1,5 +1,18 @@
 # AtlasTime backlog
 
+## v1.4: secure availability sharing
+
+- [x] Generate private opaque request links with automatic expiration.
+- [x] Store only token hashes and keep a separate organizer management key.
+- [x] Add organizer revocation and protected result retrieval endpoints.
+- [x] Add a recipient consent page with explicit Google authorization.
+- [x] Store only validated busy/free intervals inside the requested window.
+- [x] Keep event titles, descriptions, locations, attendees, and OAuth tokens out of request records.
+- [ ] Merge returned busy/free blocks into person rows and recommendation scoring.
+- [ ] Add Outlook recipient authorization and busy/free submission.
+- [ ] Replace the local JSON store with encrypted durable production storage before public hosting.
+- [ ] Deploy to an HTTPS origin and validate cross-device links outside the local network.
+
 ## v1.3: recipient-controlled availability requests
 
 - [x] Store optional phone numbers in local contacts and saved groups.

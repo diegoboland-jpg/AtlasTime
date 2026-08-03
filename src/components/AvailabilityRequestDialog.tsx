@@ -1,18 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy, MessageCircle, Share2, Smartphone, X } from "lucide-react";
 import { availabilityRequestMessage, smsAvailabilityUrl, whatsappAvailabilityUrl } from "../availabilityRequest";
+import {
+  createAvailabilityRequest,
+  getManagedAvailabilityResult,
+  loadManagedAvailabilityRequest,
+  revokeAvailabilityRequest,
+  saveManagedAvailabilityRequest,
+  type AvailabilityRequestRecord,
+} from "../services/availabilityRequests";
 import type { Person } from "../types";
 
 type Props = {
   person: Person;
+  selectedInstant: Date;
   onClose: () => void;
   onRequested: () => void;
+  onRevoked: () => void;
+  onStatusChange: (status: "shared" | "expired") => void;
 };
 
-export function AvailabilityRequestDialog({ person, onClose, onRequested }: Props) {
+export function AvailabilityRequestDialog({ person, selectedInstant, onClose, onRequested, onRevoked, onStatusChange }: Props) {
   const closeButton = useRef<HTMLButtonElement>(null);
   const [copied, setCopied] = useState(false);
-  const message = availabilityRequestMessage(person);
+  const [record, setRecord] = useState<AvailabilityRequestRecord | undefined>(() => loadManagedAvailabilityRequest(person.contactId ?? person.id));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [remoteStatus, setRemoteStatus] = useState<string | null>(null);
+  const message = availabilityRequestMessage(person, record?.url);
 
   useEffect(() => {
     closeButton.current?.focus();
@@ -23,9 +38,69 @@ export function AvailabilityRequestDialog({ person, onClose, onRequested }: Prop
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
 
+  useEffect(() => {
+    if (!record) return;
+    let active = true;
+    getManagedAvailabilityResult(record).then((result) => {
+      if (!active) return;
+      setRemoteStatus(result.status);
+      if (result.status === "shared" || result.status === "expired") onStatusChange(result.status);
+    }).catch(() => {
+      // The organizer can retry from the visible Refresh status control.
+    });
+    return () => { active = false; };
+  }, [record?.url]);
+
   function openShare(url: string) {
     window.open(url, "_blank", "noopener,noreferrer");
     onRequested();
+  }
+
+  async function generateLink() {
+    setBusy(true);
+    setError("");
+    try {
+      const timeMin = new Date(Date.UTC(selectedInstant.getUTCFullYear(), selectedInstant.getUTCMonth(), selectedInstant.getUTCDate()));
+      const timeMax = new Date(timeMin.getTime() + 86_400_000);
+      const created = await createAvailabilityRequest(person.name, timeMin.toISOString(), timeMax.toISOString());
+      saveManagedAvailabilityRequest(person.contactId ?? person.id, created);
+      setRecord(created);
+    } catch {
+      setError("The secure AtlasTime link could not be created. Start AtlasTime with the connected server and try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function revokeLink() {
+    if (!record) return;
+    setBusy(true);
+    setError("");
+    try {
+      await revokeAvailabilityRequest(record);
+      saveManagedAvailabilityRequest(person.contactId ?? person.id, null);
+      setRecord(undefined);
+      onRevoked();
+    } catch {
+      setError("AtlasTime could not revoke this link. Please try again while the connected server is running.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function refreshStatus() {
+    if (!record) return;
+    setBusy(true);
+    setError("");
+    try {
+      const result = await getManagedAvailabilityResult(record);
+      setRemoteStatus(result.status);
+      if (result.status === "shared" || result.status === "expired") onStatusChange(result.status);
+    } catch {
+      setError("AtlasTime could not refresh this request while the connected server is unavailable.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function nativeShare() {
@@ -61,17 +136,26 @@ export function AvailabilityRequestDialog({ person, onClose, onRequested }: Prop
             The recipient stays in control, and event titles or details are never requested.
           </p>
         </div>
-        <div className="availability-request-preview">
+        {!record && (
+          <div className="availability-request-generate">
+            <p>Create a private seven-day link. AtlasTime stores only a hash of its public token on the server.</p>
+            <button type="button" className="primary-button" disabled={busy} onClick={generateLink}>
+              {busy ? "Creating secure link…" : "Create secure link"}
+            </button>
+          </div>
+        )}
+        {record && <div className="availability-request-preview">
           <strong>Message preview</strong>
           <p>{message}</p>
-        </div>
-        <div className="availability-request-actions">
+          <small>Status: {remoteStatus ?? record.status} · Expires {new Date(record.expiresAt).toLocaleString()}</small>
+        </div>}
+        {record && <div className="availability-request-actions">
           {person.phone && (
-            <button type="button" className="primary-button" onClick={() => openShare(smsAvailabilityUrl(person))}>
+            <button type="button" className="primary-button" onClick={() => openShare(smsAvailabilityUrl(person, record.url))}>
               <Smartphone size={17} /> Text message
             </button>
           )}
-          <button type="button" className="secondary-button" onClick={() => openShare(whatsappAvailabilityUrl(person))}>
+          <button type="button" className="secondary-button" onClick={() => openShare(whatsappAvailabilityUrl(person, record.url))}>
             <MessageCircle size={17} /> WhatsApp
           </button>
           {typeof navigator.share === "function" && (
@@ -82,9 +166,14 @@ export function AvailabilityRequestDialog({ person, onClose, onRequested }: Prop
           <button type="button" className="secondary-button" onClick={copyRequest}>
             {copied ? <Check size={17} /> : <Copy size={17} />} {copied ? "Copied" : "Copy message"}
           </button>
-        </div>
+        </div>}
+        {record && <div className="availability-request-management">
+          <button type="button" className="secondary-button" disabled={busy} onClick={refreshStatus}>Refresh status</button>
+          <button type="button" className="availability-request-revoke" disabled={busy} onClick={revokeLink}>Revoke this link</button>
+        </div>}
+        {error && <p className="availability-request-error" role="alert">{error}</p>}
         <p className="availability-request-stage-note">
-          This preview uses the provider's official sharing instructions. A private, expiring AtlasTime consent link will follow after secure hosting is available.
+          The link is private and expires automatically. Google and Outlook authorization on the recipient page will be enabled only through explicit consent.
         </p>
       </section>
     </div>

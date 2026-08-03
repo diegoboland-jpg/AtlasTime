@@ -359,6 +359,21 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
 .availability-request-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .availability-request-actions button { justify-content: center; }
 .availability-request-stage-note { margin: 0; color: #7a879d; font-size: 10px; line-height: 1.5; }
+.availability-request-generate { display: grid; gap: 12px; padding: 15px; border: 1px solid #dce5f5; border-radius: 14px; background: #f7faff; }
+.availability-request-generate p { margin: 0; color: #64738d; font-size: 12px; line-height: 1.5; }
+.availability-request-revoke { justify-self: start; border: 0; background: transparent; color: #b22f45; font-size: 11px; font-weight: 750; cursor: pointer; }
+.availability-request-management { display: flex; align-items: center; gap: 10px; }
+.availability-request-error { margin: 0; padding: 10px 12px; border-radius: 10px; background: #fde8eb; color: #9f2940; font-size: 11px; }
+.availability-consent-page { min-height: 100vh; display: grid; place-items: center; box-sizing: border-box; padding: 24px; background: linear-gradient(145deg, #edf6ff, #f8fbff 50%, #eaf1ff); }
+.availability-consent-card { width: min(560px, 100%); box-sizing: border-box; padding: 32px; border: 1px solid #d7e2f5; border-radius: 24px; background: white; box-shadow: 0 24px 70px rgba(26, 61, 120, .14); }
+.availability-consent-mark { width: 54px; height: 54px; display: grid; place-items: center; margin-bottom: 18px; border-radius: 16px; background: #246bfd; color: white; }
+.availability-consent-card h1 { margin: 5px 0 12px; color: #101f3b; font-size: clamp(26px, 7vw, 38px); line-height: 1.08; }
+.availability-consent-card > p { color: #64738d; line-height: 1.55; }
+.availability-consent-card ul { display: grid; gap: 10px; padding: 16px 0; list-style: none; }
+.availability-consent-card li { display: flex; align-items: flex-start; gap: 8px; color: #43516a; font-size: 13px; }
+.availability-consent-card li svg { flex: 0 0 auto; color: #16845b; }
+.availability-consent-providers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.availability-consent-note { font-size: 10px; }
 
 .planner.collapsed { overflow: hidden; }
 .planner.expanded { overflow: visible; }
