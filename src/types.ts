@@ -36,7 +36,20 @@ export type HourScore = {
   total: number;
   penalty: number;
   score: number;
+  calendarConflicts?: number;
 };
+
+export type BusyPeriod = { start: string; end: string };
+
+export type PersonAvailability = {
+  status: "pending" | "expired" | "revoked" | "shared" | "declined";
+  provider: "google" | null;
+  timeMin: string;
+  timeMax: string;
+  busy: BusyPeriod[];
+};
+
+export type AvailabilityByPerson = Record<string, PersonAvailability | undefined>;
 
 export type PlannerState = {
   date: string;

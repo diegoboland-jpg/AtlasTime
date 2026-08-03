@@ -1,3 +1,5 @@
+import type { AvailabilityByPerson, PersonAvailability } from "../types";
+
 export type AvailabilityRequestRecord = {
   url: string;
   managementKey: string;
@@ -13,13 +15,7 @@ export type PublicAvailabilityRequest = {
   timeMax: string;
 };
 
-export type ManagedAvailabilityResult = {
-  status: PublicAvailabilityRequest["status"];
-  provider: "google" | null;
-  timeMin: string;
-  timeMax: string;
-  busy: Array<{ start: string; end: string }>;
-};
+export type ManagedAvailabilityResult = PersonAvailability;
 
 const STORAGE_KEY = "atlastime.availability-requests.v1";
 
@@ -101,4 +97,23 @@ export function saveManagedAvailabilityRequest(personId: string, record: Availab
   if (record) records[personId] = record;
   else delete records[personId];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+const RESULTS_STORAGE_KEY = "atlastime.availability-results.v1";
+
+export function loadManagedAvailabilityResults(): AvailabilityByPerson {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(RESULTS_STORAGE_KEY) ?? "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveManagedAvailabilityResult(personId: string, result: ManagedAvailabilityResult | null) {
+  const results = loadManagedAvailabilityResults();
+  if (result) results[personId] = result;
+  else delete results[personId];
+  localStorage.setItem(RESULTS_STORAGE_KEY, JSON.stringify(results));
+  return results;
 }

@@ -3,7 +3,7 @@ import { ArrowLeft, ContactRound, Mail, Plus, Users } from "lucide-react";
 import { personFromContact } from "../contacts";
 import type { ContactImportDraft } from "../contactImport";
 import { createId } from "../id";
-import type { ContactRecord, Person } from "../types";
+import type { ContactRecord, Person, PersonAvailability } from "../types";
 import { AddPersonForm } from "./AddPersonForm";
 import { PersonCard } from "./PersonCard";
 import { ContactImportPanel } from "./ContactImportPanel";
@@ -21,6 +21,7 @@ type Props = {
   onCancelAdd: () => void;
   onChange: (person: Person) => void;
   onRemove: (id: string) => void;
+  onAvailabilityResult?: (personId: string, result: PersonAvailability | null) => void;
 };
 
 export function PeopleManager({
@@ -36,6 +37,7 @@ export function PeopleManager({
   onCancelAdd,
   onChange,
   onRemove,
+  onAvailabilityResult = () => undefined,
 }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [importDraft, setImportDraft] = useState<ContactImportDraft | null>(null);
@@ -131,6 +133,7 @@ export function PeopleManager({
               selectedInstant={selectedInstant}
               onChange={onChange}
               onRemove={onRemove}
+              onAvailabilityResult={onAvailabilityResult}
               onEdit={() => { setEditingId(person.id); setImportDraft(null); onCancelAdd(); }}
             />
           </div>

@@ -1,7 +1,7 @@
 import { CalendarDays, ChevronDown, ChevronUp, Clock3 } from "lucide-react";
 import { durationLabel } from "../meeting";
-import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, localRangeLabel, meetingFitsWorkingHours, scoreAtUtcHour } from "../time";
-import type { HourScore, Person } from "../types";
+import { dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, localRangeLabel, meetingConflictsWithBusy, meetingFitsWorkingHours, scoreAtUtcHour } from "../time";
+import type { AvailabilityByPerson, HourScore, Person } from "../types";
 import { ExactTimeInput } from "./ExactTimeInput";
 import { MobilePlannerComparison } from "./MobilePlannerComparison";
 import { CalendarAvailability } from "./CalendarAvailability";
@@ -17,6 +17,7 @@ type TimePlannerProps = {
   recommendation: HourScore | null;
   hours: HourScore[];
   expanded: boolean;
+  availabilityByPerson?: AvailabilityByPerson;
   onExpandedChange: (expanded: boolean) => void;
   onDateChange: (date: string) => void;
   onDurationChange: (duration: number) => void;
@@ -33,6 +34,7 @@ export function TimePlanner({
   recommendation,
   hours,
   expanded,
+  availabilityByPerson = {},
   onExpandedChange,
   onDateChange,
   onDurationChange,
@@ -55,7 +57,7 @@ export function TimePlanner({
     workStart: 0,
     workEnd: 24,
   };
-  const selectedScore = scoreAtUtcHour(people, dateValue, selectedHour, durationMinutes);
+  const selectedScore = scoreAtUtcHour(people, dateValue, selectedHour, durationMinutes, availabilityByPerson);
   const selectedIsRecommendation = recommendation !== null && Math.abs(selectedHour - recommendation.utcHour) < 0.001;
 
   function selectExactStart(value: string) {
@@ -164,6 +166,7 @@ export function TimePlanner({
                   <strong>{formatUtcHour(selectedHour)}</strong>
                   <small>
                     {selectedScore.available} of {selectedScore.total} people in working hours
+                    {selectedScore.calendarConflicts ? ` · ${selectedScore.calendarConflicts} shared-calendar ${selectedScore.calendarConflicts === 1 ? "conflict" : "conflicts"}` : ""}
                     {selectedScore.penalty > 0 ? ` - discomfort penalty ${selectedScore.penalty}` : " - no discomfort penalty"}.
                   </small>
                 </span>
@@ -185,6 +188,7 @@ export function TimePlanner({
               dateValue={dateValue}
               selectedHour={selectedHour}
               durationMinutes={durationMinutes}
+              availabilityByPerson={availabilityByPerson}
             />}
 
           {!allDay && <CalendarAvailability
@@ -218,14 +222,15 @@ export function TimePlanner({
                 {hours.map((hour) => {
                   const instant = dateAtUtcHour(dateValue, hour.utcHour);
                   const working = meetingFitsWorkingHours(person, instant, durationMinutes);
+                  const calendarConflict = meetingConflictsWithBusy(instant, durationMinutes, availabilityByPerson[person.contactId ?? person.id]);
                   const localTime = formatInZone(instant, person.timeZone);
                   return (
                     <button
                       type="button"
-                      className={`hour-cell ${working ? "working" : ""} ${selectedHour === hour.utcHour ? "selected" : ""}`}
+                      className={`hour-cell ${working && !calendarConflict ? "working" : ""} ${calendarConflict ? "calendar-conflict" : ""} ${selectedHour === hour.utcHour ? "selected" : ""}`}
                       key={hour.utcHour}
                       title={`${person.name}: ${formatInZone(instant, person.timeZone)}`}
-                      aria-label={`${person.name}: ${localRangeLabel(dateValue, hour.utcHour, durationMinutes, person)}, ${working ? "complete meeting within" : "part of meeting outside"} working hours. Select ${formatUtcHour(hour.utcHour)}`}
+                      aria-label={`${person.name}: ${localRangeLabel(dateValue, hour.utcHour, durationMinutes, person)}, ${calendarConflict ? "busy on shared calendar" : working ? "complete meeting within" : "part of meeting outside"} working hours. Select ${formatUtcHour(hour.utcHour)}`}
                       onClick={() => onHourChange(hour.utcHour)}
                     >
                       {localTime}
@@ -237,7 +242,7 @@ export function TimePlanner({
           </div>}
 
           {!allDay && <p className="timeline-note">
-            Choose any 30-minute UTC start or local-time cell. Green cells mean the complete {durationLabel(durationMinutes)} meeting fits that person&apos;s working hours; scoring also penalizes very early (before 07:00) and very late (21:00 or later) local times.
+            Choose any 30-minute UTC start or local-time cell. Green cells mean the complete {durationLabel(durationMinutes)} meeting fits that person&apos;s working hours and does not overlap confirmed shared busy time. Scoring also penalizes calendar conflicts, very early (before 07:00), and very late (21:00 or later) local times.
           </p>}
         </div>
       )}

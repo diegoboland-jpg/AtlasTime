@@ -6,8 +6,10 @@ import {
   getManagedAvailabilityResult,
   loadManagedAvailabilityRequest,
   revokeAvailabilityRequest,
+  saveManagedAvailabilityResult,
   saveManagedAvailabilityRequest,
   type AvailabilityRequestRecord,
+  type ManagedAvailabilityResult,
 } from "../services/availabilityRequests";
 import type { Person } from "../types";
 
@@ -17,10 +19,11 @@ type Props = {
   onClose: () => void;
   onRequested: () => void;
   onRevoked: () => void;
-  onStatusChange: (status: "shared" | "expired") => void;
+  onStatusChange: (status: "shared" | "expired" | "declined") => void;
+  onAvailabilityResult: (result: ManagedAvailabilityResult | null) => void;
 };
 
-export function AvailabilityRequestDialog({ person, selectedInstant, onClose, onRequested, onRevoked, onStatusChange }: Props) {
+export function AvailabilityRequestDialog({ person, selectedInstant, onClose, onRequested, onRevoked, onStatusChange, onAvailabilityResult }: Props) {
   const closeButton = useRef<HTMLButtonElement>(null);
   const [copied, setCopied] = useState(false);
   const [record, setRecord] = useState<AvailabilityRequestRecord | undefined>(() => loadManagedAvailabilityRequest(person.contactId ?? person.id));
@@ -44,7 +47,11 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
     getManagedAvailabilityResult(record).then((result) => {
       if (!active) return;
       setRemoteStatus(result.status);
-      if (result.status === "shared" || result.status === "expired") onStatusChange(result.status);
+      saveManagedAvailabilityResult(person.contactId ?? person.id, result);
+      onAvailabilityResult(result);
+      if (result.status === "shared" || result.status === "expired" || result.status === "declined") {
+        onStatusChange(result.status);
+      }
     }).catch(() => {
       // The organizer can retry from the visible Refresh status control.
     });
@@ -79,6 +86,8 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
     try {
       await revokeAvailabilityRequest(record);
       saveManagedAvailabilityRequest(person.contactId ?? person.id, null);
+      saveManagedAvailabilityResult(person.contactId ?? person.id, null);
+      onAvailabilityResult(null);
       setRecord(undefined);
       onRevoked();
     } catch {
@@ -95,7 +104,11 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
     try {
       const result = await getManagedAvailabilityResult(record);
       setRemoteStatus(result.status);
-      if (result.status === "shared" || result.status === "expired") onStatusChange(result.status);
+      saveManagedAvailabilityResult(person.contactId ?? person.id, result);
+      onAvailabilityResult(result);
+      if (result.status === "shared" || result.status === "expired" || result.status === "declined") {
+        onStatusChange(result.status);
+      }
     } catch {
       setError("AtlasTime could not refresh this request while the connected server is unavailable.");
     } finally {

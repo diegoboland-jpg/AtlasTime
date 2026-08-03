@@ -13,8 +13,9 @@ import { TimeSlider } from "./components/TimeSlider";
 import { clearShareHash, createShareLink, defaultPlanner, loadGroups, readSharedGroup, saveGroups } from "./groups";
 import { loadContacts, saveContacts, updateLinkedContactInGroups, upsertContact } from "./contacts";
 import { createId } from "./id";
+import { loadManagedAvailabilityResults } from "./services/availabilityRequests";
 import { bestHour, dateAtUtcHour, formatInZone, scoreAtUtcHour, scoreHours } from "./time";
-import type { Person, SavedGroup } from "./types";
+import type { Person, PersonAvailability, SavedGroup } from "./types";
 
 type PendingPersonRemoval = {
   groupId: string;
@@ -38,6 +39,7 @@ function PlannerApp() {
   const [copyStatus, setCopyStatus] = useState("");
   const [pendingPersonRemoval, setPendingPersonRemoval] = useState<PendingPersonRemoval | null>(null);
   const [restoredPersonFocusId, setRestoredPersonFocusId] = useState<string | null>(null);
+  const [availabilityByPerson, setAvailabilityByPerson] = useState(loadManagedAvailabilityResults);
   const removalTimer = useRef<number | null>(null);
 
   const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
@@ -66,10 +68,19 @@ function PlannerApp() {
     });
   }, [restoredPersonFocusId]);
 
-  const hours = useMemo(() => scoreHours(people, planner.date, planner.durationMinutes), [people, planner.date, planner.durationMinutes]);
-  const recommendation = useMemo(() => bestHour(people, planner.date, planner.durationMinutes), [people, planner.date, planner.durationMinutes]);
+  const hours = useMemo(() => scoreHours(people, planner.date, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.durationMinutes, availabilityByPerson]);
+  const recommendation = useMemo(() => bestHour(people, planner.date, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.durationMinutes, availabilityByPerson]);
   const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
-  const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour, planner.durationMinutes), [people, planner.date, planner.hour, planner.durationMinutes]);
+  const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson]);
+
+  function updateAvailability(personId: string, result: PersonAvailability | null) {
+    setAvailabilityByPerson((current) => {
+      const next = { ...current };
+      if (result) next[personId] = result;
+      else delete next[personId];
+      return next;
+    });
+  }
 
   function updateActiveGroup(update: (group: SavedGroup) => SavedGroup) {
     setWorkspace((current) => ({
@@ -217,7 +228,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.4 secure sharing</span>
+          <span className="mvp-badge">v1.5 availability-aware planning</span>
         </div>
       </header>
 
@@ -240,6 +251,7 @@ function PlannerApp() {
             onCancelAdd={() => setShowForm(false)}
             onChange={updatePerson}
             onRemove={removePerson}
+            onAvailabilityResult={updateAvailability}
           />
         ) : (
           <>
@@ -315,6 +327,7 @@ function PlannerApp() {
           recommendation={recommendation}
           hours={hours}
           expanded={plannerExpanded}
+          availabilityByPerson={availabilityByPerson}
           onExpandedChange={setPlannerExpanded}
           onDateChange={(date) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, date } }))}
           onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
@@ -364,7 +377,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.4</span><span>Busy/free sharing uses private, expiring, revocable links.</span></footer>
+      <footer><span>AtlasTime v1.5</span><span>Confirmed shared busy time now informs planner recommendations.</span></footer>
     </div>
   );
 }

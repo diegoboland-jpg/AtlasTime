@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v1.5: availability-aware recommendations
+
+- [x] Cache organizer-protected shared busy/free results in the current browser.
+- [x] Exclude confirmed calendar conflicts from a person's available count.
+- [x] Penalize confirmed conflicts so recommendations move toward genuinely open windows.
+- [x] Mark shared-calendar conflicts in the compact planner rows and detailed timeline.
+- [x] Keep missing, pending, expired, declined, and out-of-window data unknown rather than treating it as free.
+- [ ] Add Outlook recipient authorization and combine authorized providers.
+- [ ] Replace local result caching with encrypted durable production storage before public hosting.
+
 ## v1.4: secure availability sharing
 
 - [x] Generate private opaque request links with automatic expiration.
@@ -8,7 +18,7 @@
 - [x] Add a recipient consent page with explicit Google authorization.
 - [x] Store only validated busy/free intervals inside the requested window.
 - [x] Keep event titles, descriptions, locations, attendees, and OAuth tokens out of request records.
-- [ ] Merge returned busy/free blocks into person rows and recommendation scoring.
+- [x] Merge returned busy/free blocks into person rows and recommendation scoring.
 - [ ] Add Outlook recipient authorization and busy/free submission.
 - [ ] Replace the local JSON store with encrypted durable production storage before public hosting.
 - [ ] Deploy to an HTTPS origin and validate cross-device links outside the local network.

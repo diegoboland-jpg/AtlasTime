@@ -1,5 +1,13 @@
 # AtlasTime changelog
 
+## 1.5.0 — availability-aware planning
+
+- Cache organizer-protected shared busy/free results in the current browser.
+- Exclude confirmed calendar conflicts from the available-person count and add a strong scoring penalty.
+- Move the best-time recommendation away from known busy windows.
+- Show calendar-conflict labels in compact planner cards and the detailed 24-hour comparison.
+- Preserve privacy-safe uncertainty: absent, pending, expired, declined, revoked, or out-of-window results are never presented as confirmed free time.
+
 ## 1.4.0 — secure availability sharing
 
 - Generate cryptographically random seven-day availability links and persist only hashed public tokens.
