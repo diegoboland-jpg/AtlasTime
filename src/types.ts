@@ -43,7 +43,8 @@ export type BusyPeriod = { start: string; end: string };
 
 export type PersonAvailability = {
   status: "pending" | "expired" | "revoked" | "shared" | "declined";
-  provider: "google" | null;
+  provider: "google" | "outlook" | "combined" | null;
+  providers?: Array<"google" | "outlook">;
   timeMin: string;
   timeMax: string;
   busy: BusyPeriod[];
