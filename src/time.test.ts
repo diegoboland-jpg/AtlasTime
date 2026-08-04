@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { bestHour, dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, hourInZone, meetingFitsWorkingHours, scoreAtUtcHour, scoreHours } from "./time";
-import type { Person } from "./types";
+import type { AvailabilityByPerson, Person } from "./types";
 
 function person(overrides: Partial<Person> = {}): Person {
   return {
@@ -90,5 +90,59 @@ describe("meeting scoring", () => {
     ];
 
     expect(bestHour(people, "2026-07-15", 120)).toMatchObject({ utcHour: 10, available: 2 });
+  });
+
+  it("marks confirmed shared busy time as unavailable", () => {
+    const availability: AvailabilityByPerson = {
+      person: {
+        status: "shared",
+        provider: "google",
+        timeMin: "2026-07-15T00:00:00.000Z",
+        timeMax: "2026-07-16T00:00:00.000Z",
+        busy: [{ start: "2026-07-15T10:00:00.000Z", end: "2026-07-15T11:00:00.000Z" }],
+      },
+    };
+
+    expect(scoreAtUtcHour([person()], "2026-07-15", 10, 60, availability)).toMatchObject({
+      available: 0,
+      calendarConflicts: 1,
+      penalty: 24,
+    });
+    expect(scoreAtUtcHour([person()], "2026-07-15", 11, 60, availability)).toMatchObject({
+      available: 1,
+      calendarConflicts: 0,
+    });
+  });
+
+  it("does not treat pending or expired availability as confirmed free time", () => {
+    const pending: AvailabilityByPerson = {
+      person: {
+        status: "pending",
+        provider: null,
+        timeMin: "2026-07-15T00:00:00.000Z",
+        timeMax: "2026-07-16T00:00:00.000Z",
+        busy: [{ start: "2026-07-15T10:00:00.000Z", end: "2026-07-15T11:00:00.000Z" }],
+      },
+    };
+
+    expect(scoreAtUtcHour([person()], "2026-07-15", 10, 60, pending)).toMatchObject({
+      available: 1,
+      calendarConflicts: 0,
+    });
+  });
+
+  it("moves the recommendation away from a confirmed busy block", () => {
+    const narrowHours = person({ workStart: 9, workEnd: 11 });
+    const availability: AvailabilityByPerson = {
+      person: {
+        status: "shared",
+        provider: "google",
+        timeMin: "2026-07-15T00:00:00.000Z",
+        timeMax: "2026-07-16T00:00:00.000Z",
+        busy: [{ start: "2026-07-15T09:00:00.000Z", end: "2026-07-15T10:00:00.000Z" }],
+      },
+    };
+
+    expect(bestHour([narrowHours], "2026-07-15", 60, availability)?.utcHour).toBe(10);
   });
 });

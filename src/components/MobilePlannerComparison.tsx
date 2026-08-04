@@ -1,6 +1,6 @@
-import { dateAtUtcHour, formatInZone, hourInZone, meetingFitsWorkingHours } from "../time";
+import { dateAtUtcHour, formatInZone, hourInZone, meetingConflictsWithBusy, meetingFitsWorkingHours } from "../time";
 import { timePeriodForHour } from "../timePeriods";
-import type { Person } from "../types";
+import type { AvailabilityByPerson, Person } from "../types";
 import { TimePeriodScene } from "./TimePeriodScene";
 
 type MobilePlannerComparisonProps = {
@@ -8,6 +8,7 @@ type MobilePlannerComparisonProps = {
   dateValue: string;
   selectedHour: number;
   durationMinutes: number;
+  availabilityByPerson?: AvailabilityByPerson;
 };
 
 export function MobilePlannerComparison({
@@ -15,6 +16,7 @@ export function MobilePlannerComparison({
   dateValue,
   selectedHour,
   durationMinutes,
+  availabilityByPerson = {},
 }: MobilePlannerComparisonProps) {
   const selectedInstant = dateAtUtcHour(dateValue, selectedHour);
   const endInstant = new Date(selectedInstant.getTime() + durationMinutes * 60_000);
@@ -25,8 +27,11 @@ export function MobilePlannerComparison({
       <div className="mobile-person-times" aria-live="polite">
         {people.map((person) => {
           const working = meetingFitsWorkingHours(person, selectedInstant, durationMinutes);
+          const calendarConflict = meetingConflictsWithBusy(selectedInstant, durationMinutes, availabilityByPerson[person.contactId ?? person.id]);
           const period = timePeriodForHour(hourInZone(selectedInstant, person.timeZone));
-          const statusLabel = working
+          const statusLabel = calendarConflict
+            ? "Busy on calendar"
+            : working
             ? "Working hours"
             : period.key === "night" || period.key === "evening"
               ? "Bedtime"
@@ -51,7 +56,7 @@ export function MobilePlannerComparison({
               </span>
               <span className="mobile-person-period">
                 <TimePeriodScene period={period.key} compact />
-                <em className={working ? "working" : `outside period-${period.key}`}>{statusLabel}</em>
+                <em className={calendarConflict ? "busy-calendar" : working ? "working" : `outside period-${period.key}`}>{statusLabel}</em>
               </span>
             </article>
           );

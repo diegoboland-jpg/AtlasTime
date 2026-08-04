@@ -1,7 +1,7 @@
 import { CalendarPlus2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { formatInZone, hourInZone } from "../time";
-import type { Person } from "../types";
+import type { Person, PersonAvailability } from "../types";
 import { AvailabilityRequestDialog } from "./AvailabilityRequestDialog";
 
 type PersonCardProps = {
@@ -11,11 +11,12 @@ type PersonCardProps = {
   onChange: (person: Person) => void;
   onRemove: (id: string) => void;
   onEdit: () => void;
+  onAvailabilityResult?: (personId: string, result: PersonAvailability | null) => void;
 };
 
 const hourOptions = Array.from({ length: 24 }, (_, hour) => hour);
 
-export function PersonCard({ person, now, selectedInstant, onChange, onRemove, onEdit }: PersonCardProps) {
+export function PersonCard({ person, now, selectedInstant, onChange, onRemove, onEdit, onAvailabilityResult = () => undefined }: PersonCardProps) {
   const [showAvailabilityRequest, setShowAvailabilityRequest] = useState(false);
   const localHour = hourInZone(now, person.timeZone);
   const working = localHour >= person.workStart && localHour < person.workEnd;
@@ -144,6 +145,7 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
             ...person,
             availabilityRequestStatus,
           })}
+          onAvailabilityResult={(result) => onAvailabilityResult(person.contactId ?? person.id, result)}
         />
       )}
     </article>

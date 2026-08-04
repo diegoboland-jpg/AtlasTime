@@ -1,4 +1,4 @@
-import type { HourScore, Person } from "./types";
+import type { AvailabilityByPerson, HourScore, Person, PersonAvailability } from "./types";
 
 export const timeZones = [
   "America/Sao_Paulo",
@@ -88,13 +88,40 @@ function discomfortAtInstant(person: Person, instant: Date) {
   return 2 + distance + (localHour < 7 || localHour >= 21 ? 5 : 0);
 }
 
-export function scoreAtUtcHour(people: Person[], dateValue: string, utcHour: number, durationMinutes = 60): HourScore {
+export function meetingConflictsWithBusy(start: Date, durationMinutes: number, availability?: PersonAvailability) {
+  if (!availability || availability.status !== "shared") return false;
+  const end = new Date(start.getTime() + durationMinutes * 60_000);
+  const windowStart = new Date(availability.timeMin);
+  const windowEnd = new Date(availability.timeMax);
+  if (!Number.isFinite(windowStart.getTime()) || !Number.isFinite(windowEnd.getTime())) return false;
+  if (start < windowStart || end > windowEnd) return false;
+  return availability.busy.some((period) => {
+    const busyStart = new Date(period.start);
+    const busyEnd = new Date(period.end);
+    return Number.isFinite(busyStart.getTime()) && Number.isFinite(busyEnd.getTime()) && start < busyEnd && end > busyStart;
+  });
+}
+
+export function scoreAtUtcHour(
+  people: Person[],
+  dateValue: string,
+  utcHour: number,
+  durationMinutes = 60,
+  availabilityByPerson: AvailabilityByPerson = {},
+): HourScore {
   const instant = dateAtUtcHour(dateValue, utcHour);
   let available = 0;
+  let calendarConflicts = 0;
   const penalty = people.reduce((totalPenalty, person) => {
+    const calendarConflict = meetingConflictsWithBusy(
+      instant,
+      durationMinutes,
+      availabilityByPerson[person.contactId ?? person.id],
+    );
+    if (calendarConflict) calendarConflicts += 1;
     if (meetingFitsWorkingHours(person, instant, durationMinutes)) {
-      available += 1;
-      return totalPenalty;
+      if (!calendarConflict) available += 1;
+      return totalPenalty + (calendarConflict ? 24 : 0);
     }
     let worstDiscomfort = 0;
     const offsets = Array.from({ length: Math.ceil(durationMinutes / 15) }, (_, index) => index * 15);
@@ -105,19 +132,19 @@ export function scoreAtUtcHour(people: Person[], dateValue: string, utcHour: num
         discomfortAtInstant(person, new Date(instant.getTime() + offset * 60_000)),
       );
     }
-    return totalPenalty + Math.max(2, worstDiscomfort);
+    return totalPenalty + Math.max(2, worstDiscomfort) + (calendarConflict ? 24 : 0);
   }, 0);
 
-  return { utcHour, available, total: people.length, penalty, score: available * 12 - penalty };
+  return { utcHour, available, total: people.length, penalty, score: available * 12 - penalty, calendarConflicts };
 }
 
-export function scoreHours(people: Person[], dateValue: string, durationMinutes = 60): HourScore[] {
-  return Array.from({ length: 48 }, (_, index) => scoreAtUtcHour(people, dateValue, index / 2, durationMinutes));
+export function scoreHours(people: Person[], dateValue: string, durationMinutes = 60, availabilityByPerson: AvailabilityByPerson = {}): HourScore[] {
+  return Array.from({ length: 48 }, (_, index) => scoreAtUtcHour(people, dateValue, index / 2, durationMinutes, availabilityByPerson));
 }
 
-export function bestHour(people: Person[], dateValue: string, durationMinutes = 60): HourScore | null {
+export function bestHour(people: Person[], dateValue: string, durationMinutes = 60, availabilityByPerson: AvailabilityByPerson = {}): HourScore | null {
   if (!people.length) return null;
-  return scoreHours(people, dateValue, durationMinutes).sort(
+  return scoreHours(people, dateValue, durationMinutes, availabilityByPerson).sort(
     (a, b) =>
       b.score - a.score ||
       b.available - a.available ||
