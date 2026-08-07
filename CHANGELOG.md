@@ -1,5 +1,14 @@
 # AtlasTime changelog
 
+## 1.6.0 — combined Google and Outlook availability
+
+- Add a Microsoft OAuth authorization-code flow with state, PKCE, encrypted HttpOnly token storage, and same-origin mutation protection.
+- Read only the Microsoft Graph fields required to derive busy intervals and discard all event metadata.
+- Let recipients share Google, Outlook, or both through one private availability request.
+- Replace a provider's previous response on resubmission and merge overlapping blocks across providers.
+- Expire previously shared results so outdated busy blocks stop affecting recommendations.
+- Keep the Outlook gateway optional until Microsoft Entra credentials are configured and physically validated.
+
 ## 1.5.0 — availability-aware planning
 
 - Cache organizer-protected shared busy/free results in the current browser.

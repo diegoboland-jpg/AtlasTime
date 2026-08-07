@@ -42,6 +42,19 @@ function safeBusy(value, window) {
   return busy.length === value.length ? busy : null;
 }
 
+function mergeBusy(periods) {
+  const sorted = periods.slice().sort((left, right) => new Date(left.start) - new Date(right.start));
+  return sorted.reduce((merged, period) => {
+    const previous = merged.at(-1);
+    if (!previous || new Date(period.start) > new Date(previous.end)) {
+      merged.push({ ...period });
+    } else if (new Date(period.end) > new Date(previous.end)) {
+      previous.end = period.end;
+    }
+    return merged;
+  }, []);
+}
+
 async function limitedJson(request) {
   const contentLength = Number(request.headers.get("content-length") ?? 0);
   if (contentLength > MAX_BODY_BYTES) throw new Error("body_too_large");
@@ -144,14 +157,16 @@ export function createAvailabilityRequestGateway({
     const record = current.find((item) => item.tokenHash === digest(token));
     if (!record) return json({ error: "not_found" }, { status: 404 });
     const expired = record.expiresAt <= now();
+    const visibleStatus = expired && record.status !== "revoked" ? "expired" : record.status;
 
     if (request.method === "GET" && !action) {
       return json({
         personName: record.personName,
-        status: expired && record.status === "pending" ? "expired" : record.status,
+        status: visibleStatus,
         expiresAt: new Date(record.expiresAt).toISOString(),
         timeMin: record.timeMin,
         timeMax: record.timeMax,
+        providers: record.providers ?? (record.provider ? [record.provider] : []),
       });
     }
 
@@ -161,12 +176,26 @@ export function createAvailabilityRequestGateway({
       try {
         const body = await limitedJson(request);
         const busy = safeBusy(body?.busy, record);
-        if (body?.provider !== "google" || !busy) return json({ error: "invalid_request" }, { status: 400 });
+        if (!["google", "outlook"].includes(body?.provider) || !busy) return json({ error: "invalid_request" }, { status: 400 });
+        const existingBusyByProvider = record.busyByProvider ?? (
+          record.provider && record.provider !== "combined" ? { [record.provider]: record.busy ?? [] } : {}
+        );
+        const busyByProvider = { ...existingBusyByProvider, [body.provider]: busy };
+        const providers = Object.keys(busyByProvider).filter((provider) => ["google", "outlook"].includes(provider));
+        const combinedBusy = mergeBusy(providers.flatMap((provider) => busyByProvider[provider] ?? []));
         const next = current.map((item) => item.id === record.id
-          ? { ...item, status: "shared", provider: "google", busy, sharedAt: now() }
+          ? {
+              ...item,
+              status: "shared",
+              provider: providers.length > 1 ? "combined" : providers[0],
+              providers,
+              busyByProvider,
+              busy: combinedBusy,
+              sharedAt: now(),
+            }
           : item);
         await store.write(next);
-        return json({ status: "shared" });
+        return json({ status: "shared", providers });
       } catch {
         return json({ error: "invalid_json" }, { status: 400 });
       }
@@ -180,11 +209,12 @@ export function createAvailabilityRequestGateway({
           return json({ error: "forbidden" }, { status: 403 });
         }
         return json({
-          status: expired && record.status === "pending" ? "expired" : record.status,
+          status: visibleStatus,
           provider: record.provider ?? null,
+          providers: record.providers ?? (record.provider ? [record.provider] : []),
           timeMin: record.timeMin,
           timeMax: record.timeMax,
-          busy: record.status === "shared" ? record.busy : [],
+          busy: visibleStatus === "shared" ? record.busy : [],
         });
       } catch {
         return json({ error: "invalid_json" }, { status: 400 });

@@ -346,16 +346,18 @@ input:focus, select:focus { border-color: #246bfd; box-shadow: 0 0 0 3px rgba(36
   background: rgba(13, 28, 57, .58); backdrop-filter: blur(4px);
 }
 .availability-request-dialog {
-  position: relative; display: grid; gap: 18px; width: min(560px, 100%); max-height: min(760px, calc(100vh - 40px)); overflow-y: auto;
+  position: relative; display: grid; gap: 18px; width: min(560px, 100%); max-width: 100%; min-width: 0;
+  max-height: min(760px, calc(100vh - 40px)); max-height: min(760px, calc(100dvh - 40px)); overflow-x: hidden; overflow-y: auto;
   box-sizing: border-box; padding: 26px; border-radius: 22px; background: white; box-shadow: 0 22px 70px rgba(12, 27, 56, .3);
 }
+.availability-request-dialog > * { min-width: 0; }
 .availability-request-close { position: absolute; top: 12px; right: 12px; width: 42px; height: 42px; }
 .availability-request-icon { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; background: #e7efff; color: #246bfd; }
-.availability-request-dialog h2 { margin: 4px 40px 7px 0; color: #101f3b; font-size: 23px; }
+.availability-request-dialog h2 { margin: 4px 40px 7px 0; overflow-wrap: anywhere; color: #101f3b; font-size: 23px; }
 .availability-request-dialog > div > p:last-child { margin: 0; color: #64738d; font-size: 12px; line-height: 1.55; }
 .availability-request-preview { padding: 14px; border: 1px solid #dce5f5; border-radius: 14px; background: #f7faff; }
 .availability-request-preview strong { color: #2e4267; font-size: 11px; }
-.availability-request-preview p { white-space: pre-line; }
+.availability-request-preview p { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; white-space: pre-line; }
 .availability-request-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .availability-request-actions button { justify-content: center; }
 .availability-request-stage-note { margin: 0; color: #7a879d; font-size: 10px; line-height: 1.5; }
@@ -931,6 +933,23 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .people-manager-heading { margin-top: 36px; }
   .people-summary-section .section-heading { align-items: stretch; }
   .people-summary-section .secondary-button { width: 100%; justify-content: center; }
+  .availability-request-backdrop {
+    align-items: center; padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  }
+  .availability-request-dialog {
+    gap: 14px; width: 100%; max-height: calc(100vh - 20px); max-height: calc(100dvh - 20px); padding: 18px;
+    border-radius: 18px; overscroll-behavior: contain;
+  }
+  .availability-request-close { top: 10px; right: 10px; width: 40px; height: 40px; }
+  .availability-request-icon { width: 42px; height: 42px; }
+  .availability-request-dialog h2 { margin-right: 36px; font-size: clamp(19px, 6vw, 23px); line-height: 1.16; }
+  .availability-request-preview { padding: 12px; }
+  .availability-request-preview p { font-size: 12px; line-height: 1.5; }
+  .availability-request-actions { grid-template-columns: 1fr; }
+  .availability-request-actions button { width: 100%; min-width: 0; white-space: normal; }
+  .availability-request-management { display: grid; grid-template-columns: 1fr; align-items: stretch; }
+  .availability-request-management button { width: 100%; min-width: 0; justify-content: center; white-space: normal; }
+  .availability-request-revoke { justify-self: stretch; min-height: 40px; }
 }
 
 @media (max-width: 360px) {

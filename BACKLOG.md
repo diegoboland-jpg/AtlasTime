@@ -1,5 +1,16 @@
 # AtlasTime backlog
 
+## v1.6: combined Google and Outlook availability
+
+- [x] Add a server-side Microsoft authorization-code flow with state, PKCE, encrypted HttpOnly refresh-token storage, and same-origin mutation checks.
+- [x] Request only delegated calendar-read access and query Microsoft Graph for start, end, busy state, and cancellation state.
+- [x] Strip all event subjects, locations, attendees, descriptions, and identifiers before returning busy intervals.
+- [x] Let recipients share Google, Outlook, or both from the same private request.
+- [x] Replace an individual provider's earlier submission while merging overlapping blocks across providers.
+- [x] Expire previously shared results and stop returning their old busy blocks.
+- [ ] Validate Microsoft Entra credentials with personal Outlook and an organization-managed Microsoft 365 account.
+- [ ] Document tenant-admin denial and organization policy behavior during physical-device acceptance.
+
 ## v1.5: availability-aware recommendations
 
 - [x] Cache organizer-protected shared busy/free results in the current browser.
@@ -7,7 +18,7 @@
 - [x] Penalize confirmed conflicts so recommendations move toward genuinely open windows.
 - [x] Mark shared-calendar conflicts in the compact planner rows and detailed timeline.
 - [x] Keep missing, pending, expired, declined, and out-of-window data unknown rather than treating it as free.
-- [ ] Add Outlook recipient authorization and combine authorized providers.
+- [x] Add Outlook recipient authorization and combine authorized providers.
 - [ ] Replace local result caching with encrypted durable production storage before public hosting.
 
 ## v1.4: secure availability sharing
@@ -19,7 +30,7 @@
 - [x] Store only validated busy/free intervals inside the requested window.
 - [x] Keep event titles, descriptions, locations, attendees, and OAuth tokens out of request records.
 - [x] Merge returned busy/free blocks into person rows and recommendation scoring.
-- [ ] Add Outlook recipient authorization and busy/free submission.
+- [x] Add Outlook recipient authorization and busy/free submission.
 - [ ] Replace the local JSON store with encrypted durable production storage before public hosting.
 - [ ] Deploy to an HTTPS origin and validate cross-device links outside the local network.
 

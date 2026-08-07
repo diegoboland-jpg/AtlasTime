@@ -13,6 +13,7 @@ export type PublicAvailabilityRequest = {
   expiresAt: string;
   timeMin: string;
   timeMax: string;
+  providers: Array<"google" | "outlook">;
 };
 
 export type ManagedAvailabilityResult = PersonAvailability;
@@ -37,14 +38,22 @@ export async function createAvailabilityRequest(personName: string, timeMin: str
   return json<AvailabilityRequestRecord>(response);
 }
 
-export async function submitGoogleAvailability(token: string, busy: Array<{ start: string; end: string }>) {
+export async function submitCalendarAvailability(token: string, provider: "google" | "outlook", busy: Array<{ start: string; end: string }>) {
   const response = await fetch(`/api/availability-requests/${encodeURIComponent(token)}/submit`, {
     method: "POST",
     credentials: "same-origin",
     headers: { "content-type": "application/json", "X-AtlasTime-CSRF": "1" },
-    body: JSON.stringify({ provider: "google", busy }),
+    body: JSON.stringify({ provider, busy }),
   });
-  return json<{ status: "shared" }>(response);
+  return json<{ status: "shared"; providers: Array<"google" | "outlook"> }>(response);
+}
+
+export function submitGoogleAvailability(token: string, busy: Array<{ start: string; end: string }>) {
+  return submitCalendarAvailability(token, "google", busy);
+}
+
+export function submitOutlookAvailability(token: string, busy: Array<{ start: string; end: string }>) {
+  return submitCalendarAvailability(token, "outlook", busy);
 }
 
 export async function getManagedAvailabilityResult(record: AvailabilityRequestRecord) {

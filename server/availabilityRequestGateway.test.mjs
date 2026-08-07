@@ -95,7 +95,7 @@ describe("availability request gateway", () => {
         busy: [{ start: "2026-08-01T09:00:00Z", end: "2026-08-01T10:30:00Z" }],
       }),
     }));
-    expect(await submitted.json()).toEqual({ status: "shared" });
+    expect(await submitted.json()).toEqual({ status: "shared", providers: ["google"] });
 
     const publicView = await gateway(new Request(`${origin}/api/availability-requests/${token}`));
     expect(JSON.stringify(await publicView.json())).not.toContain("09:00:00");
@@ -110,5 +110,69 @@ describe("availability request gateway", () => {
       provider: "google",
       busy: [{ start: "2026-08-01T09:00:00.000Z", end: "2026-08-01T10:30:00.000Z" }],
     });
+  });
+
+  it("combines Google and Outlook blocks while exposing no public schedule", async () => {
+    deterministicBytes.call = 0;
+    const gateway = createAvailabilityRequestGateway({ appOrigin: origin, randomBytesImpl: deterministicBytes });
+    const { payload } = await create(gateway);
+    const token = payload.url.split("/").at(-1);
+    const submit = (provider, busy) => gateway(new Request(`${origin}/api/availability-requests/${token}/submit`, {
+      method: "POST",
+      headers: mutationHeaders,
+      body: JSON.stringify({ provider, busy }),
+    }));
+
+    await submit("google", [{ start: "2026-08-01T09:00:00Z", end: "2026-08-01T10:00:00Z" }]);
+    const outlook = await submit("outlook", [
+      { start: "2026-08-01T09:30:00Z", end: "2026-08-01T11:00:00Z" },
+      { start: "2026-08-01T15:00:00Z", end: "2026-08-01T16:00:00Z" },
+    ]);
+    expect(await outlook.json()).toEqual({ status: "shared", providers: ["google", "outlook"] });
+
+    const publicView = await gateway(new Request(`${origin}/api/availability-requests/${token}`));
+    const publicPayload = await publicView.json();
+    expect(publicPayload.providers).toEqual(["google", "outlook"]);
+    expect(JSON.stringify(publicPayload)).not.toContain("09:00:00");
+
+    const result = await gateway(new Request(`${origin}/api/availability-requests/${token}/result`, {
+      method: "POST",
+      headers: mutationHeaders,
+      body: JSON.stringify({ managementKey: payload.managementKey }),
+    }));
+    await expect(result.json()).resolves.toMatchObject({
+      provider: "combined",
+      providers: ["google", "outlook"],
+      busy: [
+        { start: "2026-08-01T09:00:00.000Z", end: "2026-08-01T11:00:00.000Z" },
+        { start: "2026-08-01T15:00:00.000Z", end: "2026-08-01T16:00:00.000Z" },
+      ],
+    });
+  });
+
+  it("expires previously shared results and stops returning their busy blocks", async () => {
+    deterministicBytes.call = 0;
+    let time = 10_000;
+    const gateway = createAvailabilityRequestGateway({ appOrigin: origin, now: () => time, randomBytesImpl: deterministicBytes });
+    const { payload } = await create(gateway, {
+      personName: "Ana",
+      expiresInDays: 1,
+      timeMin: "2026-08-01T00:00:00Z",
+      timeMax: "2026-08-02T00:00:00Z",
+    });
+    const token = payload.url.split("/").at(-1);
+    await gateway(new Request(`${origin}/api/availability-requests/${token}/submit`, {
+      method: "POST",
+      headers: mutationHeaders,
+      body: JSON.stringify({ provider: "google", busy: [{ start: "2026-08-01T09:00:00Z", end: "2026-08-01T10:00:00Z" }] }),
+    }));
+    time += 86_400_001;
+
+    const result = await gateway(new Request(`${origin}/api/availability-requests/${token}/result`, {
+      method: "POST",
+      headers: mutationHeaders,
+      body: JSON.stringify({ managementKey: payload.managementKey }),
+    }));
+    await expect(result.json()).resolves.toMatchObject({ status: "expired", busy: [] });
   });
 });

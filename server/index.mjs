@@ -4,6 +4,7 @@ import { extname, join } from "node:path";
 import { loadEnvFile } from "node:process";
 import { fileURLToPath } from "node:url";
 import { createGoogleCalendarGateway } from "./googleCalendarGateway.mjs";
+import { createOutlookCalendarGateway } from "./outlookCalendarGateway.mjs";
 import { createAvailabilityRequestGateway, createFileAvailabilityRequestStore } from "./availabilityRequestGateway.mjs";
 import { resolveStaticPath } from "./staticPath.mjs";
 
@@ -24,6 +25,15 @@ const gateway = missing.length ? null : createGoogleCalendarGateway({
   redirectUri: process.env.GOOGLE_OAUTH_REDIRECT_URI,
   appOrigin,
   encryptionKey: process.env.GOOGLE_TOKEN_ENCRYPTION_KEY,
+});
+const outlookRequired = ["MICROSOFT_OAUTH_CLIENT_ID", "MICROSOFT_OAUTH_CLIENT_SECRET", "MICROSOFT_OAUTH_REDIRECT_URI", "MICROSOFT_TOKEN_ENCRYPTION_KEY"];
+const outlookMissing = outlookRequired.filter((name) => !process.env[name]);
+const outlookGateway = outlookMissing.length ? null : createOutlookCalendarGateway({
+  clientId: process.env.MICROSOFT_OAUTH_CLIENT_ID,
+  clientSecret: process.env.MICROSOFT_OAUTH_CLIENT_SECRET,
+  redirectUri: process.env.MICROSOFT_OAUTH_REDIRECT_URI,
+  appOrigin,
+  encryptionKey: process.env.MICROSOFT_TOKEN_ENCRYPTION_KEY,
 });
 const availabilityRequests = createAvailabilityRequestGateway({
   appOrigin,
@@ -103,6 +113,15 @@ createServer(async (request, response) => {
       }
       return writeResponse(await gateway(await requestFromNode(request)), response);
     }
+    if (url.pathname.startsWith("/api/outlook-calendar/")) {
+      if (!outlookGateway) {
+        return writeResponse(new Response(JSON.stringify({ error: "outlook_gateway_not_configured", missing: outlookMissing }), {
+          status: 503,
+          headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+        }), response);
+      }
+      return writeResponse(await outlookGateway(await requestFromNode(request)), response);
+    }
     return serveStatic(url.pathname, response);
   } catch {
     response.writeHead(500, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
@@ -111,4 +130,5 @@ createServer(async (request, response) => {
 }).listen(port, () => {
   console.log(`AtlasTime listening on ${appOrigin}`);
   if (missing.length) console.log(`Google Calendar connection disabled; missing ${missing.join(", ")}`);
+  if (outlookMissing.length) console.log(`Outlook Calendar connection disabled; missing ${outlookMissing.join(", ")}`);
 });

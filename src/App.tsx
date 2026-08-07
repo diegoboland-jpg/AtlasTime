@@ -228,7 +228,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.5 availability-aware planning</span>
+          <span className="mvp-badge">v1.6 Google + Outlook availability</span>
         </div>
       </header>
 
@@ -377,7 +377,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.5</span><span>Confirmed shared busy time now informs planner recommendations.</span></footer>
+      <footer><span>AtlasTime v1.6</span><span>Recipients can combine Google and Outlook busy/free time.</span></footer>
     </div>
   );
 }
