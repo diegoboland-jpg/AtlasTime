@@ -1,5 +1,15 @@
 # AtlasTime backlog
 
+## v1.7: organizer multi-calendar planning
+
+- [x] Add a visible Outlook connection card to the organizer's Handoff workspace.
+- [x] Keep Outlook access read-only and limited to occupied/free calendar blocks.
+- [x] Combine confirmed Google and Outlook busy intervals in one organizer availability strip.
+- [x] Preserve partial results when one connected provider is temporarily unavailable.
+- [x] Keep provider event names, descriptions, locations, attendees, and identifiers out of the browser response.
+- [ ] Validate a personal Google calendar and personal Outlook calendar together on Windows.
+- [ ] Document and validate organization-admin denial for a managed Microsoft 365 calendar.
+
 ## v1.6: combined Google and Outlook availability
 
 - [x] Add a server-side Microsoft authorization-code flow with state, PKCE, encrypted HttpOnly refresh-token storage, and same-origin mutation checks.
