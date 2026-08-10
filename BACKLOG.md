@@ -1,5 +1,17 @@
 # AtlasTime backlog
 
+## v1.9: deployment operations and recovery
+
+- [x] Add a production-readiness audit for HTTPS, persistence, OAuth completeness, redirect origins, and independent encryption keys.
+- [x] Create ciphertext-only availability backups with a companion SHA-256 checksum.
+- [x] Verify backup authenticity by decrypting with the configured key without printing private records.
+- [x] Require an explicit restore confirmation and preserve the previous encrypted data file before replacement.
+- [x] Add container-compatible check, backup, verify, and restore commands.
+- [x] Document the staged path from public HTTPS hosting to Google Play, TestFlight/App Store, and native widgets.
+- [ ] Select the public hosting provider, domain, persistent volume, and protected off-host backup destination.
+- [ ] Perform a complete backup-and-restore drill on the selected staging host.
+- [ ] Add automated off-host backup scheduling only after the host and retention policy are selected.
+
 ## v1.8: production hosting foundation
 
 - [x] Encrypt persisted availability-request records with authenticated AES-256-GCM encryption.

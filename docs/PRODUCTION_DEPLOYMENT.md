@@ -54,6 +54,33 @@ The runtime listens on `PORT` and stores encrypted records at `/data/availabilit
 6. Open the private link on a phone outside the development computer's Wi-Fi network.
 7. Stop the persistent volume temporarily and confirm the service fails rather than silently replacing existing records.
 
+## Operational checks and recovery
+
+Run the readiness audit after setting the production environment:
+
+```text
+npm run production:check
+```
+
+The command reports missing or mismatched settings but never prints secret values. It rejects incomplete OAuth configurations, provider callbacks on a different origin, and encryption keys reused across data, Google, or Microsoft records.
+
+Create and independently verify an encrypted backup:
+
+```text
+npm run backup:data
+npm run verify:data -- /data/backups/availability-YYYY-MM-DDTHH-MM-SS-sssZ.json.enc
+```
+
+Copy verified backups to protected storage outside the application host. A backup remains unreadable without `ATLASTIME_DATA_ENCRYPTION_KEY`, so retain that key separately in the host's secret manager and recovery documentation.
+
+Restore only during a controlled maintenance window after stopping AtlasTime writes:
+
+```text
+npm run restore:data -- /data/backups/availability-YYYY-MM-DDTHH-MM-SS-sssZ.json.enc RESTORE
+```
+
+The exact `RESTORE` confirmation is mandatory. AtlasTime verifies the backup before replacement and preserves the prior encrypted file beside the live data file.
+
 ## Before public launch
 
 - Select a hosting provider and persistent-volume or managed-database strategy.
