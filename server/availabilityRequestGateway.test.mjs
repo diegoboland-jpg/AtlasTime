@@ -236,7 +236,9 @@ describe("encrypted availability request storage", () => {
       const store = createEncryptedFileAvailabilityRequestStore(file, encodedKey);
       await store.write([{ id: "request-one" }]);
       const envelope = JSON.parse(await readFile(file, "utf8"));
-      envelope.ciphertext = `${envelope.ciphertext.slice(0, -1)}${envelope.ciphertext.endsWith("A") ? "B" : "A"}`;
+      const ciphertext = Buffer.from(envelope.ciphertext, "base64url");
+      ciphertext[0] ^= 1;
+      envelope.ciphertext = ciphertext.toString("base64url");
       await writeFile(file, JSON.stringify(envelope));
       await expect(store.read()).rejects.toThrow();
     } finally {
