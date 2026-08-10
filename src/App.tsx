@@ -228,7 +228,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.7 combined organizer calendars</span>
+          <span className="mvp-badge">v1.8 secure hosting foundation</span>
         </div>
       </header>
 
@@ -377,7 +377,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.7</span><span>Organizers can combine Google and Outlook busy/free time.</span></footer>
+      <footer><span>AtlasTime v1.8</span><span>Encrypted availability records prepare connected planning for secure hosting.</span></footer>
     </div>
   );
 }

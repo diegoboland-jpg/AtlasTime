@@ -1,5 +1,17 @@
 # AtlasTime backlog
 
+## v1.8: production hosting foundation
+
+- [x] Encrypt persisted availability-request records with authenticated AES-256-GCM encryption.
+- [x] Migrate readable local development records to ciphertext on the next write.
+- [x] Require an independent storage-encryption key and HTTPS origin in production mode.
+- [x] Add a provider-neutral container build with a persistent data-volume boundary.
+- [x] Add a privacy-safe health endpoint and restrictive production security headers.
+- [x] Document secrets, OAuth callback changes, persistent storage, backup, and acceptance checks.
+- [ ] Select a public HTTPS hosting provider and create its production environment.
+- [ ] Move from the single-instance encrypted file to a transactional encrypted database before horizontal scaling.
+- [ ] Validate private links and both OAuth providers on the public domain from a physical phone.
+
 ## v1.7: organizer multi-calendar planning
 
 - [x] Add a visible Outlook connection card to the organizer's Handoff workspace.

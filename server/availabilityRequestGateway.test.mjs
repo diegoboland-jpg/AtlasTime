@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { createAvailabilityRequestGateway, createMemoryAvailabilityRequestStore } from "./availabilityRequestGateway.mjs";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import {
+  createAvailabilityRequestGateway,
+  createEncryptedFileAvailabilityRequestStore,
+  createMemoryAvailabilityRequestStore,
+  decodeAvailabilityEncryptionKey,
+} from "./availabilityRequestGateway.mjs";
 
 const origin = "https://atlas.example";
 const mutationHeaders = { origin, "x-atlastime-csrf": "1", "content-type": "application/json" };
@@ -174,5 +182,65 @@ describe("availability request gateway", () => {
       body: JSON.stringify({ managementKey: payload.managementKey }),
     }));
     await expect(result.json()).resolves.toMatchObject({ status: "expired", busy: [] });
+  });
+});
+
+describe("encrypted availability request storage", () => {
+  const encodedKey = Buffer.alloc(32, 7).toString("base64url");
+
+  it("rejects missing or malformed production keys", () => {
+    expect(() => decodeAvailabilityEncryptionKey("")).toThrow(/base64url-encoded 32-byte key/);
+    expect(() => decodeAvailabilityEncryptionKey(Buffer.alloc(31).toString("base64url"))).toThrow(/base64url-encoded 32-byte key/);
+    expect(decodeAvailabilityEncryptionKey(encodedKey)).toHaveLength(32);
+  });
+
+  it("persists authenticated ciphertext and restores records", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "atlastime-encrypted-store-"));
+    const file = join(directory, "availability.json");
+    try {
+      const store = createEncryptedFileAvailabilityRequestStore(file, encodedKey, {
+        randomBytesImpl: (size) => Buffer.alloc(size, 3),
+      });
+      const records = [{ id: "request-one", personName: "Ana", busy: [{ start: "private-start", end: "private-end" }] }];
+      await store.write(records);
+
+      const serialized = await readFile(file, "utf8");
+      expect(serialized).toContain('"algorithm":"A256GCM"');
+      expect(serialized).not.toContain("Ana");
+      expect(serialized).not.toContain("private-start");
+      await expect(store.read()).resolves.toEqual(records);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("reads a legacy plaintext file so the next write migrates it", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "atlastime-legacy-store-"));
+    const file = join(directory, "availability.json");
+    try {
+      const records = [{ id: "legacy" }];
+      await writeFile(file, JSON.stringify(records));
+      const store = createEncryptedFileAvailabilityRequestStore(file, encodedKey);
+      await expect(store.read()).resolves.toEqual(records);
+      await store.write(records);
+      expect(JSON.parse(await readFile(file, "utf8"))).toMatchObject({ version: 1, algorithm: "A256GCM" });
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("fails closed when ciphertext is altered", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "atlastime-tampered-store-"));
+    const file = join(directory, "availability.json");
+    try {
+      const store = createEncryptedFileAvailabilityRequestStore(file, encodedKey);
+      await store.write([{ id: "request-one" }]);
+      const envelope = JSON.parse(await readFile(file, "utf8"));
+      envelope.ciphertext = `${envelope.ciphertext.slice(0, -1)}${envelope.ciphertext.endsWith("A") ? "B" : "A"}`;
+      await writeFile(file, JSON.stringify(envelope));
+      await expect(store.read()).rejects.toThrow();
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });

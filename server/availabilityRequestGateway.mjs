@@ -1,9 +1,10 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_LIFETIME_DAYS = 14;
+const ENCRYPTED_STORE_AAD = Buffer.from("AtlasTime availability requests v1", "utf8");
 
 function json(value, init = {}) {
   const headers = new Headers(init.headers);
@@ -92,6 +93,65 @@ export function createFileAvailabilityRequestStore(file) {
         await mkdir(dirname(file), { recursive: true });
         const temporary = `${file}.${process.pid}.tmp`;
         await writeFile(temporary, JSON.stringify(records), { encoding: "utf8", mode: 0o600 });
+        await rename(temporary, file);
+      });
+      return pending;
+    },
+  };
+}
+
+export function decodeAvailabilityEncryptionKey(value) {
+  if (typeof value !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(value)) {
+    throw new Error("ATLASTIME_DATA_ENCRYPTION_KEY must be a base64url-encoded 32-byte key.");
+  }
+  const key = Buffer.from(value, "base64url");
+  if (key.length !== 32) throw new Error("ATLASTIME_DATA_ENCRYPTION_KEY must be a base64url-encoded 32-byte key.");
+  return key;
+}
+
+export function createEncryptedFileAvailabilityRequestStore(file, encodedKey, { randomBytesImpl = randomBytes } = {}) {
+  const key = decodeAvailabilityEncryptionKey(encodedKey);
+  let pending = Promise.resolve();
+
+  return {
+    async read() {
+      try {
+        const parsed = JSON.parse(await readFile(file, "utf8"));
+        // Read legacy development data once so the next write can migrate it to ciphertext.
+        if (Array.isArray(parsed)) return parsed;
+        if (parsed?.version !== 1 || parsed?.algorithm !== "A256GCM") throw new Error("invalid_encrypted_store");
+        const iv = Buffer.from(parsed.iv ?? "", "base64url");
+        const tag = Buffer.from(parsed.tag ?? "", "base64url");
+        const ciphertext = Buffer.from(parsed.ciphertext ?? "", "base64url");
+        if (iv.length !== 12 || tag.length !== 16 || ciphertext.length === 0) throw new Error("invalid_encrypted_store");
+        const decipher = createDecipheriv("aes-256-gcm", key, iv);
+        decipher.setAAD(ENCRYPTED_STORE_AAD);
+        decipher.setAuthTag(tag);
+        const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+        const records = JSON.parse(plaintext.toString("utf8"));
+        if (!Array.isArray(records)) throw new Error("invalid_encrypted_store");
+        return records;
+      } catch (error) {
+        if (error?.code === "ENOENT") return [];
+        throw error;
+      }
+    },
+    async write(records) {
+      pending = pending.then(async () => {
+        const iv = randomBytesImpl(12);
+        const cipher = createCipheriv("aes-256-gcm", key, iv);
+        cipher.setAAD(ENCRYPTED_STORE_AAD);
+        const ciphertext = Buffer.concat([cipher.update(JSON.stringify(records), "utf8"), cipher.final()]);
+        const envelope = {
+          version: 1,
+          algorithm: "A256GCM",
+          iv: iv.toString("base64url"),
+          tag: cipher.getAuthTag().toString("base64url"),
+          ciphertext: ciphertext.toString("base64url"),
+        };
+        await mkdir(dirname(file), { recursive: true });
+        const temporary = `${file}.${process.pid}.tmp`;
+        await writeFile(temporary, JSON.stringify(envelope), { encoding: "utf8", mode: 0o600 });
         await rename(temporary, file);
       });
       return pending;

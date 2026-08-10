@@ -1,11 +1,15 @@
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { extname, isAbsolute, join, resolve } from "node:path";
 import { loadEnvFile } from "node:process";
 import { fileURLToPath } from "node:url";
 import { createGoogleCalendarGateway } from "./googleCalendarGateway.mjs";
 import { createOutlookCalendarGateway } from "./outlookCalendarGateway.mjs";
-import { createAvailabilityRequestGateway, createFileAvailabilityRequestStore } from "./availabilityRequestGateway.mjs";
+import {
+  createAvailabilityRequestGateway,
+  createEncryptedFileAvailabilityRequestStore,
+  createFileAvailabilityRequestStore,
+} from "./availabilityRequestGateway.mjs";
 import { resolveStaticPath } from "./staticPath.mjs";
 
 try {
@@ -16,6 +20,13 @@ try {
 
 const port = Number(process.env.PORT ?? 4173);
 const appOrigin = process.env.ATLASTIME_APP_ORIGIN ?? `http://localhost:${port}`;
+const appPackage = JSON.parse(await readFile(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"));
+const appVersion = typeof appPackage.version === "string" ? appPackage.version : "unknown";
+const production = process.env.NODE_ENV === "production";
+const parsedOrigin = new URL(appOrigin);
+if (production && parsedOrigin.protocol !== "https:") {
+  throw new Error("ATLASTIME_APP_ORIGIN must use HTTPS when NODE_ENV=production.");
+}
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const required = ["GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REDIRECT_URI", "GOOGLE_TOKEN_ENCRYPTION_KEY"];
 const missing = required.filter((name) => !process.env[name]);
@@ -35,10 +46,46 @@ const outlookGateway = outlookMissing.length ? null : createOutlookCalendarGatew
   appOrigin,
   encryptionKey: process.env.MICROSOFT_TOKEN_ENCRYPTION_KEY,
 });
+const serverDirectory = fileURLToPath(new URL(".", import.meta.url));
+const configuredDataFile = process.env.ATLASTIME_DATA_FILE;
+const availabilityDataFile = configuredDataFile
+  ? (isAbsolute(configuredDataFile) ? configuredDataFile : resolve(serverDirectory, configuredDataFile))
+  : fileURLToPath(new URL("../.data/availability-requests.json", import.meta.url));
+const availabilityEncryptionKey = process.env.ATLASTIME_DATA_ENCRYPTION_KEY;
+if (production && !availabilityEncryptionKey) {
+  throw new Error("ATLASTIME_DATA_ENCRYPTION_KEY is required when NODE_ENV=production.");
+}
+const availabilityStore = availabilityEncryptionKey
+  ? createEncryptedFileAvailabilityRequestStore(availabilityDataFile, availabilityEncryptionKey)
+  : createFileAvailabilityRequestStore(availabilityDataFile);
 const availabilityRequests = createAvailabilityRequestGateway({
   appOrigin,
-  store: createFileAvailabilityRequestStore(fileURLToPath(new URL("../.data/availability-requests.json", import.meta.url))),
+  store: availabilityStore,
 });
+
+const geocodingOrigin = (() => {
+  try { return new URL(process.env.VITE_GEOCODING_API_URL || "https://geocoding-api.open-meteo.com").origin; }
+  catch { return "https://geocoding-api.open-meteo.com"; }
+})();
+const securityHeaders = {
+  "content-security-policy": [
+    "default-src 'self'",
+    "base-uri 'self'",
+    `connect-src 'self' ${geocodingOrigin}`,
+    "font-src 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "img-src 'self' data:",
+    "object-src 'none'",
+    "script-src 'self'",
+    "style-src 'self'",
+    ...(production ? ["upgrade-insecure-requests"] : []),
+  ].join("; "),
+  "permissions-policy": "camera=(), geolocation=(), microphone=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY",
+};
 
 const contentTypes = {
   ".css": "text/css; charset=utf-8",
@@ -63,9 +110,7 @@ async function requestFromNode(request) {
 }
 
 async function writeResponse(response, nodeResponse) {
-  nodeResponse.setHeader("x-content-type-options", "nosniff");
-  nodeResponse.setHeader("x-frame-options", "DENY");
-  nodeResponse.setHeader("referrer-policy", "strict-origin-when-cross-origin");
+  for (const [name, value] of Object.entries(securityHeaders)) nodeResponse.setHeader(name, value);
   for (const [name, value] of response.headers) {
     if (name !== "set-cookie") nodeResponse.setHeader(name, value);
   }
@@ -91,9 +136,7 @@ async function serveStatic(pathname, response) {
     "cache-control": file.endsWith("index.html") || file.endsWith("sw.js") || file.endsWith("manifest.webmanifest")
       ? "no-cache"
       : "public, max-age=31536000, immutable",
-    "x-content-type-options": "nosniff",
-    "x-frame-options": "DENY",
-    "referrer-policy": "strict-origin-when-cross-origin",
+    ...securityHeaders,
   });
   response.end(body);
 }
@@ -101,6 +144,15 @@ async function serveStatic(pathname, response) {
 createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", appOrigin);
+    if (request.method === "GET" && url.pathname === "/api/health") {
+      return writeResponse(new Response(JSON.stringify({
+        status: "ok",
+        version: appVersion,
+        origin: parsedOrigin.origin,
+        storage: availabilityEncryptionKey ? "encrypted" : "development-plaintext",
+        calendars: { google: missing.length === 0, outlook: outlookMissing.length === 0 },
+      }), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } }), response);
+    }
     if (url.pathname.startsWith("/api/availability-requests")) {
       return writeResponse(await availabilityRequests(await requestFromNode(request)), response);
     }
