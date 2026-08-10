@@ -4,7 +4,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ## Current release
 
-**Version:** 1.7.0 combined organizer calendars
+**Version:** 1.8.0 production hosting foundation
 
 ### Implemented
 
@@ -19,6 +19,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Use confirmed shared busy/free blocks to avoid known calendar conflicts without reading event details
 - Let recipients combine explicitly authorized Google and Outlook busy/free blocks in one private availability response
 - Let organizers connect Outlook alongside Google and see one combined occupied/free planning view
+- Encrypt private availability-request records at rest and refuse insecure production startup
 - Save multiple groups locally
 - Set editable start and finish times, use quick 30-minute meeting lengths, type any exact minute, or create a true all-day event
 - Add meeting title, location, and notes
@@ -36,7 +37,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ### v1.0 boundary
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records and deployment safety checks.
 
 ## Important privacy model
 
@@ -67,6 +68,8 @@ npm run preview:connected
 ```
 
 Never put the Google client secret or token-encryption key in a `VITE_*` variable.
+
+For public hosting, follow [the v1.8 production deployment guide](docs/PRODUCTION_DEPLOYMENT.md). Production mode requires HTTPS, a dedicated availability-record encryption key, and persistent storage.
 
 ## Build and test
 

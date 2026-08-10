@@ -1,9 +1,9 @@
 # Project Atlas Technical Architecture
 
-**Version:** 1.0  
-**Status:** Implementation baseline  
-**Product:** Project Atlas / AtlasTime  
-**Last updated:** 2026-07-21
+**Version:** 1.8
+**Status:** Connected-planning baseline
+**Product:** Project Atlas / AtlasTime
+**Last updated:** 2026-08-10
 
 ## 1. Architecture goals
 
@@ -30,7 +30,7 @@ Quality targets:
 - Lucide React icons
 - Shareable URL-fragment payloads for portable group invitations
 
-No state-management framework, component framework, application server, or database is required for MVP.
+No state-management or component framework is required. The local-first planner remains usable without a server. Optional connected calendars and private availability links use a same-origin Node gateway; v1.8 supports one server instance with an encrypted persistent file and does not yet support a horizontally scaled database deployment.
 
 ## 3. System context
 
@@ -46,6 +46,14 @@ AtlasTime PWA
   +--> Open-Meteo geocoding (city lookup only)
   |
   +--> Browser/OS Intl time-zone database
+
+Optional connected deployment
+  |
+  +--> Same-origin Node gateway
+       |-- Google OAuth and busy/free gateway
+       |-- Microsoft OAuth and busy/free gateway
+       |-- Private availability requests
+       +-- AES-256-GCM encrypted persistent records
 ```
 
 Names and working schedules remain local. City queries sent to the geocoder must never include a person's name or group metadata.
@@ -319,7 +327,7 @@ Performance changes require measurement rather than speculative complexity.
 5. localStorage remains the MVP persistence layer.
 6. URL-fragment shares are portable copies, not collaboration.
 7. No manual time-zone selection.
-8. No backend until accounts, live sharing, or integrations justify it.
+8. Connected calendars and private live availability use an optional same-origin gateway; the planner remains local-first without it.
 9. Accessibility and privacy are architectural constraints, not polish tasks.
 
 ## 16. Immediate technical priorities

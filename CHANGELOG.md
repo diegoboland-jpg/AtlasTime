@@ -1,5 +1,13 @@
 # AtlasTime changelog
 
+## 1.8.0 — production hosting foundation
+
+- Encrypt persisted availability-request records with AES-256-GCM and fail closed if ciphertext is altered.
+- Require HTTPS and a dedicated record-encryption key whenever the connected server runs in production mode.
+- Add a provider-neutral multi-stage container build and persistent data-volume boundary.
+- Add restrictive same-origin security headers and a privacy-safe deployment health endpoint.
+- Document production secrets, OAuth callback updates, backups, persistence, and physical-device acceptance.
+
 ## 1.7.0 — organizer multi-calendar planning
 
 - Add a first-class Outlook Calendar connection to the organizer's Handoff workspace.

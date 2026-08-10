@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import { ArrowLeft, ContactRound, Mail, Plus, Users } from "lucide-react";
 import { personFromContact } from "../contacts";
 import type { ContactImportDraft } from "../contactImport";
@@ -126,7 +126,7 @@ export function PeopleManager({
 
       <div className="people-rolodex" aria-label={`Entries in ${groupName}`}>
         {people.map((person, index) => (
-          <div className="rolodex-card" style={{ "--card-index": index } as CSSProperties} key={person.id}>
+          <div className="rolodex-card" data-card-index={Math.min(index, 9)} key={person.id}>
             <PersonCard
               person={person}
               now={now}
