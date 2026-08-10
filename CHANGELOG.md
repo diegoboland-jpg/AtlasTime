@@ -1,5 +1,13 @@
 # AtlasTime changelog
 
+## 1.7.0 — organizer multi-calendar planning
+
+- Add a first-class Outlook Calendar connection to the organizer's Handoff workspace.
+- Combine Google and Outlook occupied/free blocks in a single planner visualization.
+- Keep the Microsoft permission read-only and continue discarding all event details.
+- Preserve confirmed availability from one provider when the other provider is unavailable.
+- Keep recipient-controlled Google and Outlook sharing from v1.6 unchanged.
+
 ## 1.6.0 — combined Google and Outlook availability
 
 - Add a Microsoft OAuth authorization-code flow with state, PKCE, encrypted HttpOnly token storage, and same-origin mutation protection.

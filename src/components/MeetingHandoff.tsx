@@ -7,6 +7,7 @@ import type { Person, PlannerState } from "../types";
 import { CalendarHandoffDialog } from "./CalendarHandoffDialog";
 import { CalendarInviteeSelector } from "./CalendarInviteeSelector";
 import { GoogleCalendarConnection } from "./GoogleCalendarConnection";
+import { OutlookCalendarConnection } from "./OutlookCalendarConnection";
 
 type Props = {
   people: Person[];
@@ -137,7 +138,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
         <div>
           <p className="section-kicker"><CalendarPlus size={16} /> HANDOFF</p>
           <h2 id="handoff-heading">Take the selected time with you</h2>
-          <p>Share the timezone-aware invitation through an app you choose, copy it, download a standard calendar file, or open a prefilled calendar draft. AtlasTime never sends anything automatically or reads your accounts.</p>
+          <p>Share the timezone-aware invitation through an app you choose, copy it, download a standard calendar file, or open a prefilled calendar draft. Optional calendar connections read only the access you explicitly approve.</p>
         </div>
       </div>
 
@@ -169,6 +170,8 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
           location={planner.location}
           attendees={attendees}
         />
+
+        <OutlookCalendarConnection />
 
         <CalendarInviteeSelector attendees={availableAttendees} selectedEmails={selectedEmails} onChange={setSelectedEmails} />
 
