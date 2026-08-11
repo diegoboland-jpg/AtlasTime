@@ -2,16 +2,16 @@
 
 AtlasTime already works as an installable PWA on Android, iPhone, and Windows. A store listing and a native home-screen widget require additional release layers; they do not replace the planner or its connected server.
 
-## Current position: v1.9
+## Current position: v1.10
 
 - The responsive PWA, offline shell, mobile planner, floating time slider, Google connection, Microsoft connection, private availability sharing, and combined busy/free scoring exist.
-- The connected server has encrypted persistence, production safety checks, and verified backup and restore operations.
+- The connected server has encrypted persistence, production safety checks, verified backup and restore operations, and a Render staging Blueprint.
 - Local-network phone testing works, but a public HTTPS staging domain and physical-device acceptance remain required.
 
 ## Phase A — public staging deployment
 
-1. Select a hosting provider, domain, persistent volume, and secret manager.
-2. Deploy the v1.9 container behind HTTPS.
+1. Create the prepared Render staging service and persistent disk.
+2. Deploy the v1.10 container behind managed HTTPS.
 3. Register the public Google and Microsoft OAuth callback URLs.
 4. Complete cross-network Android, iPhone, and installed-Windows tests.
 5. Perform a backup-and-restore drill and configure monitoring.

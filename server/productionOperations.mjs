@@ -17,7 +17,8 @@ function configuredGroup(environment, names) {
 export function auditProductionEnvironment(environment) {
   const errors = [];
   const warnings = [];
-  const origin = validUrl(environment.ATLASTIME_APP_ORIGIN);
+  const inferredOrigin = environment.RENDER_EXTERNAL_HOSTNAME ? `https://${environment.RENDER_EXTERNAL_HOSTNAME}` : "";
+  const origin = validUrl(environment.ATLASTIME_APP_ORIGIN || inferredOrigin);
   if (environment.NODE_ENV !== "production") errors.push("NODE_ENV must be production.");
   if (!origin || origin.protocol !== "https:") errors.push("ATLASTIME_APP_ORIGIN must be a valid HTTPS URL.");
   if (origin && ["localhost", "127.0.0.1", "::1"].includes(origin.hostname)) warnings.push("The public origin still points to the local computer.");
@@ -27,16 +28,20 @@ export function auditProductionEnvironment(environment) {
   if (!environment.ATLASTIME_DATA_FILE) errors.push("ATLASTIME_DATA_FILE must point to persistent storage.");
   else if (!isAbsolute(environment.ATLASTIME_DATA_FILE)) warnings.push("Use an absolute ATLASTIME_DATA_FILE path on the production host.");
 
-  const googleNames = ["GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REDIRECT_URI", "GOOGLE_TOKEN_ENCRYPTION_KEY"];
-  const microsoftNames = ["MICROSOFT_OAUTH_CLIENT_ID", "MICROSOFT_OAUTH_CLIENT_SECRET", "MICROSOFT_OAUTH_REDIRECT_URI", "MICROSOFT_TOKEN_ENCRYPTION_KEY"];
+  const googleNames = ["GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_TOKEN_ENCRYPTION_KEY"];
+  const microsoftNames = ["MICROSOFT_OAUTH_CLIENT_ID", "MICROSOFT_OAUTH_CLIENT_SECRET", "MICROSOFT_TOKEN_ENCRYPTION_KEY"];
   const google = configuredGroup(environment, googleNames);
   const outlook = configuredGroup(environment, microsoftNames);
   if (google.enabled && !google.complete) errors.push(`Google Calendar configuration is incomplete: ${google.missing.join(", ")}.`);
   if (outlook.enabled && !outlook.complete) errors.push(`Outlook Calendar configuration is incomplete: ${outlook.missing.join(", ")}.`);
 
-  for (const [provider, redirectName] of [["Google", "GOOGLE_OAUTH_REDIRECT_URI"], ["Outlook", "MICROSOFT_OAUTH_REDIRECT_URI"]]) {
-    const redirect = validUrl(environment[redirectName]);
-    if (environment[redirectName] && (!redirect || redirect.protocol !== "https:")) errors.push(`${provider} redirect URI must use HTTPS.`);
+  for (const [provider, redirectName, path] of [
+    ["Google", "GOOGLE_OAUTH_REDIRECT_URI", "/api/google-calendar/callback"],
+    ["Outlook", "MICROSOFT_OAUTH_REDIRECT_URI", "/api/outlook-calendar/callback"],
+  ]) {
+    const redirectValue = environment[redirectName] || (origin ? `${origin.origin}${path}` : "");
+    const redirect = validUrl(redirectValue);
+    if (redirectValue && (!redirect || redirect.protocol !== "https:")) errors.push(`${provider} redirect URI must use HTTPS.`);
     if (origin && redirect && redirect.origin !== origin.origin) errors.push(`${provider} redirect URI must use the AtlasTime origin.`);
   }
 

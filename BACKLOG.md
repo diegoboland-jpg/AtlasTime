@@ -1,5 +1,17 @@
 # AtlasTime backlog
 
+## v1.10: public staging readiness
+
+- [x] Select Render as the first staging target based on Docker, managed TLS, persistent-disk, snapshot, and health-check support.
+- [x] Add a Render Blueprint that deploys only after GitHub checks pass and mounts a 1 GB persistent data disk.
+- [x] Initialize mounted storage as root, then drop the running application to the unprivileged Node user.
+- [x] Derive the public origin and Google/Microsoft callback paths from Render's generated hostname.
+- [x] Add regression coverage for deployment artifacts and Render-derived production settings.
+- [x] Provide a numbered, illustrated setup guide covering deployment, OAuth, phone testing, and encrypted backup.
+- [ ] Merge v1.9 and v1.10 before creating the Render Blueprint.
+- [ ] Accept the paid Render web-service and persistent-disk charges.
+- [ ] Complete the public staging and cross-network physical-phone checklist.
+
 ## v1.9: deployment operations and recovery
 
 - [x] Add a production-readiness audit for HTTPS, persistence, OAuth completeness, redirect origins, and independent encryption keys.

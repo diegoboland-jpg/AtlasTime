@@ -2,6 +2,8 @@
 
 AtlasTime v1.8 can run as one same-origin Node service behind a managed HTTPS host. The browser application, Google and Microsoft OAuth callbacks, and private availability links must all use the same public origin.
 
+For the recommended first staging host, use the illustrated [Render staging setup](RENDER_STAGING_SETUP.md). The rest of this document remains provider-neutral.
+
 ## What v1.8 guarantees
 
 - Production startup refuses a non-HTTPS `ATLASTIME_APP_ORIGIN`.

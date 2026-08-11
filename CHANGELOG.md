@@ -1,5 +1,12 @@
 # AtlasTime changelog
 
+## 1.10.0 — public staging readiness
+
+- Add a Render Blueprint with Docker deployment, checks-passed auto-deploys, an encrypted persistent volume, and health monitoring.
+- Initialize a newly mounted volume safely before dropping the container to an unprivileged application user.
+- Derive AtlasTime's public origin and provider callback URLs from Render's generated hostname.
+- Add deployment regression tests and an illustrated, non-technical staging setup guide.
+
 ## 1.9.0 — deployment operations and recovery
 
 - Audit production settings before deployment, including HTTPS, persistent paths, complete OAuth credentials, callback origins, and independent encryption keys.
