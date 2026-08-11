@@ -228,7 +228,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.8 secure hosting foundation</span>
+          <span className="mvp-badge">v1.9 deployment operations</span>
         </div>
       </header>
 
@@ -377,7 +377,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.8</span><span>Encrypted availability records prepare connected planning for secure hosting.</span></footer>
+      <footer><span>AtlasTime v1.9</span><span>Verified encrypted backups prepare connected planning for reliable hosting.</span></footer>
     </div>
   );
 }

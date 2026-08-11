@@ -1,17 +1,21 @@
 {
   "name": "atlastime",
   "private": true,
-  "version": "1.8.0",
+  "version": "1.9.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:mobile": "vite --host 0.0.0.0",
     "preview:mobile": "vite preview --host 0.0.0.0 --configLoader runner",
-    "check:server": "node --check server/googleCalendarGateway.mjs && node --check server/outlookCalendarGateway.mjs && node --check server/availabilityRequestGateway.mjs && node --check server/index.mjs",
+    "check:server": "node --check server/googleCalendarGateway.mjs && node --check server/outlookCalendarGateway.mjs && node --check server/availabilityRequestGateway.mjs && node --check server/productionOperations.mjs && node --check server/productionOperationsCli.mjs && node --check server/index.mjs",
     "build": "npm run check:server && tsc --noEmit -p tsconfig.app.json && vite build --configLoader runner",
     "preview": "vite preview",
     "preview:connected": "npm run build && node server/index.mjs",
     "start": "node server/index.mjs",
+    "production:check": "node server/productionOperationsCli.mjs check",
+    "backup:data": "node server/productionOperationsCli.mjs backup",
+    "verify:data": "node server/productionOperationsCli.mjs verify",
+    "restore:data": "node server/productionOperationsCli.mjs restore",
     "test": "vitest run --configLoader runner"
   },
   "dependencies": {

@@ -1,5 +1,12 @@
 # AtlasTime changelog
 
+## 1.9.0 — deployment operations and recovery
+
+- Audit production settings before deployment, including HTTPS, persistent paths, complete OAuth credentials, callback origins, and independent encryption keys.
+- Create and verify encrypted availability backups without printing private names or busy intervals.
+- Restore only after an explicit confirmation and preserve the previous encrypted file for recovery.
+- Add container-compatible operational commands and document a practical path to public hosting and native-store releases.
+
 ## 1.8.0 — production hosting foundation
 
 - Encrypt persisted availability-request records with AES-256-GCM and fail closed if ciphertext is altered.

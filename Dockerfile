@@ -15,5 +15,6 @@ RUN npm ci --omit=dev && mkdir -p /data && chown -R node:node /app /data
 USER node
 ENV PORT=4173
 ENV ATLASTIME_DATA_FILE=/data/availability-requests.json
+ENV ATLASTIME_BACKUP_DIR=/data/backups
 EXPOSE 4173
 CMD ["node", "server/index.mjs"]
