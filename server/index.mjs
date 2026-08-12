@@ -19,7 +19,8 @@ try {
 }
 
 const port = Number(process.env.PORT ?? 4173);
-const appOrigin = process.env.ATLASTIME_APP_ORIGIN ?? `http://localhost:${port}`;
+const renderOrigin = process.env.RENDER_EXTERNAL_HOSTNAME ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}` : null;
+const appOrigin = process.env.ATLASTIME_APP_ORIGIN ?? renderOrigin ?? `http://localhost:${port}`;
 const appPackage = JSON.parse(await readFile(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"));
 const appVersion = typeof appPackage.version === "string" ? appPackage.version : "unknown";
 const production = process.env.NODE_ENV === "production";
@@ -28,21 +29,23 @@ if (production && parsedOrigin.protocol !== "https:") {
   throw new Error("ATLASTIME_APP_ORIGIN must use HTTPS when NODE_ENV=production.");
 }
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
-const required = ["GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REDIRECT_URI", "GOOGLE_TOKEN_ENCRYPTION_KEY"];
+const googleRedirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI ?? `${parsedOrigin.origin}/api/google-calendar/callback`;
+const required = ["GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_TOKEN_ENCRYPTION_KEY"];
 const missing = required.filter((name) => !process.env[name]);
 const gateway = missing.length ? null : createGoogleCalendarGateway({
   clientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-  redirectUri: process.env.GOOGLE_OAUTH_REDIRECT_URI,
+  redirectUri: googleRedirectUri,
   appOrigin,
   encryptionKey: process.env.GOOGLE_TOKEN_ENCRYPTION_KEY,
 });
-const outlookRequired = ["MICROSOFT_OAUTH_CLIENT_ID", "MICROSOFT_OAUTH_CLIENT_SECRET", "MICROSOFT_OAUTH_REDIRECT_URI", "MICROSOFT_TOKEN_ENCRYPTION_KEY"];
+const outlookRedirectUri = process.env.MICROSOFT_OAUTH_REDIRECT_URI ?? `${parsedOrigin.origin}/api/outlook-calendar/callback`;
+const outlookRequired = ["MICROSOFT_OAUTH_CLIENT_ID", "MICROSOFT_OAUTH_CLIENT_SECRET", "MICROSOFT_TOKEN_ENCRYPTION_KEY"];
 const outlookMissing = outlookRequired.filter((name) => !process.env[name]);
 const outlookGateway = outlookMissing.length ? null : createOutlookCalendarGateway({
   clientId: process.env.MICROSOFT_OAUTH_CLIENT_ID,
   clientSecret: process.env.MICROSOFT_OAUTH_CLIENT_SECRET,
-  redirectUri: process.env.MICROSOFT_OAUTH_REDIRECT_URI,
+  redirectUri: outlookRedirectUri,
   appOrigin,
   encryptionKey: process.env.MICROSOFT_TOKEN_ENCRYPTION_KEY,
 });

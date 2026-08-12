@@ -228,7 +228,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.9 deployment operations</span>
+          <span className="mvp-badge">v1.10 public staging ready</span>
         </div>
       </header>
 
@@ -377,7 +377,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.9</span><span>Verified encrypted backups prepare connected planning for reliable hosting.</span></footer>
+      <footer><span>AtlasTime v1.10</span><span>Render-ready staging brings connected planning beyond the local network.</span></footer>
     </div>
   );
 }

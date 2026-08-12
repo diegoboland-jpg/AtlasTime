@@ -42,6 +42,16 @@ describe("production readiness audit", () => {
     });
   });
 
+  it("uses Render's generated hostname and derived callback paths", () => {
+    const environment = productionEnvironment({
+      ATLASTIME_APP_ORIGIN: "",
+      RENDER_EXTERNAL_HOSTNAME: "atlastime-staging.onrender.com",
+      GOOGLE_OAUTH_REDIRECT_URI: "",
+      MICROSOFT_OAUTH_REDIRECT_URI: "",
+    });
+    expect(auditProductionEnvironment(environment)).toMatchObject({ ready: true, errors: [] });
+  });
+
   it("rejects unsafe origins, incomplete providers, and reused keys", () => {
     const result = auditProductionEnvironment(productionEnvironment({
       ATLASTIME_APP_ORIGIN: "http://localhost:4173",

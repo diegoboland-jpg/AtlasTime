@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: atlastime-staging
+    runtime: docker
+    plan: starter
+    autoDeployTrigger: checksPass
+    healthCheckPath: /api/health
+    disk:
+      name: atlastime-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ATLASTIME_DATA_FILE
+        value: /data/availability-requests.json
+      - key: ATLASTIME_BACKUP_DIR
+        value: /data/backups
+      - key: ATLASTIME_DATA_ENCRYPTION_KEY
+        sync: false

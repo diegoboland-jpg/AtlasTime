@@ -4,7 +4,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ## Current release
 
-**Version:** 1.9.0 deployment operations and recovery
+**Version:** 1.10.0 public staging readiness
 
 ### Implemented
 
@@ -21,6 +21,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Let organizers connect Outlook alongside Google and see one combined occupied/free planning view
 - Encrypt private availability-request records at rest and refuse insecure production startup
 - Audit production configuration and create, verify, and safely restore encrypted backups
+- Deploy reproducibly to Render staging with managed HTTPS, health checks, and persistent encrypted storage
 - Save multiple groups locally
 - Set editable start and finish times, use quick 30-minute meeting lengths, type any exact minute, or create a true all-day event
 - Add meeting title, location, and notes
@@ -38,7 +39,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ### v1.0 boundary
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified backup and restore operations.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage.
 
 ## Important privacy model
 
@@ -73,6 +74,8 @@ Never put the Google client secret or token-encryption key in a `VITE_*` variabl
 For public hosting, follow [the v1.8 production deployment guide](docs/PRODUCTION_DEPLOYMENT.md). Production mode requires HTTPS, a dedicated availability-record encryption key, and persistent storage.
 
 Before starting or updating a production host, run `npm run production:check`. Use `npm run backup:data`, `npm run verify:data -- <backup-file>`, and `npm run restore:data -- <backup-file> RESTORE` for encrypted recovery operations. The path from hosting to store releases and native widgets is tracked in [the mobile release path](docs/MOBILE_RELEASE_PATH.md).
+
+For the first public test environment, follow the illustrated [Render staging guide](docs/RENDER_STAGING_SETUP.md).
 
 ## Build and test
 
