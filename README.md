@@ -4,7 +4,7 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 
 ## Current release
 
-**Version:** 1.10.0 public staging readiness
+**Version:** 1.11.0 mobile visual navigation
 
 ### Implemented
 
