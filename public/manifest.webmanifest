@@ -1,17 +1,17 @@
 {
   "id": "/",
-  "name": "AtlasTime",
-  "short_name": "AtlasTime",
-  "description": "Find a humane meeting time across time zones.",
+  "name": "Kikiroo",
+  "short_name": "Kikiroo",
+  "description": "Time. Anywhere. Together. Find a humane time to connect across time zones.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f5f7fb",
-  "theme_color": "#101828",
+  "background_color": "#F1F5F9",
+  "theme_color": "#0D1B2A",
   "orientation": "any",
   "icons": [
     {
-      "src": "/icons/atlas-icon.svg",
+      "src": "/icons/kikiroo-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
