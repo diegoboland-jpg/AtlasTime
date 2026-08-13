@@ -1,8 +1,12 @@
-const CACHE_NAME = "atlastime-v1.11.0";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/atlas-icon.svg"];
+const CACHE_NAME = "kikiroo-v1.11.1";
+const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/kikiroo-icon.svg"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("message", (event) => {
