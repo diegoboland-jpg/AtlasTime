@@ -10,7 +10,7 @@
   "theme_color": "#0D1B2A",
   "orientation": "any",
   "icons": [{
-    "src": "/icons/kikiroo-launcher.svg",
+    "src": "/icons/kikiroo-approved.svg",
     "sizes": "any",
     "type": "image/svg+xml",
     "purpose": "any maskable"
