@@ -9,6 +9,7 @@ export function PwaUpdateNotice() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     const showUpdate = (event: Event) => {
+      setUpdating(false);
       setRegistration((event as CustomEvent<PwaUpdateDetail>).detail.registration);
     };
     window.addEventListener(PWA_UPDATE_EVENT, showUpdate);
@@ -21,16 +22,27 @@ export function PwaUpdateNotice() {
   if (!registration) return null;
 
   function updateNow() {
+    const waiting = registration.waiting;
+    if (!waiting) {
+      setUpdating(false);
+      setRegistration(null);
+      return;
+    }
     setUpdating(true);
     navigator.serviceWorker.addEventListener("controllerchange", () => window.location.reload(), { once: true });
-    activateWaitingServiceWorker(registration!);
+    if (!activateWaitingServiceWorker(registration)) {
+      setUpdating(false);
+      setRegistration(null);
+      return;
+    }
+    window.setTimeout(() => window.location.reload(), 3500);
   }
 
   return (
     <aside className="pwa-update-notice" role="status" aria-live="polite">
       <RefreshCw size={20} aria-hidden="true" />
       <div>
-        <strong>A new AtlasTime version is ready.</strong>
+        <strong>A new Kikiroo version is ready.</strong>
         <span>Your saved groups will stay on this device.</span>
       </div>
       <button type="button" className="pwa-update-action" onClick={updateNow} disabled={updating}>
