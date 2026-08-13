@@ -27,7 +27,7 @@ describe("PWA update notice", () => {
     await act(async () => root.render(<PwaUpdateNotice />));
     await act(async () => window.dispatchEvent(new CustomEvent(PWA_UPDATE_EVENT, { detail: { registration } })));
 
-    expect(container.textContent).toContain("A new AtlasTime version is ready.");
+    expect(container.textContent).toContain("A new Kikiroo version is ready.");
     expect(container.textContent).toContain("saved groups will stay");
     await act(async () => container.querySelector<HTMLButtonElement>(".pwa-update-action")!.click());
     expect(postMessage).toHaveBeenCalledWith({ type: "SKIP_WAITING" });
