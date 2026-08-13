@@ -7,7 +7,7 @@ export interface InstallPromptEvent extends Event {
 
 type StandaloneNavigator = Navigator & { standalone?: boolean };
 
-export const PWA_UPDATE_EVENT = "atlastime:update-ready";
+export const PWA_UPDATE_EVENT = "kikiroo:update-ready";
 
 export type PwaUpdateDetail = {
   registration: ServiceWorkerRegistration;
@@ -29,7 +29,7 @@ export function isIosDevice(userAgent?: string) {
 export function installInstructions(ios: boolean) {
   return ios
     ? "In Safari, tap Share, then Add to Home Screen."
-    : "Use your browser menu and choose Install AtlasTime or Add to Home screen.";
+    : "Use your browser menu and choose Install Kikiroo or Add to Home screen.";
 }
 
 function announceWaitingUpdate(registration: ServiceWorkerRegistration) {
@@ -40,7 +40,10 @@ function announceWaitingUpdate(registration: ServiceWorkerRegistration) {
 }
 
 export function activateWaitingServiceWorker(registration: ServiceWorkerRegistration) {
-  registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+  const waiting = registration.waiting;
+  if (!waiting) return false;
+  waiting.postMessage({ type: "SKIP_WAITING" });
+  return true;
 }
 
 export function registerAtlasTimeServiceWorker() {
@@ -56,7 +59,7 @@ export function registerAtlasTimeServiceWorker() {
       });
       window.addEventListener("focus", () => registration.update().catch(() => undefined));
     }).catch(() => {
-      // AtlasTime remains usable online if registration is unavailable.
+      // Kikiroo remains usable online if registration is unavailable.
     });
   });
 }
