@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Kikiroo rooster clock</title>
+  <desc id="desc">A singing rooster rising from a globe-shaped clock.</desc>
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#00B4A8"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset=".55" stop-color="#00B4A8"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#0D1B2A"/>
+  <circle cx="274" cy="315" r="128" fill="#F1F5F9"/>
+  <circle cx="274" cy="315" r="128" fill="none" stroke="url(#ring)" stroke-width="22"/>
+  <path d="M208 323c21-27 48-42 78-45 22-2 42 2 61 11-11 7-20 17-25 28-12-6-24-8-37-7-25 3-44 15-59 36z" fill="#22D3EE" opacity=".75"/>
+  <path d="M250 199c-18-22-24-48-17-73 9-30 34-53 65-60-7 15-8 30-2 44 8 20 26 35 48 42-17 9-31 23-40 40-10 20-13 40-9 61z" fill="url(#body)"/>
+  <circle cx="299" cy="122" r="10" fill="#0D1B2A"/>
+  <path d="M316 109l41 10-38 21z" fill="#FF9F1C"/>
+  <path d="M255 80c-19-22-12-45 9-53 3 18 10 28 22 36 0-21 12-38 31-43 1 21 7 34 21 45 6-19 21-30 39-29-3 27-18 46-46 56z" fill="#EF4444"/>
+  <path d="M242 213c-46 5-80 29-103 69 37-19 69-22 96-10-43 9-74 32-95 69 37-15 69-14 97 2-33 12-59 32-77 61 44-11 82-7 113 13" fill="none" stroke="#0D1B2A" stroke-width="22" stroke-linecap="round"/>
+  <path d="M274 315V244M274 315l55 34" fill="none" stroke="#0D1B2A" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="274" cy="315" r="14" fill="#0D1B2A"/>
+  <path d="M373 93l25-14M382 119h31M371 145l25 15" stroke="#FF9F1C" stroke-width="12" stroke-linecap="round"/>
+</svg>
