@@ -1,27 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">Kikiroo rooster clock</title>
-  <desc id="desc">A singing rooster rising from a globe-shaped clock.</desc>
-  <defs>
-    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#00B4A8"/>
-    </linearGradient>
-    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#22D3EE"/>
-      <stop offset=".55" stop-color="#00B4A8"/>
-      <stop offset="1" stop-color="#8B5CF6"/>
-    </linearGradient>
-  </defs>
-  <rect width="512" height="512" rx="116" fill="#0D1B2A"/>
-  <circle cx="274" cy="315" r="128" fill="#F1F5F9"/>
-  <circle cx="274" cy="315" r="128" fill="none" stroke="url(#ring)" stroke-width="22"/>
-  <path d="M208 323c21-27 48-42 78-45 22-2 42 2 61 11-11 7-20 17-25 28-12-6-24-8-37-7-25 3-44 15-59 36z" fill="#22D3EE" opacity=".75"/>
-  <path d="M250 199c-18-22-24-48-17-73 9-30 34-53 65-60-7 15-8 30-2 44 8 20 26 35 48 42-17 9-31 23-40 40-10 20-13 40-9 61z" fill="url(#body)"/>
-  <circle cx="299" cy="122" r="10" fill="#0D1B2A"/>
-  <path d="M316 109l41 10-38 21z" fill="#FF9F1C"/>
-  <path d="M255 80c-19-22-12-45 9-53 3 18 10 28 22 36 0-21 12-38 31-43 1 21 7 34 21 45 6-19 21-30 39-29-3 27-18 46-46 56z" fill="#EF4444"/>
-  <path d="M242 213c-46 5-80 29-103 69 37-19 69-22 96-10-43 9-74 32-95 69 37-15 69-14 97 2-33 12-59 32-77 61 44-11 82-7 113 13" fill="none" stroke="#0D1B2A" stroke-width="22" stroke-linecap="round"/>
-  <path d="M274 315V244M274 315l55 34" fill="none" stroke="#0D1B2A" stroke-width="18" stroke-linecap="round"/>
-  <circle cx="274" cy="315" r="14" fill="#0D1B2A"/>
-  <path d="M373 93l25-14M382 119h31M371 145l25 15" stroke="#FF9F1C" stroke-width="12" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kikiroo rooster globe clock">
+<rect width="512" height="512" rx="108" fill="#F1F5F9"/>
+<circle cx="298" cy="316" r="132" fill="#fff" stroke="#0D1B2A" stroke-width="15"/>
+<path d="M232 279c20-25 48-41 79-43 35-2 66 10 89 34-25 0-43 10-54 28-12 19-12 40-3 60-24-3-45 4-62 20-20-17-30-39-30-65 0-12-7-23-19-34z" fill="#00B4A8" opacity=".55"/>
+<path d="M266 243c-5 16-3 31 7 45l26 8 12 22 30 5 13-18 31-5 13-18-17-22-39-19-40-4zM235 343l20 8 8 27 27 9 9 28-26 13-30-22-15-32z" fill="#00B4A8"/>
+<path d="M298 316V251M298 316l55 37" fill="none" stroke="#0D1B2A" stroke-width="16" stroke-linecap="round"/>
+<circle cx="298" cy="316" r="13" fill="#0D1B2A"/>
+<path d="M190 285C176 238 182 196 208 160c16-23 38-38 64-46-4 17 0 31 12 42 13 12 29 18 49 17-20 12-34 29-41 51-7 20-7 40-1 59z" fill="#00B4A8"/>
+<circle cx="279" cy="141" r="8" fill="#0D1B2A"/>
+<path d="M301 132l43 13-40 23z" fill="#FF9F1C"/>
+<path d="M227 107c-18-31-8-57 18-69 1 21 8 36 22 46 2-27 18-47 43-53-1 24 7 41 23 53 7-22 24-35 46-35-4 32-22 55-54 68z" fill="#EF4444"/>
+<path d="M207 217c-52 6-91 32-117 78 42-23 78-27 109-13-48 10-83 36-106 78 43-18 80-17 111 2-38 13-68 36-89 70 50-13 92-8 126 14" fill="none" stroke="#0D1B2A" stroke-width="22" stroke-linecap="round"/>
+<path d="M383 199a148 148 0 0 1 35 36" fill="none" stroke="#FF9F1C" stroke-width="17" stroke-linecap="round"/>
+<path d="M430 257a148 148 0 0 1 10 43" fill="none" stroke="#00B4A8" stroke-width="17" stroke-linecap="round"/>
+<path d="M441 331a148 148 0 0 1-12 42" fill="none" stroke="#22D3EE" stroke-width="17" stroke-linecap="round"/>
+<path d="M414 398a148 148 0 0 1-32 32" fill="none" stroke="#8B5CF6" stroke-width="17" stroke-linecap="round"/>
+<path d="M361 104l26-15M373 130h31M361 157l26 15" stroke="#EF4444" stroke-width="11" stroke-linecap="round"/>
 </svg>
