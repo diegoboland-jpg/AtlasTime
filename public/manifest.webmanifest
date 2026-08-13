@@ -9,12 +9,10 @@
   "background_color": "#F1F5F9",
   "theme_color": "#0D1B2A",
   "orientation": "any",
-  "icons": [
-    {
-      "src": "/icons/kikiroo-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "icons": [{
+    "src": "/icons/kikiroo-launcher.svg",
+    "sizes": "any",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }]
 }
