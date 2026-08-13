@@ -10,7 +10,6 @@ describe("PWA install guidance", () => {
 
   it("is safe when browser globals are unavailable", () => {
     vi.stubGlobal("navigator", undefined);
-
     try {
       expect(isIosDevice()).toBe(false);
     } finally {
@@ -20,7 +19,7 @@ describe("PWA install guidance", () => {
 
   it("provides platform-appropriate installation instructions", () => {
     expect(installInstructions(true)).toContain("Add to Home Screen");
-    expect(installInstructions(false)).toContain("Install AtlasTime");
+    expect(installInstructions(false)).toContain("Install Kikiroo");
   });
 });
 
@@ -28,7 +27,6 @@ describe("PWA update lifecycle", () => {
   it("uses a cache generation that matches the current app version", () => {
     const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as { version: string };
     const serviceWorker = readFileSync(new URL("../public/sw.js", import.meta.url), "utf8");
-
     expect(serviceWorker).toContain(`const CACHE_NAME = "kikiroo-v${packageJson.version}";`);
     expect(serviceWorker).toContain('event.data?.type === "SKIP_WAITING"');
     expect(serviceWorker).toContain("self.skipWaiting()");
