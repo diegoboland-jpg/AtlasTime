@@ -4,6 +4,7 @@ import { GroupManager } from "./components/GroupManager";
 import { AvailabilityConsentPage } from "./components/AvailabilityConsentPage";
 import { MeetingHandoff } from "./components/MeetingHandoff";
 import { MobileTimeOverview } from "./components/MobileTimeOverview";
+import { MobileWorkspaceDeck } from "./components/MobileWorkspaceDeck";
 import { PeopleManager } from "./components/PeopleManager";
 import { PwaInstall } from "./components/PwaInstall";
 import { PwaUpdateNotice } from "./components/PwaUpdateNotice";
@@ -36,6 +37,7 @@ function PlannerApp() {
   const [showForm, setShowForm] = useState(false);
   const [managingPeople, setManagingPeople] = useState(false);
   const [plannerExpanded, setPlannerExpanded] = useState(false);
+  const [mobilePanel, setMobilePanel] = useState(0);
   const [copyStatus, setCopyStatus] = useState("");
   const [pendingPersonRemoval, setPendingPersonRemoval] = useState<PendingPersonRemoval | null>(null);
   const [restoredPersonFocusId, setRestoredPersonFocusId] = useState<string | null>(null);
@@ -160,6 +162,7 @@ function PlannerApp() {
 
   function openPlanner() {
     setPlannerExpanded(true);
+    setMobilePanel(3);
     window.requestAnimationFrame(() => document.getElementById("planner")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
@@ -228,7 +231,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.10 public staging ready</span>
+          <span className="mvp-badge">v1.11 mobile visual navigation</span>
         </div>
       </header>
 
@@ -256,6 +259,12 @@ function PlannerApp() {
         ) : (
           <>
 
+        <MobileWorkspaceDeck
+          activePanel={mobilePanel}
+          labels={["Everyone's time", "Saved group", "People", "Plan Humanly", "Handoff"]}
+          onActivePanelChange={setMobilePanel}
+        >
+        <div className="overview-workspace-panel">
         <MobileTimeOverview
           now={now}
           people={people}
@@ -267,6 +276,7 @@ function PlannerApp() {
           onNow={selectNow}
           onOpenPlanner={openPlanner}
           onAddEntry={openAddEntry}
+          portalSlider
         />
 
         <section className="hero">
@@ -281,6 +291,7 @@ function PlannerApp() {
             <small>{Intl.DateTimeFormat().resolvedOptions().timeZone.replaceAll("_", " ")}</small>
           </div>
         </section>
+        </div>
 
         <GroupManager
           groups={workspace.groups}
@@ -310,15 +321,15 @@ function PlannerApp() {
           </div>
         </section>
 
-        <TimeSlider
-          selectedHour={planner.hour}
-          selectedScore={selectedScore}
-          scoringEnabled={planner.eventMode === "timed"}
-          onHourChange={selectHour}
-          onNow={selectNow}
-        />
-
-        <TimePlanner
+        <div className="planner-workspace-panel">
+          <TimeSlider
+            selectedHour={planner.hour}
+            selectedScore={selectedScore}
+            scoringEnabled={planner.eventMode === "timed"}
+            onHourChange={selectHour}
+            onNow={selectNow}
+          />
+          <TimePlanner
           people={people}
           dateValue={planner.date}
           selectedHour={planner.hour}
@@ -333,16 +344,18 @@ function PlannerApp() {
           onDurationChange={(durationMinutes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, durationMinutes } }))}
           onEventModeChange={(eventMode) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, eventMode } }))}
           onHourChange={selectHour}
-        />
+          />
+        </div>
 
-        <MeetingHandoff
+        <div className="handoff-workspace-panel">
+          <MeetingHandoff
           people={people}
           planner={planner}
           selectedInstant={selectedInstant}
           onTitleChange={(title) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, title } }))}
           onLocationChange={(location) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, location } }))}
           onNotesChange={(notes) => updateActiveGroup((group) => ({ ...group, planner: { ...group.planner, notes } }))}
-        />
+          />
 
         <section className="section launch-section">
           <div>
@@ -357,7 +370,9 @@ function PlannerApp() {
             <a href="viber://chat"><Phone /> Viber <ExternalLink size={15} /></a>
           </div>
           <p className="selected-summary">Selected instant: <strong>{selectedInstant.toUTCString()}</strong></p>
-        </section>
+          </section>
+        </div>
+        </MobileWorkspaceDeck>
           </>
         )}
       </main>
@@ -377,7 +392,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.10</span><span>Render-ready staging brings connected planning beyond the local network.</span></footer>
+      <footer><span>AtlasTime v1.11</span><span>Consistent cards, humane-time quality, and swipeable mobile workspaces.</span></footer>
     </div>
   );
 }

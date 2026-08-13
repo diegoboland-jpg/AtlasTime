@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Flujo para conectar Google y Outlook al AtlasTime publico</title>
+  <desc id="desc">El diagrama muestra la URL de Render, las variables privadas, las URI de retorno de Google y Microsoft y la verificacion final.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f4f7fb}.card{fill:#fff;stroke:#cad6e6;stroke-width:2}.head{fill:#10213d}.title{font:700 27px Arial,sans-serif;fill:#10213d}.h{font:700 21px Arial,sans-serif;fill:#10213d}.body{font:17px Arial,sans-serif;fill:#53637b}.code{font:16px Consolas,monospace;fill:#17468f}.good{fill:#e9f8ef;stroke:#9ed5b2}.arrow{stroke:#246bfd;stroke-width:4;fill:none;marker-end:url(#head)}
+    </style>
+    <marker id="head" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#246bfd"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="620" rx="26"/>
+  <text x="50" y="58" class="title">Calendarios: tres lugares, una misma URL publica</text>
+
+  <g transform="translate(55 105)">
+    <rect class="card" width="315" height="365" rx="20"/>
+    <rect class="head" width="315" height="58" rx="20"/><rect class="head" y="34" width="315" height="24"/>
+    <text x="25" y="38" style="font:700 19px Arial,sans-serif;fill:#fff">1. Render Environment</text>
+    <text x="25" y="98" class="h">Guardar secretos</text>
+    <text x="25" y="135" class="code">GOOGLE_OAUTH_CLIENT_ID</text>
+    <text x="25" y="168" class="code">GOOGLE_OAUTH_CLIENT_SECRET</text>
+    <text x="25" y="201" class="code">GOOGLE_TOKEN_...</text>
+    <text x="25" y="251" class="code">MICROSOFT_OAUTH_CLIENT_ID</text>
+    <text x="25" y="284" class="code">MICROSOFT_OAUTH_CLIENT_SECRET</text>
+    <text x="25" y="317" class="code">MICROSOFT_TOKEN_...</text>
+    <text x="25" y="350" class="body">Save and deploy</text>
+  </g>
+
+  <g transform="translate(445 105)">
+    <rect class="card" width="315" height="365" rx="20"/>
+    <rect class="head" width="315" height="58" rx="20"/><rect class="head" y="34" width="315" height="24"/>
+    <text x="25" y="38" style="font:700 19px Arial,sans-serif;fill:#fff">2. Proveedores OAuth</text>
+    <text x="25" y="98" class="h">Agregar callbacks</text>
+    <text x="25" y="137" class="body">Google Cloud:</text>
+    <text x="25" y="169" class="code">/api/google-calendar/</text>
+    <text x="25" y="195" class="code">callback</text>
+    <text x="25" y="246" class="body">Microsoft Entra (Web):</text>
+    <text x="25" y="278" class="code">/api/outlook-calendar/</text>
+    <text x="25" y="304" class="code">callback</text>
+    <text x="25" y="350" class="body">Usar el mismo host HTTPS</text>
+  </g>
+
+  <g transform="translate(835 105)">
+    <rect class="card" width="315" height="365" rx="20"/>
+    <rect class="head" width="315" height="58" rx="20"/><rect class="head" y="34" width="315" height="24"/>
+    <text x="25" y="38" style="font:700 19px Arial,sans-serif;fill:#fff">3. Verificar AtlasTime</text>
+    <text x="25" y="98" class="h">Health + prueba real</text>
+    <rect class="good" x="25" y="126" width="265" height="62" rx="12"/>
+    <text x="44" y="163" style="font:700 17px Arial,sans-serif;fill:#187044">google: true | outlook: true</text>
+    <text x="25" y="231" class="body">Conectar y desconectar</text>
+    <text x="25" y="266" class="body">Leer busy/free</text>
+    <text x="25" y="301" class="body">Crear enlace privado</text>
+    <text x="25" y="336" class="body">Reiniciar y repetir</text>
+  </g>
+
+  <path class="arrow" d="M372 285 C400 285 414 285 440 285"/>
+  <path class="arrow" d="M762 285 C790 285 804 285 830 285"/>
+  <rect x="300" y="510" width="600" height="64" rx="16" fill="#edf3ff" stroke="#a9c2ff"/>
+  <text x="600" y="550" text-anchor="middle" class="code">https://TU-SERVICIO.onrender.com</text>
+</svg>

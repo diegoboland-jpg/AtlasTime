@@ -20,6 +20,13 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toMatch(/@media \(max-width: 360px\) \{[\s\S]*?\.mobile-person-time \{ grid-template-columns: 78px minmax\(0, 1fr\) 48px/);
   });
 
+  it("provides an app-like swipe deck without duplicating the floating slider", () => {
+    expect(styles).toContain("scroll-snap-type: x mandatory");
+    expect(styles).toContain("scroll-snap-stop: always");
+    expect(styles).toContain(".planner-workspace-panel > .time-slider-section { display: none; }");
+    expect(styles).toContain("background: rgba(13,24,48,.78)");
+  });
+
   it("uses the shared animated overview as the desktop PWA experience", () => {
     expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.hero \{ display: none/);
     expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.mobile-time-strip \{ grid-column: 2; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); max-height: 228px/);
@@ -54,8 +61,9 @@ describe("responsive accessibility safeguards", () => {
   });
 
   it("keeps trusted country flags subtle, cropped, and optional in high-contrast modes", () => {
-    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?width: 35%/);
-    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?opacity: \.22/);
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?width: 36%/);
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?opacity: \.2/);
+    expect(styles).toContain("background-size: cover");
     expect(styles).toContain("clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%)");
     expect(styles).toMatch(/@media \(forced-colors: active\) \{[\s\S]*?\.time-period-scene, \.country-flag-backdrop \{ display: none/);
   });

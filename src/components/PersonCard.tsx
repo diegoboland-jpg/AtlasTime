@@ -113,19 +113,17 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
           </select>
         </label>
       </div>
-      {(person.email || person.phone) && (
-        <div className="availability-request-row">
+      <div className={`availability-request-row ${person.email || person.phone ? "" : "unavailable"}`}>
           <div>
             <strong>Calendar availability</strong>
             <span className={`availability-request-status ${requestStatus}`}>
-              {requestStatus === "requested" ? "Request prepared" : requestStatus.replace("-", " ")}
+              {person.email || person.phone ? (requestStatus === "requested" ? "Request prepared" : requestStatus.replace("-", " ")) : "Add contact details"}
             </span>
           </div>
-          <button type="button" className="secondary-button" onClick={() => setShowAvailabilityRequest(true)}>
-            <CalendarPlus2 size={16} /> {requestStatus === "requested" ? "Send again" : "Request availability"}
+          <button type="button" className="secondary-button" disabled={!person.email && !person.phone} onClick={() => setShowAvailabilityRequest(true)}>
+            <CalendarPlus2 size={16} /> {person.email || person.phone ? (requestStatus === "requested" ? "Send again" : "Request availability") : "Contact required"}
           </button>
-        </div>
-      )}
+      </div>
       {showAvailabilityRequest && (
         <AvailabilityRequestDialog
           person={person}

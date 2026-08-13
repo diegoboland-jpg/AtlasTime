@@ -59,6 +59,19 @@ export function TimePlanner({
   };
   const selectedScore = scoreAtUtcHour(people, dateValue, selectedHour, durationMinutes, availabilityByPerson);
   const selectedIsRecommendation = recommendation !== null && Math.abs(selectedHour - recommendation.utcHour) < 0.001;
+  const bestScore = hours.reduce((best, hour) => Math.max(best, hour.score), Number.NEGATIVE_INFINITY);
+  const availabilityRatio = selectedScore.total > 0 ? selectedScore.available / selectedScore.total : 0;
+  const quality = selectedScore.total === 0
+    ? { key: "neutral", label: "Add people to score this time" }
+    : selectedScore.available === selectedScore.total && selectedScore.penalty === 0
+      ? { key: "excellent", label: "Excellent for everyone" }
+      : selectedScore.score === bestScore
+        ? { key: "best", label: "Best available option" }
+        : availabilityRatio >= 0.75
+          ? { key: "good", label: "Good option" }
+          : availabilityRatio >= 0.5
+            ? { key: "limited", label: "Limited availability" }
+            : { key: "poor", label: "Poor availability" };
 
   function selectExactStart(value: string) {
     const [hour, minute] = value.split(":").map(Number);
@@ -159,7 +172,7 @@ export function TimePlanner({
             </div>
           ) : (
             <div className="planner-sticky-recommendation" aria-label="Selected meeting time and my local time">
-              <div className="recommendation" role="status">
+              <div className={`recommendation meeting-quality-${quality.key}`} role="status">
                 <span className="recommendation-icon"><Clock3 size={24} /></span>
                 <span className="recommendation-copy">
                   <span>{selectedIsRecommendation ? "Best-scoring" : "Selected"} {durationLabel(durationMinutes)} window</span>
@@ -169,6 +182,7 @@ export function TimePlanner({
                     {selectedScore.calendarConflicts ? ` · ${selectedScore.calendarConflicts} shared-calendar ${selectedScore.calendarConflicts === 1 ? "conflict" : "conflicts"}` : ""}
                     {selectedScore.penalty > 0 ? ` - discomfort penalty ${selectedScore.penalty}` : " - no discomfort penalty"}.
                   </small>
+                  <em className="meeting-quality-label">{quality.label}</em>
                 </span>
               </div>
               <aside className="my-time-recommendation" aria-label={`My time in ${deviceTimeZone}`}>

@@ -4,7 +4,6 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { countryCodeToFlag } from "../country";
 import { MobileTimeOverview } from "./MobileTimeOverview";
 
 describe("mobile time overview", () => {
@@ -49,7 +48,8 @@ describe("mobile time overview", () => {
     expect(markup.match(/time-period-scene/g)?.length).toBe(2);
     expect(markup).toContain("scene-lunch");
     expect(markup).toContain("country-flag-backdrop");
-    expect(markup).toContain("🇪🇸");
+    expect(markup).toContain('data-country-code="ES"');
+    expect(markup).toContain("data:image/svg+xml");
     expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
     expect(markup).toContain('aria-label="Add a person, location, or team"');
   });
@@ -206,7 +206,7 @@ describe("mobile time overview", () => {
     );
 
     expect(markup).toContain("country-flag-backdrop");
-    expect(markup).toContain(countryCodeToFlag("ES")!);
+    expect(markup).toContain('data-country-code="ES"');
   });
 
   it("uses six add invitations for an empty group and opens the shared add flow", async () => {

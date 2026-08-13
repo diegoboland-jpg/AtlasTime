@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Clock3, Coffee, Moon, Palette, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
 import { getCountryByTimeZone } from "../cities";
-import { countryCodeToFlag } from "../country";
 import { formatInZone, formatUtcHour, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
 import { TimePeriodScene } from "./TimePeriodScene";
+import { CountryFlagBackdrop } from "./CountryFlagBackdrop";
 
 type MobileTimeOverviewProps = {
   now: Date;
@@ -18,6 +19,7 @@ type MobileTimeOverviewProps = {
   onNow: () => void;
   onOpenPlanner: () => void;
   onAddEntry: () => void;
+  portalSlider?: boolean;
 };
 
 const RETURN_TO_NOW_MS = 20_000;
@@ -64,6 +66,7 @@ export function MobileTimeOverview({
   onNow,
   onOpenPlanner,
   onAddEntry,
+  portalSlider = false,
 }: MobileTimeOverviewProps) {
   const returnTimer = useRef<number | undefined>(undefined);
   const [returnPending, setReturnPending] = useState(false);
@@ -98,7 +101,34 @@ export function MobileTimeOverview({
     onNow();
   }
 
+  const sliderPanel = (
+    <div className="mobile-overview-slider">
+      <label htmlFor="mobile-time-slider">
+        <span>Explore 24 hours</span>
+        <small>{scoringEnabled ? `${available}/${total} available - score ${selectedScore?.score ?? 0}` : "All-day event"}</small>
+      </label>
+      <input
+        id="mobile-time-slider"
+        type="range"
+        min="0"
+        max="23.5"
+        step="0.5"
+        value={selectedHour}
+        onChange={(event) => scheduleReturnToNow(Number(event.target.value))}
+        aria-label="Selected UTC meeting hour in mobile overview"
+        aria-valuetext={scoringEnabled ? `${selectedHourLabel}, ${available} of ${total} available` : selectedHourLabel}
+      />
+      <button type="button" onClick={returnToNow} title="Return to the current UTC date and hour">
+        <RotateCcw size={14} aria-hidden="true" /> Now
+      </button>
+      <p className="mobile-return-note" aria-live="polite">
+        {returnPending ? "Returning to current time after 20 seconds." : "Move the slider to explore; Now restores current time."}
+      </p>
+    </div>
+  );
+
   return (
+    <>
     <section className={`mobile-time-overview theme-${overviewTheme}`} aria-labelledby="mobile-overview-heading">
       <article
         className={`mobile-current-time time-period-${overviewPeriod.key} ${returnPending ? "exploring" : ""}`}
@@ -154,7 +184,7 @@ export function MobileTimeOverview({
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
           const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
-          const countryFlag = countryCodeToFlag(person.countryCode ?? getCountryByTimeZone(person.timeZone)?.countryCode);
+          const countryCode = person.countryCode ?? getCountryByTimeZone(person.timeZone)?.countryCode;
           return (
             <article
               className={`compact-time-card time-period-${period.key}`}
@@ -162,7 +192,7 @@ export function MobileTimeOverview({
               role="listitem"
               aria-label={`${person.name}, ${placeLabel}: ${formatInZone(tileInstant, person.timeZone)}, ${period.label}, ${working ? "working hours" : "outside work hours"}`}
             >
-              {countryFlag && <span className="country-flag-backdrop" aria-hidden="true">{countryFlag}</span>}
+              <CountryFlagBackdrop countryCode={countryCode} />
               <TimePeriodScene period={period.key} compact />
               <div className="compact-place-rotator" aria-label={`${person.name}, ${placeLabel}`}>
                 <span aria-hidden="true">{person.name}</span>
@@ -195,33 +225,11 @@ export function MobileTimeOverview({
         </div>
       )}
 
-      <div className="mobile-overview-slider">
-        <label htmlFor="mobile-time-slider">
-          <span>Explore 24 hours</span>
-          <small>{scoringEnabled ? `${available}/${total} available - score ${selectedScore?.score ?? 0}` : "All-day event"}</small>
-        </label>
-        <input
-          id="mobile-time-slider"
-          type="range"
-          min="0"
-          max="23.5"
-          step="0.5"
-          value={selectedHour}
-          onChange={(event) => scheduleReturnToNow(Number(event.target.value))}
-          aria-label="Selected UTC meeting hour in mobile overview"
-          aria-valuetext={scoringEnabled ? `${selectedHourLabel}, ${available} of ${total} available` : selectedHourLabel}
-        />
-        <button type="button" onClick={returnToNow} title="Return to the current UTC date and hour">
-          <RotateCcw size={14} aria-hidden="true" /> Now
-        </button>
-        <p className="mobile-return-note" aria-live="polite">
-          {returnPending ? "Returning to current time after 20 seconds." : "Move the slider to explore; Now restores current time."}
-        </p>
-      </div>
-
       <p className="sr-only" aria-live="polite">
         {scoringEnabled ? `Selected meeting time ${selectedHourLabel}. ${available} of ${total} entries are within working hours.` : "All-day event selected. Hourly availability scoring is paused."}
       </p>
     </section>
+    {portalSlider && typeof document !== "undefined" ? createPortal(sliderPanel, document.body) : sliderPanel}
+    </>
   );
 }
