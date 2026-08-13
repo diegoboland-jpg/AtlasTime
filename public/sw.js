@@ -1,5 +1,5 @@
 const CACHE_NAME = "kikiroo-v1.11.0";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/kikiroo-icon.svg"];
+const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/kikiroo-launcher.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
