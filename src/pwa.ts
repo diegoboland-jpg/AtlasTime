@@ -7,7 +7,7 @@ export interface InstallPromptEvent extends Event {
 
 type StandaloneNavigator = Navigator & { standalone?: boolean };
 
-export const PWA_UPDATE_EVENT = "atlastime:update-ready";
+export const PWA_UPDATE_EVENT = "kikroo:update-ready";
 
 export type PwaUpdateDetail = {
   registration: ServiceWorkerRegistration;
@@ -40,7 +40,10 @@ function announceWaitingUpdate(registration: ServiceWorkerRegistration) {
 }
 
 export function activateWaitingServiceWorker(registration: ServiceWorkerRegistration) {
-  registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+  const waiting = registration.waiting;
+  if (!waiting) return false;
+  waiting.postMessage({ type: "SKIP_WAITING" });
+  return true;
 }
 
 export function registerAtlasTimeServiceWorker() {
@@ -56,7 +59,7 @@ export function registerAtlasTimeServiceWorker() {
       });
       window.addEventListener("focus", () => registration.update().catch(() => undefined));
     }).catch(() => {
-      // AtlasTime remains usable online if registration is unavailable.
+      // Kikroo remains usable online if registration is unavailable.
     });
   });
 }

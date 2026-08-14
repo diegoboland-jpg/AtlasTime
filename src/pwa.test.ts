@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
+import { describe, expect, it, vi } from "vitest";
 import { installInstructions, isIosDevice } from "./pwa";
 
 describe("PWA install guidance", () => {
@@ -10,7 +10,6 @@ describe("PWA install guidance", () => {
 
   it("is safe when browser globals are unavailable", () => {
     vi.stubGlobal("navigator", undefined);
-
     try {
       expect(isIosDevice()).toBe(false);
     } finally {

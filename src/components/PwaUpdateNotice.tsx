@@ -9,6 +9,7 @@ export function PwaUpdateNotice() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     const showUpdate = (event: Event) => {
+      setUpdating(false);
       setRegistration((event as CustomEvent<PwaUpdateDetail>).detail.registration);
     };
     window.addEventListener(PWA_UPDATE_EVENT, showUpdate);
@@ -18,13 +19,26 @@ export function PwaUpdateNotice() {
     return () => window.removeEventListener(PWA_UPDATE_EVENT, showUpdate);
   }, []);
 
-  if (!registration) return null;
-
   function updateNow() {
+    const current = registration;
+    if (!current || !current.waiting) {
+      setUpdating(false);
+      setRegistration(null);
+      return;
+    }
+
     setUpdating(true);
     navigator.serviceWorker.addEventListener("controllerchange", () => window.location.reload(), { once: true });
-    activateWaitingServiceWorker(registration!);
+    const started = activateWaitingServiceWorker(current);
+    if (!started) {
+      setUpdating(false);
+      setRegistration(null);
+      return;
+    }
+    window.setTimeout(() => window.location.reload(), 3500);
   }
+
+  if (!registration) return null;
 
   return (
     <aside className="pwa-update-notice" role="status" aria-live="polite">
