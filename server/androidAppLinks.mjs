@@ -10,9 +10,10 @@ export function normalizeAndroidFingerprint(value) {
 
 export function createAndroidAssetLinks({ packageId, sha256Fingerprints }) {
   if (!packageId && !sha256Fingerprints) return null;
-  if (!packageId || !sha256Fingerprints) {
-    throw new Error("ANDROID_APP_PACKAGE_ID and ANDROID_SHA256_CERT_FINGERPRINTS must be configured together.");
-  }
+  // Render can safely carry the final package ID before a Play signing
+  // fingerprint exists. Keep App Links disabled until signing is ready.
+  if (!sha256Fingerprints) return null;
+  if (!packageId) throw new Error("ANDROID_APP_PACKAGE_ID is required when Android signing fingerprints are configured.");
   const segments = String(packageId).split(".");
   if (segments.length < 2 || segments.some((segment) => !packageSegment.test(segment))) {
     throw new Error("ANDROID_APP_PACKAGE_ID is not a valid Android application ID.");

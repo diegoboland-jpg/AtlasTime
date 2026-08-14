@@ -9,8 +9,8 @@ This phase packages the existing public Kikroo PWA as a Trusted Web Activity (TW
 | App name | Kikroo | Ready |
 | Confirmed application ID | `com.badie.kikroo` | Ready; do not change after Play app creation |
 | Initial HTTPS host | `atlastime-staging.onrender.com` | Ready for private testing |
-| Version name | `1.12.0` | Ready |
-| Version code | `11200` | Ready |
+| Version name | `1.12.1` | Ready |
+| Version code | `11201` | Ready |
 | Web manifest | `https://atlastime-staging.onrender.com/manifest.webmanifest` | Ready after v1.12 deploy |
 | Digital Asset Links | `https://atlastime-staging.onrender.com/.well-known/assetlinks.json` | Activates after certificate fingerprints are added in Render |
 

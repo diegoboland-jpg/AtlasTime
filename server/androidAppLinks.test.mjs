@@ -26,9 +26,10 @@ describe("Android Digital Asset Links", () => {
     }]);
   });
 
-  it("stays disabled until both settings are present", () => {
+  it("stays disabled until a signing fingerprint is present", () => {
     expect(createAndroidAssetLinks({})).toBeNull();
-    expect(() => createAndroidAssetLinks({ packageId: "com.badie.kikroo" })).toThrow(/configured together/);
+    expect(createAndroidAssetLinks({ packageId: "com.badie.kikroo" })).toBeNull();
+    expect(() => createAndroidAssetLinks({ sha256Fingerprints: rawFingerprint })).toThrow(/PACKAGE_ID is required/);
     expect(() => createAndroidAssetLinks({ packageId: "not valid", sha256Fingerprints: rawFingerprint })).toThrow(/valid Android/);
   });
 });
