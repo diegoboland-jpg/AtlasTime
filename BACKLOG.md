@@ -1,4 +1,4 @@
-# AtlasTime backlog
+# Kikroo backlog
 
 ## v1.11: mobile visual navigation and planning clarity
 
@@ -8,7 +8,7 @@
 - [x] Preserve time-of-day colors and readable foreground content over every decorative flag.
 - [x] Make the floating 24-hour slider translucent and give Now clear hover, focus, and pressed states.
 - [x] Color and label the selected meeting window from excellent through poor availability, including a distinct best-available state.
-- [x] Add swipeable mobile workspaces for Everyone's Time, saved groups, people, Plan Humanly, and calendar handoff.
+- [x] Add swipeable mobile workspaces for Everyone's Time, saved groups, people, Find a good time, and calendar handoff.
 - [x] Add visible previous/next controls, section dots, wraparound navigation, and return to the main panel when the app is reopened.
 - [x] Preserve vertical scrolling inside each mobile workspace and avoid taking over the time slider gesture.
 - [ ] Validate the new swipe deck, card sizing, flag treatment, and quality colors on the physical Android phone.
@@ -16,7 +16,10 @@
 
 ## v1.12: Android store packaging
 
-- [ ] Confirm the final Android application ID and public production domain.
+- [x] Confirm the privacy-conscious application ID `com.badie.kikroo` and retain the existing Render HTTPS origin before publishing to Play.
+- [x] Add store-ready PNG and maskable icons to the manifest and offline cache.
+- [x] Serve Digital Asset Links from package and certificate settings kept outside source control.
+- [x] Add a reproducible Android release configuration and automated readiness check.
 - [ ] Generate a signed Android App Bundle from the public PWA using a Trusted Web Activity wrapper.
 - [ ] Publish Digital Asset Links using the release-signing certificate fingerprint.
 - [ ] Prepare store icons, feature graphic, screenshots, privacy disclosure, and data-safety answers.

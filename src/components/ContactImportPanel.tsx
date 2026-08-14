@@ -38,7 +38,7 @@ export function ContactImportPanel({ onComplete }: Props) {
       const supported = await contactsApi.getProperties();
       const requested = ["name", "email", "tel", "address"].filter((property) => supported.includes(property));
       if (!requested.includes("name")) {
-        setStatus("This device cannot share contact names with AtlasTime.");
+        setStatus("This device cannot share contact names with Kikroo.");
         return;
       }
       const imported = draftsFromDeviceContacts(await contactsApi.select(requested, { multiple: true }));
@@ -75,7 +75,7 @@ export function ContactImportPanel({ onComplete }: Props) {
       <div className="contact-import-heading">
         <div>
           <p className="section-kicker"><ContactRound size={14} /> IMPORT</p>
-          <h3 id="contact-import-heading">Bring selected contacts into AtlasTime</h3>
+          <h3 id="contact-import-heading">Bring selected contacts into Kikroo</h3>
         </div>
         <div className="contact-import-actions">
           <button type="button" className="secondary-button" onClick={pickFromDevice} disabled={!pickerAvailable}>
@@ -88,7 +88,7 @@ export function ContactImportPanel({ onComplete }: Props) {
         </div>
       </div>
       {!pickerAvailable && <p className="contact-import-support">Device selection requires a supported Android browser or installed app on HTTPS. File import works here.</p>}
-      <p className="contact-import-privacy">You choose exactly which contacts and fields to share. AtlasTime stores completed contacts only in this browser and never edits the source address book.</p>
+      <p className="contact-import-privacy">You choose exactly which contacts and fields to share. Kikroo stores completed contacts only in this browser and never edits the source address book.</p>
       {status && <p className="contact-import-status" role="status" aria-live="polite">{status}</p>}
       {drafts.length > 0 && (
         <div className="contact-import-drafts" aria-label="Contacts waiting for a timezone">

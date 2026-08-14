@@ -11,6 +11,8 @@ describe("Render staging artifacts", () => {
     expect(blueprint).toContain("healthCheckPath: /api/health");
     expect(blueprint).toContain("mountPath: /data");
     expect(blueprint).toContain("ATLASTIME_DATA_ENCRYPTION_KEY");
+    expect(blueprint).toContain("ANDROID_APP_PACKAGE_ID");
+    expect(blueprint).toContain("ANDROID_SHA256_CERT_FINGERPRINTS");
     expect(blueprint).toContain("sync: false");
     expect(blueprint).not.toMatch(/CLIENT_SECRET\s*\n\s*value:/);
   });

@@ -29,9 +29,9 @@ export function CalendarHandoffDialog({ destination, confirmLabel, eventTitle, t
       <section className="calendar-review" role="dialog" aria-modal="true" aria-labelledby="calendar-review-title">
         <p className="section-kicker">FINAL REVIEW</p>
         <h3 id="calendar-review-title">Continue to {destination}?</h3>
-        <p>Nothing has been sent or saved. Check the details before AtlasTime continues.</p>
+        <p>Nothing has been sent or saved. Check the details before Kikroo continues.</p>
         <dl>
-          <div><dt>Event</dt><dd>{eventTitle.trim() || "AtlasTime meeting"}</dd></div>
+          <div><dt>Event</dt><dd>{eventTitle.trim() || "Kikroo meeting"}</dd></div>
           <div><dt>When</dt><dd>{timing}</dd></div>
           {location.trim() && <div><dt>Location</dt><dd>{location.trim()}</dd></div>}
           <div>

@@ -11,6 +11,7 @@ import {
   createFileAvailabilityRequestStore,
 } from "./availabilityRequestGateway.mjs";
 import { resolveStaticPath } from "./staticPath.mjs";
+import { createAndroidAssetLinks } from "./androidAppLinks.mjs";
 
 try {
   loadEnvFile(fileURLToPath(new URL("../.env", import.meta.url)));
@@ -23,6 +24,10 @@ const renderOrigin = process.env.RENDER_EXTERNAL_HOSTNAME ? `https://${process.e
 const appOrigin = process.env.ATLASTIME_APP_ORIGIN ?? renderOrigin ?? `http://localhost:${port}`;
 const appPackage = JSON.parse(await readFile(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"));
 const appVersion = typeof appPackage.version === "string" ? appPackage.version : "unknown";
+const androidAssetLinks = createAndroidAssetLinks({
+  packageId: process.env.ANDROID_APP_PACKAGE_ID,
+  sha256Fingerprints: process.env.ANDROID_SHA256_CERT_FINGERPRINTS,
+});
 const production = process.env.NODE_ENV === "production";
 const parsedOrigin = new URL(appOrigin);
 if (production && parsedOrigin.protocol !== "https:") {
@@ -154,7 +159,19 @@ createServer(async (request, response) => {
         origin: parsedOrigin.origin,
         storage: availabilityEncryptionKey ? "encrypted" : "development-plaintext",
         calendars: { google: missing.length === 0, outlook: outlookMissing.length === 0 },
+        androidAppLinks: Boolean(androidAssetLinks),
       }), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } }), response);
+    }
+    if (request.method === "GET" && url.pathname === "/.well-known/assetlinks.json") {
+      if (!androidAssetLinks) {
+        return writeResponse(new Response(JSON.stringify({ error: "android_app_links_not_configured" }), {
+          status: 503,
+          headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+        }), response);
+      }
+      return writeResponse(new Response(JSON.stringify(androidAssetLinks), {
+        headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=300" },
+      }), response);
     }
     if (url.pathname.startsWith("/api/availability-requests")) {
       return writeResponse(await availabilityRequests(await requestFromNode(request)), response);
@@ -183,7 +200,7 @@ createServer(async (request, response) => {
     response.end(JSON.stringify({ error: "internal_server_error" }));
   }
 }).listen(port, () => {
-  console.log(`AtlasTime listening on ${appOrigin}`);
+  console.log(`Kikroo listening on ${appOrigin}`);
   if (missing.length) console.log(`Google Calendar connection disabled; missing ${missing.join(", ")}`);
   if (outlookMissing.length) console.log(`Outlook Calendar connection disabled; missing ${outlookMissing.join(", ")}`);
 });

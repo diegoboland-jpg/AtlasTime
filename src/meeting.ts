@@ -112,7 +112,7 @@ export function calendarAttendees(people: Person[]): CalendarAttendee[] {
 export function meetingSummary(title: string, start: Date, durationMinutes: number, people: Person[], details: MeetingDetails = {}) {
   const allDayDate = details.allDay ? validDate(details.date) : null;
   const end = eventEnd(start, durationMinutes);
-  const heading = title.trim() || "AtlasTime meeting";
+  const heading = title.trim() || "Kikroo meeting";
   const location = details.location?.trim();
   const notes = details.notes?.trim();
   const localTimes = allDayDate
@@ -137,7 +137,7 @@ export function meetingSummary(title: string, start: Date, durationMinutes: numb
 
 export function createMeetingShareData(title: string, summary: string): MeetingShareData {
   return {
-    title: title.trim() || "AtlasTime meeting",
+    title: title.trim() || "Kikroo meeting",
     text: summary,
   };
 }
@@ -145,11 +145,11 @@ export function createMeetingShareData(title: string, summary: string): MeetingS
 export function createIcsEvent({ title, start, durationMinutes, description, location, uid, createdAt, allDay, date, attendees = [] }: IcsEvent) {
   const allDayDate = allDay ? validDate(date) : null;
   const end = eventEnd(start, durationMinutes);
-  const summary = title.trim() || "AtlasTime meeting";
+  const summary = title.trim() || "Kikroo meeting";
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//AtlasTime//Meeting Handoff//EN",
+    "PRODID:-//Kikroo//Meeting Handoff//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -175,7 +175,7 @@ export function createGoogleCalendarUrl({ title, start, durationMinutes, descrip
     dates: allDayDate
       ? `${compactDate(allDayDate)}/${compactDate(nextDate(allDayDate))}`
       : `${utcDateTime(start)}/${utcDateTime(eventEnd(start, durationMinutes))}`,
-    text: title.trim() || "AtlasTime meeting",
+    text: title.trim() || "Kikroo meeting",
     details: description,
   });
   if (location?.trim()) params.set("location", location.trim());
@@ -190,7 +190,7 @@ export function createOutlookCalendarUrl({ title, start, durationMinutes, descri
     rru: "addevent",
     startdt: allDayDate ?? start.toISOString(),
     enddt: allDayDate ? nextDate(allDayDate) : eventEnd(start, durationMinutes).toISOString(),
-    subject: title.trim() || "AtlasTime meeting",
+    subject: title.trim() || "Kikroo meeting",
     body: description,
   });
   if (allDayDate) params.set("allday", "true");

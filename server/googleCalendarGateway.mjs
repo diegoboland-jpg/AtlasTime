@@ -91,7 +91,7 @@ function stringValue(value, maxLength) {
 
 function calendarEvent(value) {
   if (!value || typeof value !== "object") return null;
-  const title = stringValue(value.title, 120) || "AtlasTime meeting";
+  const title = stringValue(value.title, 120) || "Kikroo meeting";
   const description = stringValue(value.description, 5000);
   const location = stringValue(value.location, 500);
   const attendees = Array.isArray(value.attendees)
@@ -175,7 +175,7 @@ export function createGoogleCalendarGateway(options) {
 
   const redirectUrl = new URL(redirectUri);
   const normalizedOrigin = new URL(appOrigin).origin;
-  if (redirectUrl.origin !== normalizedOrigin) throw new Error("GOOGLE_OAUTH_REDIRECT_URI must use the AtlasTime application origin.");
+  if (redirectUrl.origin !== normalizedOrigin) throw new Error("GOOGLE_OAUTH_REDIRECT_URI must use the Kikroo application origin.");
   const secure = redirectUrl.protocol === "https:";
   const crypt = encryption(encryptionKey);
 

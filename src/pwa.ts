@@ -29,7 +29,7 @@ export function isIosDevice(userAgent?: string) {
 export function installInstructions(ios: boolean) {
   return ios
     ? "In Safari, tap Share, then Add to Home Screen."
-    : "Use your browser menu and choose Install AtlasTime or Add to Home screen.";
+    : "Use your browser menu and choose Install Kikroo or Add to Home screen.";
 }
 
 function announceWaitingUpdate(registration: ServiceWorkerRegistration) {

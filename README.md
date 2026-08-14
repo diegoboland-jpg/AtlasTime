@@ -1,10 +1,12 @@
-# AtlasTime
+# Kikroo
 
-AtlasTime is a local-first Progressive Web App for people coordinating calls across time zones. It replaces manual conversion with synchronized local times, working-hour comparison, and meeting recommendations.
+Kikroo is a local-first Progressive Web App for people coordinating calls across time zones. It replaces manual conversion with synchronized local times, working-hour comparison, and meeting recommendations.
+
+**A friendly time for everyone.** The primary planning action is **Find a good time**.
 
 ## Current release
 
-**Version:** 1.11.0 mobile visual navigation
+**Version:** 1.12.0 Android store preparation
 
 ### Implemented
 
@@ -22,6 +24,8 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Encrypt private availability-request records at rest and refuse insecure production startup
 - Audit production configuration and create, verify, and safely restore encrypted backups
 - Deploy reproducibly to Render staging with managed HTTPS, health checks, and persistent encrypted storage
+- Publish Android Digital Asset Links from server-only signing-certificate settings
+- Validate store-ready 192 px, 512 px, and maskable Android icon assets during every production build
 - Save multiple groups locally
 - Set editable start and finish times, use quick 30-minute meeting lengths, type any exact minute, or create a true all-day event
 - Add meeting title, location, and notes
@@ -37,9 +41,9 @@ AtlasTime is a local-first Progressive Web App for people coordinating calls acr
 - Launch WhatsApp, Zoom, Telegram, or Viber
 - Use keyboard-accessible city autocomplete and reduced-motion/forced-color support
 
-### v1.0 boundary
+### Release progression
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the first private Android store build without placing signing material in source control.
 
 ## Important privacy model
 
@@ -76,6 +80,8 @@ For public hosting, follow [the v1.8 production deployment guide](docs/PRODUCTIO
 Before starting or updating a production host, run `npm run production:check`. Use `npm run backup:data`, `npm run verify:data -- <backup-file>`, and `npm run restore:data -- <backup-file> RESTORE` for encrypted recovery operations. The path from hosting to store releases and native widgets is tracked in [the mobile release path](docs/MOBILE_RELEASE_PATH.md).
 
 For the first public test environment, follow the illustrated [Render staging guide](docs/RENDER_STAGING_SETUP.md).
+
+For the first private Google Play installation, follow the [v1.12 Android internal-test guide](docs/ANDROID_INTERNAL_TEST_GUIDE.md).
 
 ## Build and test
 

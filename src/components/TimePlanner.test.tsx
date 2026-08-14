@@ -38,7 +38,7 @@ describe("progressive planner disclosure", () => {
     const markup = renderPlanner(false);
 
     expect(markup).toContain("Compare every hour when you need it");
-    expect(markup).toContain("Plan Humanly");
+    expect(markup).toContain("Find a good time");
     expect(markup).toContain('aria-expanded="false"');
     expect(markup).not.toContain("Scrollable 24-hour local-time comparison");
     expect(markup).not.toContain('type="date"');

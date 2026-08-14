@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Clock3, Coffee, Moon, Palette, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
 import { getCountryByTimeZone } from "../cities";
+import { countryCodeFromName } from "../countries";
 import { formatInZone, formatUtcHour, hourInZone } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
@@ -162,7 +163,7 @@ export function MobileTimeOverview({
               onChange={(event) => setOverviewTheme(event.target.value as OverviewTheme)}
               aria-label="Everyone's time color theme"
             >
-              <option value="sky">Sky</option>
+              <option value="sky">Kikroo</option>
               <option value="midnight">Midnight</option>
             </select>
           </label>
@@ -184,7 +185,7 @@ export function MobileTimeOverview({
           const working = localHour >= person.workStart && localHour < person.workEnd;
           const period = timePeriodForHour(localHour);
           const placeLabel = person.city || person.timeZone.replaceAll("_", " ");
-          const countryCode = person.countryCode ?? getCountryByTimeZone(person.timeZone)?.countryCode;
+          const countryCode = person.countryCode ?? countryCodeFromName(person.country) ?? getCountryByTimeZone(person.timeZone)?.countryCode;
           return (
             <article
               className={`compact-time-card time-period-${period.key}`}

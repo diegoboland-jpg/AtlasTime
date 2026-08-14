@@ -76,7 +76,7 @@ export function PeopleManager({
       <section className="contact-directory" aria-labelledby="contact-directory-heading">
         <div>
           <p className="section-kicker"><ContactRound size={15} /> LOCAL DIRECTORY</p>
-          <h2 id="contact-directory-heading">Your AtlasTime contacts</h2>
+          <h2 id="contact-directory-heading">Your Kikroo contacts</h2>
           <p>Saved only in this browser. A contact remains here when removed from a group.</p>
         </div>
         <div className="contact-directory-list">

@@ -72,7 +72,7 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
           setNotice(status.connected
             ? { message: "Google Calendar connected.", kind: "success" }
             : {
-                message: "Google returned successfully, but AtlasTime could not verify the saved connection. Connect again.",
+                message: "Google returned successfully, but Kikroo could not verify the saved connection. Connect again.",
                 kind: "error",
               });
         } else if (result?.result === "error") {
@@ -88,7 +88,7 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
           setNotice({
             message: result.result === "error"
               ? result.message
-              : "Google returned successfully, but AtlasTime could not verify the saved connection.",
+              : "Google returned successfully, but Kikroo could not verify the saved connection.",
             kind: "error",
           });
         }
@@ -162,7 +162,7 @@ export function GoogleCalendarConnection({ event, eventTitle, timing, location, 
       <p>
         {connected
           ? "Create the reviewed meeting directly on your primary calendar. Google sends invitations only after this final confirmation."
-          : "Connect only when you want AtlasTime to create a reviewed event. Calendar drafts and .ics files work without connecting."}
+          : "Connect only when you want Kikroo to create a reviewed event. Calendar drafts and .ics files work without connecting."}
       </p>
 
       {view.kind === "error" && <p className="calendar-connection-message error" role="status">{view.message}</p>}

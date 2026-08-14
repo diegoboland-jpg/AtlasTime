@@ -1,4 +1,4 @@
-# AtlasTime Android internal-test preparation
+# Kikroo Android internal-test preparation
 
 This is the next release phase after v1.11. The goal is a private Google Play installation that uses the existing hosted PWA inside a Trusted Web Activity (TWA). It is not a public launch yet.
 
@@ -14,7 +14,7 @@ This is the next release phase after v1.11. The goal is a private Google Play in
 ## Decisions required before generating the signed Android bundle
 
 1. **Final Android application ID** - recommended shape: `com.<owner>.atlastime`. It cannot be casually renamed after Play publication.
-2. **Store-facing app name** - currently `AtlasTime`.
+2. **Store-facing app name** - `Kikroo`.
 3. **Production web domain** - staging can be used for internal testing, but production should use the final stable domain.
 4. **Signing owner and secure backup location** - the release key must never be committed to GitHub.
 5. **Google Play developer account** - required to create the internal-testing application.
@@ -22,7 +22,7 @@ This is the next release phase after v1.11. The goal is a private Google Play in
 ## Packaging sequence
 
 1. Run the full v1.11 Android acceptance checklist on the public URL.
-2. Generate store PNG icons and a 1024 x 500 feature graphic from the approved AtlasTime identity.
+2. Generate store PNG icons and a 1024 x 500 feature graphic from the approved Kikroo identity.
 3. Create the TWA project with the chosen application ID and start URL.
 4. Generate the release signing key outside the repository and store an encrypted backup.
 5. Build the signed `.aab` Android App Bundle.

@@ -51,7 +51,7 @@ describe("meeting handoff", () => {
       title: "Project sync",
       text: summary,
     });
-    expect(createMeetingShareData("   ", summary).title).toBe("AtlasTime meeting");
+    expect(createMeetingShareData("   ", summary).title).toBe("Kikroo meeting");
     expect(createMeetingShareData("Project sync", summary)).not.toHaveProperty("url");
   });
 

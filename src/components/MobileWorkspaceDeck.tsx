@@ -53,7 +53,7 @@ export function MobileWorkspaceDeck({ activePanel, labels, children, onActivePan
   useEffect(() => () => window.clearTimeout(scrollTimer.current), []);
 
   return (
-    <section className="mobile-workspace-deck" aria-label="AtlasTime mobile workspace">
+    <section className="mobile-workspace-deck" aria-label="Kikroo mobile workspace">
       <nav className="mobile-workspace-nav" aria-label="Workspace sections">
         <button type="button" onClick={() => goTo(activePanel - 1)} aria-label="Previous section">
           <ChevronLeft size={17} aria-hidden="true" />

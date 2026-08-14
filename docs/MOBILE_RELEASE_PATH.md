@@ -1,14 +1,15 @@
-# AtlasTime path to mobile stores and native widgets
+# Kikroo path to mobile stores and native widgets
 
-AtlasTime already works as an installable PWA on Android, iPhone, and Windows. A store listing and a native home-screen widget require additional release layers; they do not replace the planner or its connected server.
+Kikroo already works as an installable PWA on Android, iPhone, and Windows. A store listing and a native home-screen widget require additional release layers; they do not replace the planner or its connected server.
 
-## Current position: v1.11
+## Current position: v1.12 preparation
 
 - The responsive PWA, offline shell, mobile planner, floating time slider, Google connection, Microsoft connection, private availability sharing, and combined busy/free scoring exist.
 - The connected server has encrypted persistence, production safety checks, verified backup and restore operations, and public Render staging.
 - Google and Microsoft connections work on the public HTTPS build.
 - v1.11 adds the phone workspace deck, consistent people cards, embedded flag treatments, and live meeting-quality feedback.
-- Physical-device acceptance of the v1.11 navigation remains required before packaging the first Android bundle.
+- v1.12 now contains Android-compatible icons, a candidate package identity, a release-readiness check, and a secure Digital Asset Links endpoint.
+- Physical-device acceptance of the v1.11 navigation remains required before generating the first signed Android bundle. The permanent candidate ID is confirmed as `com.badie.kikroo`.
 
 ## Phase A - public staging deployment (complete)
 
