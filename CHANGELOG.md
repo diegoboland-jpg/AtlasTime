@@ -1,5 +1,14 @@
 # Kikroo changelog
 
+## 1.13.0 - mobile fit and Google Play internal test
+
+- Lock the first mobile workspace to the visible device height so the complete page no longer wiggles vertically.
+- Increase the Kikroo logo by 15% while reducing the mobile header and workspace-navigation footprint.
+- Keep six overview slots visible without scrolling the page; groups with more than six entries scroll only inside the tile grid.
+- Preserve a compact six-slot layout on shorter phones without hiding the persistent time slider.
+- Add pinned Bubblewrap initialization and signed Android App Bundle commands for `com.badie.kikroo`.
+- Keep the generated Android project, bundles, signing key, and passwords outside Git, with a detailed private Google Play test guide.
+
 ## 1.12.1 — Render startup hotfix
 
 - Allow Render to carry Kikroo's final Android package ID before a signing fingerprint exists.

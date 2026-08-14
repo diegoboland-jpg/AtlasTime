@@ -9,3 +9,5 @@ dist/
 Thumbs.db
 .vscode/
 .idea/
+.local-secrets/
+android/twa/

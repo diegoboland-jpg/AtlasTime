@@ -160,6 +160,7 @@ describe("mobile time overview", () => {
 
     const list = container.querySelector<HTMLElement>('[role="list"]')!;
     expect(list.tabIndex).toBe(0);
+    expect(list.classList.contains("is-scrollable")).toBe(true);
     expect(list.getAttribute("aria-describedby")).toBe("mobile-time-strip-help");
     expect(list.querySelectorAll('[role="listitem"]')).toHaveLength(7);
     expect(list.querySelectorAll(".add-time-slot")).toHaveLength(0);
@@ -186,6 +187,8 @@ describe("mobile time overview", () => {
     );
 
     expect(markup).toContain('role="list"');
+    expect(markup).toContain('class="mobile-time-strip "');
+    expect(markup).not.toContain("is-scrollable");
     expect(markup).not.toContain('tabindex="0"');
     expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
   });

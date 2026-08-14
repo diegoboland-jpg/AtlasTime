@@ -174,7 +174,7 @@ export function MobileTimeOverview({
         Six group slots are shown. Filled entries include their place, local time, time of day, and working-hours status. Empty slots add a person, location, or team. Additional entries scroll below the first six.
       </p>
       <div
-        className="mobile-time-strip"
+        className={`mobile-time-strip ${people.length > 6 ? "is-scrollable" : ""}`}
         role="list"
         aria-label="Selected group times"
         aria-describedby="mobile-time-strip-help"

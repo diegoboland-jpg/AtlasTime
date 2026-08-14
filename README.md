@@ -6,7 +6,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ## Current release
 
-**Version:** 1.12.1 Render startup hotfix
+**Version:** 1.13.0 mobile fit and Google Play internal-test packaging
 
 ### Implemented
 
@@ -43,7 +43,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ### Release progression
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the first private Android store build without placing signing material in source control.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the Android identity, icons, and Digital Asset Links. v1.13 removes unnecessary phone-page movement, keeps six overview slots visible, and adds reproducible commands for the first signed Google Play internal-test bundle.
 
 ## Important privacy model
 
@@ -81,7 +81,7 @@ Before starting or updating a production host, run `npm run production:check`. U
 
 For the first public test environment, follow the illustrated [Render staging guide](docs/RENDER_STAGING_SETUP.md).
 
-For the first private Google Play installation, follow the [v1.12 Android internal-test guide](docs/ANDROID_INTERNAL_TEST_GUIDE.md).
+For the first private Google Play installation, follow the [v1.13 Android internal-test guide](docs/ANDROID_INTERNAL_TEST_GUIDE.md).
 
 ## Build and test
 
