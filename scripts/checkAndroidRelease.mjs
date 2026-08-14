@@ -17,8 +17,12 @@ const [appPackage, webManifest, releaseConfig] = await Promise.all([
 const failures = [];
 if (appPackage.version !== releaseConfig.versionName) failures.push("package and Android version names differ");
 if (!/^com\.[a-z0-9_.]+$/.test(releaseConfig.applicationId)) failures.push("Android application ID is invalid");
+if (!Number.isSafeInteger(releaseConfig.versionCode) || releaseConfig.versionCode < 1) failures.push("Android version code must be a positive integer");
+if (!/^\d+\.\d+\.\d+$/.test(releaseConfig.bubblewrapVersion)) failures.push("Bubblewrap version must be pinned exactly");
 if (!releaseConfig.manifestUrl.startsWith("https://")) failures.push("Android manifest URL must use HTTPS");
 if (webManifest.display !== "standalone") failures.push("web manifest must use standalone display mode");
+if (appPackage.scripts?.["android:init"] !== "node scripts/initAndroidTwa.mjs") failures.push("android:init command is missing");
+if (appPackage.scripts?.["android:build:bundle"] !== "node scripts/buildAndroidBundle.mjs") failures.push("android:build:bundle command is missing");
 for (const [icon, expectedSize] of requiredIcons) {
   try {
     const location = new URL(icon, root);

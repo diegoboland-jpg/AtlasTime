@@ -222,7 +222,7 @@ function PlannerApp() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${managingPeople ? "people-mode" : "workspace-mode"}`}>
       <a className="skip-link" href="#main-content">Skip to planner content</a>
       <header className="topbar">
         <a className="brand" href="#main-content" aria-label="Kikroo home">
@@ -231,7 +231,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.12 Android release preparation</span>
+          <span className="mvp-badge">v1.13 Google Play internal test</span>
         </div>
       </header>
 
@@ -392,7 +392,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>Kikroo v1.12</span><span>A friendly time for everyone.</span></footer>
+      <footer><span>Kikroo v1.13</span><span>A friendly time for everyone.</span></footer>
     </div>
   );
 }
