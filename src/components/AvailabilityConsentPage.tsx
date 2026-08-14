@@ -72,7 +72,7 @@ export function AvailabilityConsentPage({ token }: Props) {
         {(request?.status === "pending" || request?.status === "shared") && (
           <>
             <h1>{request.status === "shared" ? `Availability shared for ${request.personName}` : `Share busy/free time for ${request.personName}`}</h1>
-            <p>AtlasTime will ask your calendar provider only whether selected times are occupied or free.</p>
+            <p>Kikroo will ask your calendar provider only whether selected times are occupied or free.</p>
             <ul>
               <li><ShieldCheck size={17} /> No event titles, descriptions, attendees, or locations.</li>
               <li><ShieldCheck size={17} /> You choose the provider and explicitly approve access.</li>

@@ -27,7 +27,7 @@ describe("mobile time overview", () => {
     expect(markup).toContain("Everyone&#x27;s time");
     expect(markup).toContain("theme-sky");
     expect(markup).toContain("Everyone&#x27;s time color theme");
-    expect(markup).toContain('<option value="sky" selected="">Sky</option>');
+    expect(markup).toContain('<option value="sky" selected="">Kikroo</option>');
     expect(markup).toContain("Current time");
     expect(markup).toContain("Your device time zone");
     expect(markup).toContain("Madrid team");
@@ -49,7 +49,7 @@ describe("mobile time overview", () => {
     expect(markup).toContain("scene-lunch");
     expect(markup).toContain("country-flag-backdrop");
     expect(markup).toContain('data-country-code="ES"');
-    expect(markup).toContain("data:image/svg+xml");
+    expect(markup).toContain("/flags/4x3/es.svg");
     expect(markup.match(/class="add-time-slot"/g)?.length).toBe(5);
     expect(markup).toContain('aria-label="Add a person, location, or team"');
   });

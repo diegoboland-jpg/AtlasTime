@@ -100,7 +100,7 @@ export function TimePlanner({
           aria-controls="planner-analysis"
           onClick={() => onExpandedChange(!expanded)}
         >
-          {expanded ? <><ChevronUp size={17} /> Hide planner</> : <><ChevronDown size={17} /> Plan Humanly</>}
+          {expanded ? <><ChevronUp size={17} /> Hide planner</> : <><ChevronDown size={17} /> Find a good time</>}
         </button>
       </div>
 

@@ -1,4 +1,29 @@
-# AtlasTime changelog
+# Kikroo changelog
+
+## v1.12 branding decision
+
+- Adopt **Kikroo** as the public product and store name.
+- Adopt `com.badie.kikroo` before creating the permanent Google Play application.
+- Adopt the selected multicolor rooster-and-world-clock mark as Kikroo's primary logo, including web, PWA, Apple touch, and Android maskable variants.
+- Align the Everyone's time panel and persistent time slider with Kikroo's aqua, teal, midnight, and sunrise palette.
+- Replace handcrafted flag approximations with the maintained `flag-icons` ISO collection, covering both offline cities and new countries returned by global search.
+- Resolve missing flag metadata from a recognized country name or a trusted timezone mapping, show a neutral globe when identification remains ambiguous, and let people correct the country manually.
+- Replace **Plan Humanly** with the friendlier **Find a good time** action.
+- Retain the current Render hostname and legacy security/storage identifiers for compatibility with connected calendars and encrypted records.
+
+## 1.12.0 — Android store preparation
+
+- Add store-compatible PNG and maskable icons to the installable web manifest and offline shell.
+- Prepare a stable Android application ID and Render-hosted Trusted Web Activity configuration.
+- Serve Digital Asset Links from server-only package and signing-certificate settings.
+- Support both upload/local and Google Play app-signing fingerprints without committing either signing key.
+- Add an automated Android release-readiness check and a private-testing guide.
+
+## 1.11.0 — mobile visual navigation and planning clarity
+
+- Standardize people-management card sizes and remove unintended card tilt.
+- Add clean country-flag treatments, a translucent persistent time slider, and live humane-time quality states.
+- Add wraparound mobile workspaces for the overview, saved groups, people, planner, and handoff.
 
 ## 1.10.0 — public staging readiness
 

@@ -24,7 +24,7 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain("scroll-snap-type: x mandatory");
     expect(styles).toContain("scroll-snap-stop: always");
     expect(styles).toContain(".planner-workspace-panel > .time-slider-section { display: none; }");
-    expect(styles).toContain("background: rgba(13,24,48,.78)");
+    expect(styles).toContain("background: linear-gradient(135deg, rgba(13,27,42,.82), rgba(0,180,168,.68))");
   });
 
   it("uses the shared animated overview as the desktop PWA experience", () => {
@@ -61,10 +61,11 @@ describe("responsive accessibility safeguards", () => {
   });
 
   it("keeps trusted country flags subtle, cropped, and optional in high-contrast modes", () => {
-    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?width: 36%/);
-    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?opacity: \.2/);
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?width: 32%/);
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?opacity: \.16/);
+    expect(styles).toMatch(/\.country-flag-backdrop \{[\s\S]*?mask-image: linear-gradient/);
     expect(styles).toContain("background-size: cover");
-    expect(styles).toContain("clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%)");
+    expect(styles).toContain("clip-path: polygon(0 0, 100% 0, 76% 100%, 0 100%)");
     expect(styles).toMatch(/@media \(forced-colors: active\) \{[\s\S]*?\.time-period-scene, \.country-flag-backdrop \{ display: none/);
   });
 

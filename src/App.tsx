@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ExternalLink, Globe2, MessageCircle, Phone, Settings2, Users, Video } from "lucide-react";
+import { ExternalLink, MessageCircle, Phone, Settings2, Users, Video } from "lucide-react";
 import { GroupManager } from "./components/GroupManager";
 import { AvailabilityConsentPage } from "./components/AvailabilityConsentPage";
 import { MeetingHandoff } from "./components/MeetingHandoff";
@@ -202,7 +202,7 @@ function PlannerApp() {
       setCopyStatus("Copied!");
       window.setTimeout(() => setCopyStatus(""), 2200);
     } catch {
-      window.prompt("Copy this AtlasTime link", link);
+      window.prompt("Copy this Kikroo link", link);
     }
   }
 
@@ -225,13 +225,13 @@ function PlannerApp() {
     <div className="app-shell">
       <a className="skip-link" href="#main-content">Skip to planner content</a>
       <header className="topbar">
-        <a className="brand" href="#main-content" aria-label="AtlasTime home">
-          <span className="brand-mark"><Globe2 size={20} /></span>
-          <span>AtlasTime</span>
+        <a className="brand" href="#main-content" aria-label="Kikroo home">
+          <img className="brand-mark" src="/icons/kikroo-logo.png" alt="" />
+          <span>Kikroo</span>
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.11 mobile visual navigation</span>
+          <span className="mvp-badge">v1.12 Android release preparation</span>
         </div>
       </header>
 
@@ -261,7 +261,7 @@ function PlannerApp() {
 
         <MobileWorkspaceDeck
           activePanel={mobilePanel}
-          labels={["Everyone's time", "Saved group", "People", "Plan Humanly", "Handoff"]}
+          labels={["Everyone's time", "Saved group", "People", "Find a good time", "Handoff"]}
           onActivePanelChange={setMobilePanel}
         >
         <div className="overview-workspace-panel">
@@ -282,7 +282,7 @@ function PlannerApp() {
         <section className="hero">
           <div>
             <p className="eyebrow">TIME ZONES, WITHOUT THE MATH</p>
-            <h1>Find a humane time<br />for everyone.</h1>
+            <h1>Find a good time<br />for everyone.</h1>
             <p className="hero-copy">Explore every hour, compare live local times, and choose a fair meeting window.</p>
           </div>
           <div className="hero-clock" aria-label={`Your local time is ${formatInZone(now, Intl.DateTimeFormat().resolvedOptions().timeZone)}`}>
@@ -392,7 +392,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>AtlasTime v1.11</span><span>Consistent cards, humane-time quality, and swipeable mobile workspaces.</span></footer>
+      <footer><span>Kikroo v1.12</span><span>A friendly time for everyone.</span></footer>
     </div>
   );
 }

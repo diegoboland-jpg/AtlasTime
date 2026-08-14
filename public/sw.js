@@ -1,12 +1,16 @@
-const CACHE_NAME = "kikiroo-v1.11.0";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/kikiroo-launcher.svg"];
+const CACHE_NAME = "kikroo-v1.12.0";
+const APP_SHELL = [
+  "/",
+  "/manifest.webmanifest",
+  "/icons/kikroo-logo.png",
+  "/icons/kikroo-icon-192.png",
+  "/icons/kikroo-icon-512.png",
+  "/icons/kikroo-icon-maskable-512.png",
+  "/icons/kikroo-apple-touch-icon.png",
+];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting()),
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
 });
 
 self.addEventListener("message", (event) => {
@@ -24,11 +28,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
-  if (
-    request.method !== "GET"
-    || url.origin !== self.location.origin
-    || url.pathname.startsWith("/api/")
-  ) return;
+  if (request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
 
   if (request.mode === "navigate") {
     event.respondWith(

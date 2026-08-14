@@ -48,6 +48,23 @@ describe("global city search cache", () => {
     expect(fallback[0]).toMatchObject({ city: "Curitiba", source: "offline" });
   });
 
+  it("recovers a missing country code from the provider's country name", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(response({
+      results: [{
+        id: 264371,
+        name: "Reykjavik",
+        latitude: 64.15,
+        longitude: -21.94,
+        timezone: "Atlantic/Reykjavik",
+        country: "Iceland",
+      }],
+    }));
+
+    await expect(searchGlobalCities("Reykjavik")).resolves.toEqual([
+      expect.objectContaining({ city: "Reykjavik", countryCode: "IS", timeZone: "Atlantic/Reykjavik" }),
+    ]);
+  });
+
   it("preserves the error when no saved place matches", async () => {
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new TypeError("offline"));
     await expect(searchGlobalCities("Reykjavik")).rejects.toThrow("offline");

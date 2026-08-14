@@ -119,7 +119,7 @@ export function createOutlookCalendarGateway({
   if (!clientId || !clientSecret || !redirectUri || !appOrigin || !encryptionKey) throw new Error("Outlook Calendar gateway configuration is incomplete.");
   const redirectUrl = new URL(redirectUri);
   const normalizedOrigin = new URL(appOrigin).origin;
-  if (redirectUrl.origin !== normalizedOrigin) throw new Error("MICROSOFT_OAUTH_REDIRECT_URI must use the AtlasTime application origin.");
+  if (redirectUrl.origin !== normalizedOrigin) throw new Error("MICROSOFT_OAUTH_REDIRECT_URI must use the Kikroo application origin.");
   const secure = redirectUrl.protocol === "https:";
   const crypt = encryption(encryptionKey);
 

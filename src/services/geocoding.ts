@@ -1,4 +1,5 @@
 import type { CityOption } from "../cities";
+import { countryCodeFromName, normalizeCountryCode } from "../countries";
 
 const DEFAULT_ENDPOINT = "https://geocoding-api.open-meteo.com/v1/search";
 const CACHE_KEY = "atlastime.geocoding-cache.v1";
@@ -113,7 +114,7 @@ export async function searchGlobalCities(query: string, signal?: AbortSignal): P
         label: resultLabel(place),
         city: place.name,
         country: place.country ?? "",
-        countryCode: /^[A-Z]{2}$/i.test(place.country_code ?? "") ? place.country_code!.toUpperCase() : undefined,
+        countryCode: normalizeCountryCode(place.country_code) ?? countryCodeFromName(place.country),
         timeZone: place.timezone,
         latitude: place.latitude,
         longitude: place.longitude,

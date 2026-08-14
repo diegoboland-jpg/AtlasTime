@@ -1,0 +1,15 @@
+{
+  "applicationId": "com.badie.kikroo",
+  "appName": "Kikroo",
+  "host": "atlastime-staging.onrender.com",
+  "startUrl": "/",
+  "manifestUrl": "https://atlastime-staging.onrender.com/manifest.webmanifest",
+  "versionName": "1.12.0",
+  "versionCode": 11200,
+  "display": "standalone",
+  "orientation": "any",
+  "themeColor": "#101828",
+  "backgroundColor": "#f5f7fb",
+  "iconUrl": "https://atlastime-staging.onrender.com/icons/kikroo-icon-512.png",
+  "maskableIconUrl": "https://atlastime-staging.onrender.com/icons/kikroo-icon-maskable-512.png"
+}

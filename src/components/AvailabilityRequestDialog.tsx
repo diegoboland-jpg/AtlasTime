@@ -73,7 +73,7 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
       saveManagedAvailabilityRequest(person.contactId ?? person.id, created);
       setRecord(created);
     } catch {
-      setError("The secure AtlasTime link could not be created. Start AtlasTime with the connected server and try again.");
+      setError("The secure Kikroo link could not be created. Start Kikroo with the connected server and try again.");
     } finally {
       setBusy(false);
     }
@@ -91,7 +91,7 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
       setRecord(undefined);
       onRevoked();
     } catch {
-      setError("AtlasTime could not revoke this link. Please try again while the connected server is running.");
+      setError("Kikroo could not revoke this link. Please try again while the connected server is running.");
     } finally {
       setBusy(false);
     }
@@ -110,7 +110,7 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
         onStatusChange(result.status);
       }
     } catch {
-      setError("AtlasTime could not refresh this request while the connected server is unavailable.");
+      setError("Kikroo could not refresh this request while the connected server is unavailable.");
     } finally {
       setBusy(false);
     }
@@ -119,7 +119,7 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
   async function nativeShare() {
     if (!navigator.share) return;
     try {
-      await navigator.share({ title: "AtlasTime availability request", text: message });
+      await navigator.share({ title: "Kikroo availability request", text: message });
       onRequested();
     } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError")) setCopied(false);
@@ -145,13 +145,13 @@ export function AvailabilityRequestDialog({ person, selectedInstant, onClose, on
           <p className="section-kicker">AVAILABILITY REQUEST</p>
           <h2 id="availability-request-title">Ask {person.name} to share busy/free time</h2>
           <p>
-            AtlasTime prepares the message; you choose how and whether to send it.
+            Kikroo prepares the message; you choose how and whether to send it.
             The recipient stays in control, and event titles or details are never requested.
           </p>
         </div>
         {!record && (
           <div className="availability-request-generate">
-            <p>Create a private seven-day link. AtlasTime stores only a hash of its public token on the server.</p>
+            <p>Create a private seven-day link. Kikroo stores only a hash of its public token on the server.</p>
             <button type="button" className="primary-button" disabled={busy} onClick={generateLink}>
               {busy ? "Creating secure link…" : "Create secure link"}
             </button>

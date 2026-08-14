@@ -111,7 +111,7 @@ export function CalendarAvailability({ dateValue, selectedHour, durationMinutes 
         <span><CalendarClock size={18} /></span>
         <div>
           <strong id="calendar-availability-heading">My connected calendar availability</strong>
-          <small>Google and Outlook occupied/free blocks are combined. Event details never enter AtlasTime.</small>
+          <small>Google and Outlook occupied/free blocks are combined. Event details never enter Kikroo.</small>
         </div>
         {view.kind === "loading" && <LoaderCircle className="calendar-spinner" size={18} aria-label="Loading connected calendar availability" />}
       </div>
@@ -133,7 +133,7 @@ export function CalendarAvailability({ dateValue, selectedHour, durationMinutes 
             {connectedProviders.map((provider) => <span key={provider}>{provider}</span>)}
           </div>
           {lookupUnavailable && (
-            <p role="status">One connected provider did not return availability. AtlasTime shows confirmed blocks from the other provider and does not assume missing time is free.</p>
+            <p role="status">One connected provider did not return availability. Kikroo shows confirmed blocks from the other provider and does not assume missing time is free.</p>
           )}
           <div className="availability-strip" aria-label={`Your combined ${connectedProviders.join(" and ")} occupied and free periods`}>
             {SLOTS.map((slot) => {

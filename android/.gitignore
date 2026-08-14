@@ -1,0 +1,10 @@
+# Never commit Android signing material or generated build output.
+*.jks
+*.keystore
+*.p12
+*.pem
+*.aab
+*.apk
+.gradle/
+build/
+local.properties

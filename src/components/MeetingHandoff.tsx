@@ -192,7 +192,7 @@ export function MeetingHandoff({ people, planner, selectedInstant, onTitleChange
             <Download size={17} /> Apple / device calendar (.ics)
           </button>
         </div>
-        <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Valid contact emails are included as invitees, but the calendar provider decides whether invitations are sent when you save. Apple and device calendars import the complete .ics event. AtlasTime never saves or sends anything without your confirmation.</p>
+        <p className="handoff-privacy-note">Google and Outlook open prefilled drafts for you to review and save. Valid contact emails are included as invitees, but the calendar provider decides whether invitations are sent when you save. Apple and device calendars import the complete .ics event. Kikroo never saves or sends anything without your confirmation.</p>
       </div>
       {pendingHandoff && handoffDetails && (
         <CalendarHandoffDialog

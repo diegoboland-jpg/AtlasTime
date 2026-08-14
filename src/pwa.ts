@@ -7,7 +7,7 @@ export interface InstallPromptEvent extends Event {
 
 type StandaloneNavigator = Navigator & { standalone?: boolean };
 
-export const PWA_UPDATE_EVENT = "kikiroo:update-ready";
+export const PWA_UPDATE_EVENT = "kikroo:update-ready";
 
 export type PwaUpdateDetail = {
   registration: ServiceWorkerRegistration;
@@ -29,7 +29,7 @@ export function isIosDevice(userAgent?: string) {
 export function installInstructions(ios: boolean) {
   return ios
     ? "In Safari, tap Share, then Add to Home Screen."
-    : "Use your browser menu and choose Install Kikiroo or Add to Home screen.";
+    : "Use your browser menu and choose Install Kikroo or Add to Home screen.";
 }
 
 function announceWaitingUpdate(registration: ServiceWorkerRegistration) {
@@ -59,7 +59,7 @@ export function registerAtlasTimeServiceWorker() {
       });
       window.addEventListener("focus", () => registration.update().catch(() => undefined));
     }).catch(() => {
-      // Kikiroo remains usable online if registration is unavailable.
+      // Kikroo remains usable online if registration is unavailable.
     });
   });
 }

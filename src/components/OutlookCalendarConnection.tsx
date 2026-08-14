@@ -46,7 +46,7 @@ export function OutlookCalendarConnection() {
         if (result?.result === "connected") {
           setNotice(status.connected && status.availabilityGranted
             ? { message: "Outlook Calendar connected for occupied/free planning.", kind: "success" }
-            : { message: "Microsoft returned successfully, but AtlasTime could not verify calendar access. Connect again.", kind: "error" });
+            : { message: "Microsoft returned successfully, but Kikroo could not verify calendar access. Connect again.", kind: "error" });
         } else if (result?.result === "error") {
           setNotice({ message: result.message, kind: "error" });
         }
@@ -54,7 +54,7 @@ export function OutlookCalendarConnection() {
       .catch(() => {
         if (!active) return;
         setView({ kind: "unavailable" });
-        if (result) setNotice({ message: "AtlasTime could not verify the Outlook connection.", kind: "error" });
+        if (result) setNotice({ message: "Kikroo could not verify the Outlook connection.", kind: "error" });
       });
     return () => { active = false; };
   }, []);
@@ -95,7 +95,7 @@ export function OutlookCalendarConnection() {
 
       <p>
         {connected
-          ? "AtlasTime combines Outlook occupied/free blocks with Google availability in the planner. Event names, descriptions, attendees, and locations are never requested."
+          ? "Kikroo combines Outlook occupied/free blocks with Google availability in the planner. Event names, descriptions, attendees, and locations are never requested."
           : "Connect a personal Outlook or permitted Microsoft 365 calendar to include its occupied/free blocks in your planning view."}
       </p>
 

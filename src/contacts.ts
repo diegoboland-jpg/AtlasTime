@@ -1,4 +1,5 @@
 import { getCityByPlace, getCountryByTimeZone } from "./cities";
+import { countryCodeFromName, normalizeCountryCode } from "./countries";
 import type { ContactRecord, Person, SavedGroup } from "./types";
 
 const CONTACTS_STORAGE_KEY = "atlastime.contacts.v1";
@@ -45,9 +46,9 @@ function safeContact(value: unknown): ContactRecord | null {
   const country = typeof candidate.country === "string" && candidate.country.trim()
     ? candidate.country.trim().slice(0, 80)
     : knownCountry?.country;
-  const countryCode = typeof candidate.countryCode === "string" && /^[A-Z]{2}$/i.test(candidate.countryCode)
-    ? candidate.countryCode.toUpperCase()
-    : knownCountry?.countryCode;
+  const countryCode = normalizeCountryCode(candidate.countryCode)
+    ?? countryCodeFromName(country)
+    ?? knownCountry?.countryCode;
   const email = normalizeEmail(candidate.email);
   const phone = normalizePhone(candidate.phone);
   const requestStatus = availabilityStatus(candidate.availabilityRequestStatus);

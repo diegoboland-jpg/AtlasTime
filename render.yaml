@@ -18,3 +18,7 @@ services:
         value: /data/backups
       - key: ATLASTIME_DATA_ENCRYPTION_KEY
         sync: false
+      - key: ANDROID_APP_PACKAGE_ID
+        value: com.badie.kikroo
+      - key: ANDROID_SHA256_CERT_FINGERPRINTS
+        sync: false

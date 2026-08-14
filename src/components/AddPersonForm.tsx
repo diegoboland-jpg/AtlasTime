@@ -1,6 +1,8 @@
 import { FormEvent, KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { MapPin, Search } from "lucide-react";
-import type { CityOption } from "../cities";
+import { getCountryByTimeZone, type CityOption } from "../cities";
+import { countryCodeFromName, countryNameFromCode, countryOptions, normalizeCountryCode } from "../countries";
+import { countryCodeToFlag } from "../country";
 import { createId } from "../id";
 import { searchGlobalCities } from "../services/geocoding";
 import type { Person } from "../types";
@@ -30,6 +32,9 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
   const [query, setQuery] = useState(initialCity?.label ?? draftLocation);
   const [results, setResults] = useState<CityOption[]>([]);
   const [selectedCity, setSelectedCity] = useState<CityOption | undefined>(initialCity);
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string | undefined>(() => normalizeCountryCode(initialPerson?.countryCode)
+    ?? countryCodeFromName(initialPerson?.country)
+    ?? (initialPerson ? getCountryByTimeZone(initialPerson.timeZone)?.countryCode : undefined));
   const [status, setStatus] = useState<SearchStatus>("idle");
   const [activeIndex, setActiveIndex] = useState(0);
   const [focused, setFocused] = useState(false);
@@ -71,7 +76,11 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
   }, [query, retryKey, selectedCity]);
 
   function chooseCity(city: CityOption) {
-    setSelectedCity(city);
+    const inferredCountryCode = normalizeCountryCode(city.countryCode)
+      ?? countryCodeFromName(city.country)
+      ?? getCountryByTimeZone(city.timeZone)?.countryCode;
+    setSelectedCity({ ...city, ...(inferredCountryCode ? { countryCode: inferredCountryCode } : {}) });
+    setSelectedCountryCode(inferredCountryCode);
     setQuery(city.label);
     setResults([]);
     setStatus("idle");
@@ -109,8 +118,8 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
       ...(initialPerson?.availabilityRequestStatus ? { availabilityRequestStatus: initialPerson.availabilityRequestStatus } : {}),
       ...(initialPerson?.availabilityRequestedAt ? { availabilityRequestedAt: initialPerson.availabilityRequestedAt } : {}),
       city: selectedCity.city,
-      country: selectedCity.country,
-      countryCode: selectedCity.countryCode,
+      country: countryNameFromCode(selectedCountryCode) ?? selectedCity.country,
+      ...(selectedCountryCode ? { countryCode: selectedCountryCode } : {}),
       timeZone: selectedCity.timeZone,
       workStart: 9,
       workEnd: 18,
@@ -174,6 +183,7 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
             onChange={(event) => {
               setQuery(event.target.value);
               setSelectedCity(undefined);
+              setSelectedCountryCode(undefined);
               setFocused(true);
             }}
             onFocus={() => setFocused(true)}
@@ -235,6 +245,33 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
           readOnly
           aria-readonly="true"
         />
+      </label>
+
+      <label className="wide-field country-select-field" htmlFor={`${timeZoneId}-country`}>
+        Country flag
+        <span className="country-select-wrap">
+          <span aria-hidden="true">{countryCodeToFlag(selectedCountryCode) ?? "🌐"}</span>
+          <select
+            id={`${timeZoneId}-country`}
+            value={selectedCountryCode ?? ""}
+            onChange={(event) => {
+              const code = normalizeCountryCode(event.target.value);
+              setSelectedCountryCode(code);
+              setSelectedCity((current) => current ? {
+                ...current,
+                country: countryNameFromCode(code) ?? current.country,
+                ...(code ? { countryCode: code } : { countryCode: undefined }),
+              } : current);
+            }}
+            disabled={!selectedCity}
+          >
+            <option value="">Choose country if it could not be identified</option>
+            {countryOptions.map(({ code, name: countryName }) => (
+              <option key={code} value={code}>{countryName}</option>
+            ))}
+          </select>
+        </span>
+        <small className="provider-note">The city search fills this automatically. Change it here only when the country is missing or incorrect.</small>
       </label>
 
       <div className="form-actions">

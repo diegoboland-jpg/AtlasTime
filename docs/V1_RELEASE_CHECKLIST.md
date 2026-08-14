@@ -24,7 +24,7 @@ Use the release-candidate branch and record each item as Pass, Fail, or Not avai
 - [ ] Create a group and add at least three locations, including a half-hour time zone.
 - [ ] Everyone's Time shows six stable slots and exact current minutes while idle.
 - [ ] Slider, Now, animated scenes, country flags, and scrolling remain readable.
-- [ ] **Plan Humanly** opens the detailed planner.
+- [ ] **Find a good time** opens the detailed planner.
 - [ ] Start/Finish accept `1437` as `14:37` without the clipped Android clock dialog.
 - [ ] A custom-duration and an all-day plan show correct participant dates and times.
 - [ ] Google Calendar and Outlook buttons open prefilled event drafts.

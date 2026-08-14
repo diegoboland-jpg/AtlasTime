@@ -7,7 +7,7 @@ describe("mobile workspace deck", () => {
     const markup = renderToStaticMarkup(
       <MobileWorkspaceDeck
         activePanel={0}
-        labels={["Everyone's time", "Saved group", "People", "Plan Humanly", "Handoff"]}
+        labels={["Everyone's time", "Saved group", "People", "Find a good time", "Handoff"]}
         onActivePanelChange={vi.fn()}
       >
         <div>Main</div>

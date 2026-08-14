@@ -1,18 +1,17 @@
 {
   "id": "/",
-  "name": "Kikiroo",
-  "short_name": "Kikiroo",
-  "description": "Time. Anywhere. Together. Find a humane time to connect across time zones.",
+  "name": "Kikroo",
+  "short_name": "Kikroo",
+  "description": "A friendly time for everyone.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#F1F5F9",
-  "theme_color": "#0D1B2A",
+  "background_color": "#f5f7fb",
+  "theme_color": "#101828",
   "orientation": "any",
-  "icons": [{
-    "src": "/icons/kikiroo-approved.svg",
-    "sizes": "any",
-    "type": "image/svg+xml",
-    "purpose": "any maskable"
-  }]
+  "icons": [
+    { "src": "/icons/kikroo-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/kikroo-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/kikroo-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
 }

@@ -4,9 +4,9 @@ export const GOOGLE_CALENDAR_SHARING_HELP = "https://support.google.com/calendar
 
 export function availabilityRequestMessage(person: Person, requestUrl = GOOGLE_CALENDAR_SHARING_HELP) {
   return [
-    `Hi ${person.name}, I am planning a meeting with AtlasTime.`,
+    `Hi ${person.name}, I am planning a meeting with Kikroo.`,
     "Would you share only your calendar availability (busy/free), without event titles or details?",
-    `Private AtlasTime availability link: ${requestUrl}`,
+    `Private Kikroo availability link: ${requestUrl}`,
     "Please share only if you are comfortable. You can change or revoke access in your calendar settings.",
   ].join("\n\n");
 }

@@ -44,7 +44,7 @@ export function PwaUpdateNotice() {
     <aside className="pwa-update-notice" role="status" aria-live="polite">
       <RefreshCw size={20} aria-hidden="true" />
       <div>
-        <strong>A new Kikiroo version is ready.</strong>
+        <strong>A new Kikroo version is ready.</strong>
         <span>Your saved groups will stay on this device.</span>
       </div>
       <button type="button" className="pwa-update-action" onClick={updateNow} disabled={updating}>
