@@ -1,5 +1,11 @@
 # Kikroo changelog
 
+## 1.12.1 — Render startup hotfix
+
+- Allow Render to carry Kikroo's final Android package ID before a signing fingerprint exists.
+- Keep Digital Asset Links safely disabled until the Play signing fingerprint is configured.
+- Prevent the optional Android setup from stopping the web app or connected calendars.
+
 ## v1.12 branding decision
 
 - Adopt **Kikroo** as the public product and store name.

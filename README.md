@@ -6,7 +6,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ## Current release
 
-**Version:** 1.12.0 Android store preparation
+**Version:** 1.12.1 Render startup hotfix
 
 ### Implemented
 
