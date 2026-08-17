@@ -81,8 +81,12 @@ function safePeople(value: unknown): Person[] {
     const contactId = typeof candidate.contactId === "string" && candidate.contactId.trim()
       ? candidate.contactId.trim().slice(0, 120)
       : undefined;
+    const entryType = ["person", "team", "place"].includes(String(candidate.entryType))
+      ? candidate.entryType
+      : undefined;
     return [{
       id: candidate.id!,
+      ...(entryType ? { entryType } : {}),
       ...(contactId ? { contactId } : {}),
       name: candidate.name!,
       ...(email ? { email } : {}),

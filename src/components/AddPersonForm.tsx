@@ -5,7 +5,7 @@ import { countryCodeFromName, countryNameFromCode, countryOptions, normalizeCoun
 import { countryCodeToFlag } from "../country";
 import { createId } from "../id";
 import { searchGlobalCities } from "../services/geocoding";
-import type { Person } from "../types";
+import type { EntryType, Person } from "../types";
 import type { ContactImportDraft } from "../contactImport";
 
 type AddPersonFormProps = {
@@ -17,6 +17,15 @@ type AddPersonFormProps = {
 
 type SearchStatus = "idle" | "loading" | "success" | "error";
 
+const entryChoices: Array<{ value: EntryType; label: string; help: string }> = [
+  { value: "person", label: "Person", help: "A contact with editable local working hours." },
+  { value: "team", label: "Team or group", help: "A family, office, or team sharing one local schedule." },
+  { value: "place", label: "Place", help: "A city or country used mainly as a time reference." },
+];
+
+const startHours = Array.from({ length: 24 }, (_, hour) => hour);
+const endHours = Array.from({ length: 24 }, (_, index) => index + 1);
+
 export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: AddPersonFormProps) {
   const initialCity = initialPerson ? {
     label: [initialPerson.city, initialPerson.country].filter(Boolean).join(", "),
@@ -25,6 +34,9 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
     countryCode: initialPerson.countryCode,
     timeZone: initialPerson.timeZone,
   } satisfies CityOption : undefined;
+  const inferredInitialType: EntryType = initialPerson?.entryType
+    ?? (initialDraft || initialPerson?.email || initialPerson?.phone ? "person" : initialPerson ? "place" : "person");
+  const [entryType, setEntryType] = useState<EntryType>(inferredInitialType);
   const [name, setName] = useState(initialPerson?.name ?? initialDraft?.name ?? "");
   const [email, setEmail] = useState(initialPerson?.email ?? initialDraft?.email ?? "");
   const [phone, setPhone] = useState(initialPerson?.phone ?? initialDraft?.phone ?? "");
@@ -39,12 +51,25 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
   const [activeIndex, setActiveIndex] = useState(0);
   const [focused, setFocused] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
+  const [workStart, setWorkStart] = useState(initialPerson?.workStart ?? 9);
+  const [workEnd, setWorkEnd] = useState(initialPerson?.workEnd ?? 18);
   const blurTimer = useRef<number | undefined>(undefined);
   const nameId = useId();
   const cityId = useId();
   const resultsId = useId();
   const statusId = useId();
   const timeZoneId = useId();
+  const entryTypeId = useId();
+
+  function changeWorkHours(field: "start" | "end", value: number) {
+    if (field === "start") {
+      setWorkStart(Math.min(value, workEnd - 1));
+      if (value >= workEnd) setWorkEnd(Math.min(24, value + 1));
+      return;
+    }
+    setWorkEnd(Math.max(value, workStart + 1));
+    if (value <= workStart) setWorkStart(Math.max(0, value - 1));
+  }
 
   useEffect(() => {
     if (selectedCity?.label === query || query.trim().length < 2) {
@@ -111,18 +136,21 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
     if (!name.trim() || !selectedCity) return;
     onAdd({
       id: initialPerson?.id ?? createId(),
-      contactId: initialPerson?.contactId ?? createId(),
+      entryType,
+      ...(entryType === "person"
+        ? { contactId: initialPerson?.contactId ?? createId() }
+        : initialPerson?.contactId ? { contactId: initialPerson.contactId } : {}),
       name: name.trim(),
-      ...(email.trim() ? { email: email.trim().toLowerCase() } : {}),
-      ...(phone.trim() ? { phone: phone.trim() } : {}),
-      ...(initialPerson?.availabilityRequestStatus ? { availabilityRequestStatus: initialPerson.availabilityRequestStatus } : {}),
-      ...(initialPerson?.availabilityRequestedAt ? { availabilityRequestedAt: initialPerson.availabilityRequestedAt } : {}),
+      ...(entryType !== "place" && email.trim() ? { email: email.trim().toLowerCase() } : {}),
+      ...(entryType !== "place" && phone.trim() ? { phone: phone.trim() } : {}),
+      ...(entryType === "person" && initialPerson?.availabilityRequestStatus ? { availabilityRequestStatus: initialPerson.availabilityRequestStatus } : {}),
+      ...(entryType === "person" && initialPerson?.availabilityRequestedAt ? { availabilityRequestedAt: initialPerson.availabilityRequestedAt } : {}),
       city: selectedCity.city,
       country: countryNameFromCode(selectedCountryCode) ?? selectedCity.country,
       ...(selectedCountryCode ? { countryCode: selectedCountryCode } : {}),
       timeZone: selectedCity.timeZone,
-      workStart: 9,
-      workEnd: 18,
+      workStart: entryType === "place" ? initialPerson?.workStart ?? 9 : workStart,
+      workEnd: entryType === "place" ? initialPerson?.workEnd ?? 18 : workEnd,
     });
   }
 
@@ -130,41 +158,81 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
 
   return (
     <form className="add-form" onSubmit={submit}>
+      <fieldset className="entry-type-selector wide-field">
+        <legend>What are you adding?</legend>
+        <div>
+          {entryChoices.map((choice) => (
+            <label key={choice.value} className={entryType === choice.value ? "selected" : ""}>
+              <input
+                type="radio"
+                name={entryTypeId}
+                value={choice.value}
+                checked={entryType === choice.value}
+                onChange={() => setEntryType(choice.value)}
+              />
+              <span><strong>{choice.label}</strong><small>{choice.help}</small></span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
       <label htmlFor={nameId}>
-        Person, location, or team
+        {entryType === "person" ? "Person's name" : entryType === "team" ? "Team or group name" : "Place label"}
         <input
           id={nameId}
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="e.g. Olesya, Madrid office, or Design team"
+          placeholder={entryType === "person" ? "e.g. Olesya" : entryType === "team" ? "e.g. Family or Madrid office" : "e.g. Tokyo or Brazil"}
           autoFocus
           required
         />
       </label>
 
-      <label htmlFor={`${nameId}-phone`}>
-        Mobile number <span className="optional-label">Optional</span>
-        <input
-          id={`${nameId}-phone`}
-          type="tel"
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
-          placeholder="+55 11 99999 9999"
-          autoComplete="tel"
-        />
-      </label>
+      {entryType !== "place" && (
+        <>
+          <label htmlFor={`${nameId}-phone`}>
+            Mobile number <span className="optional-label">Optional</span>
+            <input
+              id={`${nameId}-phone`}
+              type="tel"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              placeholder="+55 11 99999 9999"
+              autoComplete="tel"
+            />
+          </label>
 
-      <label htmlFor={`${nameId}-email`}>
-        Email address <span className="optional-label">Optional</span>
-        <input
-          id={`${nameId}-email`}
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="name@example.com"
-          autoComplete="email"
-        />
-      </label>
+          <label htmlFor={`${nameId}-email`}>
+            Email address <span className="optional-label">Optional</span>
+            <input
+              id={`${nameId}-email`}
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="name@example.com"
+              autoComplete="email"
+            />
+          </label>
+
+          <fieldset className="work-hours-editor wide-field">
+            <legend>Local working hours</legend>
+            <label>
+              Starts
+              <select value={workStart} onChange={(event) => changeWorkHours("start", Number(event.target.value))}>
+                {startHours.map((hour) => <option key={hour} value={hour}>{String(hour).padStart(2, "0")}:00</option>)}
+              </select>
+            </label>
+            <span>to</span>
+            <label>
+              Ends
+              <select value={workEnd} onChange={(event) => changeWorkHours("end", Number(event.target.value))}>
+                {endHours.map((hour) => <option key={hour} value={hour}>{String(hour).padStart(2, "0")}:00</option>)}
+              </select>
+            </label>
+            <small>Saved locally for this contact or group and used by Find a good time.</small>
+          </fieldset>
+        </>
+      )}
 
       <label className="city-search-field" htmlFor={cityId}>
         Global city search
@@ -277,7 +345,7 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
       <div className="form-actions">
         <button className="secondary-button" type="button" onClick={onCancel}>Cancel</button>
         <button className="primary-button" type="submit" disabled={!name.trim() || !selectedCity}>
-          {initialPerson ? "Save changes" : "Save contact and add"}
+          {initialPerson ? "Save changes" : entryType === "person" ? "Save contact and add" : "Save entry"}
         </button>
       </div>
     </form>

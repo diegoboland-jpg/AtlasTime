@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ExternalLink, MessageCircle, Phone, Settings2, Users, Video } from "lucide-react";
+import { ExternalLink, Info, MessageCircle, Phone, Settings2, Users, Video } from "lucide-react";
+import { AboutPrivacyDialog } from "./components/AboutPrivacyDialog";
 import { GroupManager } from "./components/GroupManager";
 import { AvailabilityConsentPage } from "./components/AvailabilityConsentPage";
 import { MeetingHandoff } from "./components/MeetingHandoff";
@@ -17,6 +18,7 @@ import { createId } from "./id";
 import { loadManagedAvailabilityResults } from "./services/availabilityRequests";
 import { bestHour, dateAtUtcHour, formatInZone, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person, PersonAvailability, SavedGroup } from "./types";
+import { APP_RELEASE_LABEL } from "./version";
 
 type PendingPersonRemoval = {
   groupId: string;
@@ -37,6 +39,7 @@ function PlannerApp() {
   const [showForm, setShowForm] = useState(false);
   const [managingPeople, setManagingPeople] = useState(false);
   const [plannerExpanded, setPlannerExpanded] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [mobilePanel, setMobilePanel] = useState(0);
   const [copyStatus, setCopyStatus] = useState("");
   const [pendingPersonRemoval, setPendingPersonRemoval] = useState<PendingPersonRemoval | null>(null);
@@ -230,8 +233,11 @@ function PlannerApp() {
           <span>Kikroo</span>
         </a>
         <div className="topbar-actions">
+          <button type="button" className="about-button" onClick={() => setAboutOpen(true)} aria-label="About and privacy">
+            <Info size={18} /> <span>About & privacy</span>
+          </button>
           <PwaInstall />
-          <span className="mvp-badge">v1.14 UX harmony</span>
+          <span className="mvp-badge">{APP_RELEASE_LABEL}</span>
         </div>
       </header>
 
@@ -394,7 +400,8 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>Kikroo v1.14</span><span>A friendly time for everyone.</span></footer>
+      <AboutPrivacyDialog open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      <footer><span>{APP_RELEASE_LABEL}</span><span>A friendly time for everyone.</span></footer>
     </div>
   );
 }

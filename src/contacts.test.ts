@@ -51,6 +51,11 @@ describe("local contact directory", () => {
     expect(loadContacts([])).toEqual(contacts);
   });
 
+  it("keeps explicit teams and places out of the personal contact directory", () => {
+    expect(upsertContact([], { ...person, entryType: "team", id: "family", name: "Family" })).toEqual([]);
+    expect(upsertContact([], { ...person, entryType: "place", id: "tokyo", name: "Tokyo" })).toEqual([]);
+  });
+
   it("reuses a directory contact with a new group-entry id and keeps edits linked", () => {
     const contact: ContactRecord = contactFromPerson({ ...person, contactId: "ana-contact" });
     const reused = personFromContact(contact, "new-group-entry");

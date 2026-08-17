@@ -1,5 +1,8 @@
+export type EntryType = "person" | "team" | "place";
+
 export type Person = {
   id: string;
+  entryType?: EntryType;
   contactId?: string;
   name: string;
   email?: string;
@@ -16,6 +19,7 @@ export type Person = {
 
 export type ContactRecord = {
   id: string;
+  entryType?: "person";
   name: string;
   email?: string;
   phone?: string;

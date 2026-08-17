@@ -3,7 +3,8 @@
 **Document version:** 1.0  
 **Status:** Approved foundation for MVP design and implementation  
 **Product:** Project Atlas / AtlasTime  
-**Owner:** Atlas Labs  
+**Product identity:** Kikroo
+**Legal owner:** DIEGO BOLAND AUSILIO CONSULTORIA EM TECNOLOGIA DA INFORMACAO LTDA
 **Last updated:** 2026-07-21
 
 ## 1. Purpose
