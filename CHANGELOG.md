@@ -1,5 +1,15 @@
 # Kikroo changelog
 
+## 1.14.0 - UX harmony and clearer mobile cards
+
+- Keep each overview card's name fixed at the top instead of alternating it with the location.
+- Show the location and a familiar time-zone abbreviation together at the bottom of every card.
+- Consolidate saved-group controls and people management into one mobile workspace.
+- Remove the redundant Everyone's time heading and enlarge At a glance for a clearer hierarchy.
+- Reduce the mobile workspace from five screens to four while preserving wraparound navigation.
+- Extend Kikroo's aqua, teal, cloud, and midnight palette across navigation, forms, cards, controls, and planning surfaces.
+- Keep the desktop overview grid balanced and prevent detailed card content from being clipped.
+
 ## 1.13.0 - mobile fit and Google Play internal test
 
 - Lock the first mobile workspace to the visible device height so the complete page no longer wiggles vertically.

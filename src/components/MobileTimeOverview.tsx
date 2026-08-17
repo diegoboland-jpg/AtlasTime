@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Clock3, Coffee, Moon, Palette, Plus, RotateCcw, SunMedium, Sunrise, Sunset, Utensils } from "lucide-react";
 import { getCountryByTimeZone } from "../cities";
 import { countryCodeFromName } from "../countries";
-import { formatInZone, formatUtcHour, hourInZone } from "../time";
+import { formatInZone, formatUtcHour, hourInZone, timeZoneAbbreviation } from "../time";
 import { timePeriodForHour, type TimePeriodKey } from "../timePeriods";
 import type { HourScore, Person } from "../types";
 import { TimePeriodScene } from "./TimePeriodScene";
@@ -150,8 +150,7 @@ export function MobileTimeOverview({
 
       <div className="mobile-overview-heading">
         <div>
-          <span><Clock3 size={14} aria-hidden="true" /> At a glance</span>
-          <h1 id="mobile-overview-heading">Everyone's time</h1>
+          <h1 id="mobile-overview-heading"><Clock3 size={16} aria-hidden="true" /> At a glance</h1>
         </div>
         <div className="mobile-overview-heading-actions">
           <strong>{hourLabel}</strong>
@@ -195,10 +194,7 @@ export function MobileTimeOverview({
             >
               <CountryFlagBackdrop countryCode={countryCode} />
               <TimePeriodScene period={period.key} compact />
-              <div className="compact-place-rotator" aria-label={`${person.name}, ${placeLabel}`}>
-                <span aria-hidden="true">{person.name}</span>
-                <small aria-hidden="true">{placeLabel}</small>
-              </div>
+              <div className="compact-person-name">{person.name}</div>
               <strong className="tile-time-value">
                 {formatInZone(tileInstant, person.timeZone)}
               </strong>
@@ -206,6 +202,10 @@ export function MobileTimeOverview({
               <em className={working ? "working" : ""}>
                 {dayLabel(tileInstant, person.timeZone)} - {working ? "Working hours" : "Outside work hours"}
               </em>
+              <div className="compact-location-zone">
+                <span>{placeLabel}</span>
+                <abbr title={person.timeZone}>{timeZoneAbbreviation(tileInstant, person.timeZone)}</abbr>
+              </div>
             </article>
           );
         })}

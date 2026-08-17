@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bestHour, dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, hourInZone, meetingFitsWorkingHours, scoreAtUtcHour, scoreHours } from "./time";
+import { bestHour, dateAtUtcHour, durationBetweenUtcTimes, formatInZone, formatUtcHour, hourInZone, meetingFitsWorkingHours, scoreAtUtcHour, scoreHours, timeZoneAbbreviation } from "./time";
 import type { AvailabilityByPerson, Person } from "./types";
 
 function person(overrides: Partial<Person> = {}): Person {
@@ -29,6 +29,14 @@ describe("timezone conversion", () => {
   it("preserves non-hour timezone offsets", () => {
     expect(formatInZone(new Date("2026-01-15T00:00:00Z"), "Asia/Kathmandu")).toBe("05:45");
     expect(formatInZone(new Date("2026-01-15T00:00:00Z"), "Asia/Kolkata")).toBe("05:30");
+  });
+
+  it("provides compact, recognizable timezone labels for overview tiles", () => {
+    const instant = new Date("2026-01-15T12:00:00Z");
+    expect(timeZoneAbbreviation(instant, "Asia/Kolkata")).toBe("IST");
+    expect(timeZoneAbbreviation(instant, "Europe/London")).toBe("GMT");
+    expect(timeZoneAbbreviation(instant, "America/Sao_Paulo")).toBe("BRT");
+    expect(timeZoneAbbreviation(instant, "Asia/Kathmandu")).toBe("UTC+5:45");
   });
 });
 
