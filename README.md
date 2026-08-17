@@ -6,7 +6,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ## Current release
 
-**Version:** 1.14.0 UX harmony and clearer mobile cards
+**Version:** 1.15.0 protected beta
 
 ### Implemented
 
@@ -43,7 +43,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ### Release progression
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the Android identity, icons, and Digital Asset Links. v1.13 removes unnecessary phone-page movement, keeps six overview slots visible, and adds reproducible commands for the first signed Google Play internal-test bundle. v1.14 simplifies the mobile information hierarchy, combines group and people management, and extends Kikroo's visual language across the complete product.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the Android identity, icons, and Digital Asset Links. v1.13 removes unnecessary phone-page movement, keeps six overview slots visible, and adds reproducible commands for the first signed Google Play internal-test bundle. v1.14 simplifies the mobile information hierarchy, combines group and people management, and extends Kikroo's visual language across the complete product. v1.15 introduces the protected-beta privacy surface, an allow-listed local diagnostic, and an explicit review-before-copy feedback flow.
 
 ## Important privacy model
 
@@ -82,6 +82,12 @@ Before starting or updating a production host, run `npm run production:check`. U
 For the first public test environment, follow the illustrated [Render staging guide](docs/RENDER_STAGING_SETUP.md).
 
 For the first private Google Play installation, follow the [v1.13 Android internal-test guide](docs/ANDROID_INTERNAL_TEST_GUIDE.md).
+
+For the protected external beta, use the [v1.15 scope](docs/V1_15_PROTECTED_BETA.md), [release checklist](docs/BETA_RELEASE_CHECKLIST.md), [tester invitation](docs/BETA_TESTER_INVITATION.md), [tester validation plan](docs/BETA_VALIDATION_PLAN.md), [exit-report template](docs/BETA_EXIT_REPORT_TEMPLATE.md), and [draft beta privacy notice](docs/BETA_PRIVACY_NOTICE.md). Brand and asset decisions are tracked in the [IP asset register](docs/IP_ASSET_REGISTER.md) and [brand-protection plan](docs/BRAND_PROTECTION_PLAN.md). Third-party release attribution is summarized in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Ownership and filing choices are recorded in the [legal decision record](docs/LEGAL_DECISION_RECORD.md) and [international trademark strategy](docs/INTERNATIONAL_TRADEMARK_STRATEGY.md). Protected-beta recruitment uses a completion-based [tester recruitment plan](docs/TESTER_RECRUITMENT_PLAN.md). The next product increment is the measurable [v1.16 Google Play internal beta](docs/V1_16_ANDROID_INTERNAL_BETA.md); native widget implementation remains outside that release until its privacy-safe snapshot architecture is approved.
+
+Create a checksum-backed evidence bundle in an ignored local folder with `npm run evidence:release`. For long-term storage, pass a protected external destination after `--`; never place credentials, private signing material, tester identities, or calendar data in the bundle.
 
 ## Build and test
 

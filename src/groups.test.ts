@@ -141,6 +141,22 @@ describe("saved groups", () => {
     expect(loaded[0]).toMatchObject({ contactId: "ana-contact", email: "ana@example.com" });
     expect(loaded[1].email).toBeUndefined();
   });
+
+  it("preserves explicit person, team, and place entry types", () => {
+    localStorage.setItem("atlastime.groups.v1", JSON.stringify([{
+      id: "typed",
+      name: "Typed entries",
+      people: [
+        { ...person, id: "person", entryType: "person" },
+        { ...person, id: "team", entryType: "team" },
+        { ...person, id: "place", entryType: "place" },
+      ],
+      planner: { date: "2026-07-22", hour: 12 },
+      updatedAt: "2026-07-22T00:00:00Z",
+    }]));
+
+    expect(loadGroups().groups[0].people.map((entry) => entry.entryType)).toEqual(["person", "team", "place"]);
+  });
 });
 
 describe("share links", () => {

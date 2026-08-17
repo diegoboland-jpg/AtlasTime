@@ -2,7 +2,7 @@
 
 Kikroo already works as an installable PWA on Android, iPhone, and Windows. A store listing and a native home-screen widget require additional release layers; they do not replace the planner or its connected server.
 
-## Current position: v1.13 internal-test packaging
+## Current position: v1.15 protected beta; v1.16 internal Play distribution next
 
 - The responsive PWA, offline shell, mobile planner, floating time slider, Google connection, Microsoft connection, private availability sharing, and combined busy/free scoring exist.
 - The connected server has encrypted persistence, production safety checks, verified backup and restore operations, and public Render staging.
@@ -10,6 +10,9 @@ Kikroo already works as an installable PWA on Android, iPhone, and Windows. A st
 - v1.11 adds the phone workspace deck, consistent people cards, embedded flag treatments, and live meeting-quality feedback.
 - v1.12 contains Android-compatible icons, the confirmed package identity, a release-readiness check, and a secure Digital Asset Links endpoint.
 - v1.13 fixes the mobile viewport, keeps six overview slots in one screen, scrolls only additional tiles, and adds guided Bubblewrap initialization plus signed App Bundle generation. The permanent ID is `com.badie.kikroo`.
+- v1.14 harmonizes the mobile information hierarchy and complete product palette.
+- v1.15 adds the protected-beta privacy surface, safe diagnostics, controlled feedback, asset evidence, and structured tester release gate.
+- v1.16 is defined in `V1_16_ANDROID_INTERNAL_BETA.md`: a real private Play installation and update proof, not a public launch.
 
 ## Phase A - public staging deployment (complete)
 
@@ -21,7 +24,7 @@ Kikroo already works as an installable PWA on Android, iPhone, and Windows. A st
 
 The stable public origin is now available. The remaining operational drill does not block preparing an Android internal-test bundle, but it must pass before production release.
 
-## Phase B - Google Play internal test
+## Phase B - Google Play internal test (v1.16)
 
 1. Finalize store screenshots, privacy disclosure, support URL, and data-safety answers; icons and package identity are ready.
 2. Package the hosted PWA as an Android Trusted Web Activity after validating v1.13 on the physical phone.
@@ -29,7 +32,7 @@ The stable public origin is now available. The remaining operational drill does 
 4. Produce a signed Android App Bundle and test it through Play Console internal testing.
 5. Validate installation, updates, calendar handoff, OAuth return, account disconnect, and offline reopen.
 
-The first Android store build should remain visually identical to the tested PWA. Native-only features should not delay the initial internal release.
+The first Android store build should remain visually identical to the tested PWA. Native-only features should not delay the initial internal release. The measurable v1.16 gate requires two physical Android devices and one successful Play update that preserves local data.
 
 ## Phase C - Apple TestFlight and App Store
 
@@ -51,4 +54,4 @@ The existing six-tile overview is an in-app widget-style experience. A real Andr
 4. Refresh on OS-approved schedules; widgets cannot run the continuous web animation or slider interaction.
 5. Open the full app for editing, time exploration, calendar connection, and planning.
 
-The practical order is: **public staging -> Android internal test -> iOS TestFlight -> native widgets**.
+The practical order is: **protected beta -> Android internal test -> iOS TestFlight and/or Android widget implementation after the widget architecture decision**.

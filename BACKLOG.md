@@ -1,5 +1,38 @@
 # Kikroo backlog
 
+## v1.16: Google Play internal beta
+
+- [x] Define the v1.16 product increment, explicit non-goals, evidence requirements, and measurable release gate.
+- [ ] Complete the v1.15 exit report with a proceed/limited-extension decision and no open P0/P1 issue.
+- [ ] Build and verify a signed `com.badie.kikroo` App Bundle without placing signing material in Git.
+- [ ] Create the private Play internal-testing application, store declarations, tester list, and release.
+- [ ] Publish Digital Asset Links with the Play app-signing SHA-256 certificate and validate a browser-bar-free launch.
+- [ ] Validate Google/Outlook OAuth return, disconnect, availability revocation, offline reopen, and back navigation on two Android devices.
+- [ ] Prove one Play update preserves groups, people, working hours, planner state, and preferences on both devices.
+- [ ] Define and security-review the privacy-safe native-widget snapshot contract; do not ship a widget in v1.16.
+
+## v1.15: protected beta
+
+- [x] Create an IP asset register covering the name, tagline, logo, app icons, code, visual system, Android identity, integrations, signing material, and third-party assets.
+- [x] Document the trademark-clearance and filing decision gates without claiming registration or legal clearance.
+- [x] Preserve release-facing third-party notices and the existing Flag Icons license.
+- [x] Draft a beta privacy notice based on the implemented local storage, sharing, calendar, and encrypted availability behavior.
+- [x] Define a six-session cross-device tester protocol, severity model, feedback record, and release gate.
+- [x] Define the v1.15 product increment and measurable acceptance criteria.
+- [x] Define the next increment, v1.16 Google Play internal beta, with measurable acceptance evidence.
+- [x] Approve a Brazilian company as the intended applicant and Brazil as the first filing territory; exact corporate identifiers remain a pre-filing gate outside Git.
+- [x] Confirm the controlled-domain beta contact as `support@kikroo.com`.
+- [ ] Confirm operational-log retention and scheduled deletion of expired hosted availability records. Availability-request links already expire after seven days by default.
+- [x] Compare Brazil/direct foreign filings with the Madrid route and record the six-month priority strategy.
+- [ ] Complete live professional trademark clearance and final goods/services wording before filing.
+- [ ] Complete and archive live INPI/WIPO similarity searches with professional review.
+- [x] Implement the About & privacy surface and privacy-safe diagnostic summary.
+- [x] Add an explicit review-before-copy feedback template with session, reproduction, severity, and redaction fields.
+- [x] Add a checksum-backed release-evidence generator, tester invitation, release checklist, and exit-report template.
+- [x] Add an explicit Person / Team or group / Place selector before the name and persist the entry type safely.
+- [x] Let people and teams define local working hours while adding or editing without resetting existing hours.
+- [ ] Run the two-wave protected-beta protocol to at least five completed distinct testers and publish the exit report (current starting evidence: three approached, one completed).
+
 ## v1.11: mobile visual navigation and planning clarity
 
 - [x] Keep every people-management card the same size and remove the unintended card tilt.

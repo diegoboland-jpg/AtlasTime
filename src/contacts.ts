@@ -55,6 +55,7 @@ function safeContact(value: unknown): ContactRecord | null {
 
   return {
     id: candidate.id,
+    entryType: "person",
     name: candidate.name.trim().slice(0, 120),
     ...(email ? { email } : {}),
     ...(phone ? { phone } : {}),
@@ -75,6 +76,7 @@ export function contactFromPerson(person: Person): ContactRecord {
   const phone = normalizePhone(person.phone);
   return {
     id: person.contactId ?? person.id,
+    entryType: "person",
     name: person.name,
     ...(email ? { email } : {}),
     ...(phone ? { phone } : {}),
@@ -93,6 +95,7 @@ export function contactFromPerson(person: Person): ContactRecord {
 export function personFromContact(contact: ContactRecord, id: string): Person {
   return {
     id,
+    entryType: "person",
     contactId: contact.id,
     name: contact.name,
     ...(contact.email ? { email: contact.email } : {}),
@@ -109,6 +112,10 @@ export function personFromContact(contact: ContactRecord, id: string): Person {
 }
 
 export function upsertContact(contacts: ContactRecord[], person: Person) {
+  if (person.entryType && person.entryType !== "person") {
+    const contactId = person.contactId ?? person.id;
+    return contacts.filter((contact) => contact.id !== contactId);
+  }
   const next = contactFromPerson(person);
   const index = contacts.findIndex((contact) => contact.id === next.id);
   if (index < 0) return [...contacts, next].slice(-MAX_CONTACTS);

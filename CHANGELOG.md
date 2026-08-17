@@ -1,5 +1,18 @@
 # Kikroo changelog
 
+## 1.15.0 - protected beta
+
+- Add an always-reachable About and privacy surface for browser, installed PWA, and mobile workspaces.
+- Explain local storage, encrypted connected-server records, occupied/free calendar access, and tester control in plain language.
+- Generate a narrow, allow-listed diagnostic only after an explicit tester action; never include contacts, groups, event content, tokens, private links, or busy/free periods.
+- Keep beta feedback local until the tester reviews and explicitly copies it into an approved channel.
+- Add the protected-beta validation plan, draft privacy notice, IP asset register, brand-protection plan, and third-party notices.
+- Add a checksum-backed evidence-bundle generator plus operational tester invitation, release checklist, and exit-report templates.
+- Ask whether a new entry is a person, team/group, or place before its name, with plain-language examples.
+- Let people and teams define local working hours during creation or editing, and preserve those hours instead of resetting them to 09:00–18:00.
+- Keep explicit teams and places out of the personal contact directory while safely retaining legacy entries.
+- Align web, offline-cache, and Android version metadata at 1.15.0.
+
 ## 1.14.0 - UX harmony and clearer mobile cards
 
 - Keep each overview card's name fixed at the top instead of alternating it with the location.
