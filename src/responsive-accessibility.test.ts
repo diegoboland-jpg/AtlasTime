@@ -23,13 +23,16 @@ describe("responsive accessibility safeguards", () => {
   it("provides an app-like swipe deck without duplicating the floating slider", () => {
     expect(styles).toContain("scroll-snap-type: x mandatory");
     expect(styles).toContain("scroll-snap-stop: always");
-    expect(styles).toContain(".planner-workspace-panel > .time-slider-section { display: none; }");
+    expect(styles).toMatch(
+      /main > \.time-slider-section \{ display: none; \}\s*\.planner-workspace-panel > \.time-slider-section \{ display: none; \}\s*@media \(min-width: 641px\)/,
+    );
     expect(styles).toContain("background: linear-gradient(135deg, rgba(13,27,42,.82), rgba(0,180,168,.68))");
   });
 
   it("uses the shared animated overview as the desktop PWA experience", () => {
     expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.hero \{ display: none/);
-    expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.mobile-time-strip \{ grid-column: 2; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); max-height: 228px/);
+    expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.mobile-time-strip \{ grid-column: 2; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); min-height: 228px; max-height: none/);
+    expect(styles).toContain(".mobile-time-strip:not(.is-scrollable) { grid-template-rows: repeat(2, minmax(110px, 1fr)); }");
     expect(styles).toMatch(/\.mobile-overview-slider \{\s*position: fixed/);
     expect(styles).toContain("main > .time-slider-section { display: none; }");
   });
@@ -52,12 +55,12 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain("@media (prefers-contrast: more)");
   });
 
-  it("cycles compact identity labels without overlap and stops for reduced motion", () => {
-    expect(styles).toContain("@keyframes compact-name-cycle");
-    expect(styles).toContain("@keyframes compact-location-cycle");
-    expect(styles).toContain("animation: compact-name-cycle 6s linear infinite");
-    expect(styles).toContain("animation: compact-location-cycle 6s linear infinite");
-    expect(styles).toContain(".compact-place-rotator span, .compact-place-rotator small { position: static; opacity: 1 !important");
+  it("keeps names fixed while placing location and timezone at the tile footer", () => {
+    expect(styles).toContain(".compact-person-name");
+    expect(styles).toContain(".compact-location-zone");
+    expect(styles).toContain(".compact-location-zone abbr");
+    expect(styles).not.toContain("compact-name-cycle");
+    expect(styles).not.toContain("compact-location-cycle");
   });
 
   it("keeps trusted country flags subtle, cropped, and optional in high-contrast modes", () => {

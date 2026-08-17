@@ -31,6 +31,31 @@ export function formatInZone(date: Date, timeZone: string, options?: Intl.DateTi
   }).format(date);
 }
 
+const namedTimeZones: Record<string, Record<string, string>> = {
+  "America/Sao_Paulo": { "GMT-3": "BRT" },
+  "America/Argentina/Buenos_Aires": { "GMT-3": "ART" },
+  "Europe/London": { GMT: "GMT", "GMT+1": "BST" },
+  "Europe/Madrid": { "GMT+1": "CET", "GMT+2": "CEST" },
+  "Europe/Paris": { "GMT+1": "CET", "GMT+2": "CEST" },
+  "Europe/Berlin": { "GMT+1": "CET", "GMT+2": "CEST" },
+  "Europe/Rome": { "GMT+1": "CET", "GMT+2": "CEST" },
+  "Europe/Moscow": { "GMT+3": "MSK" },
+  "Asia/Dubai": { "GMT+4": "GST" },
+  "Asia/Kolkata": { "GMT+5:30": "IST" },
+  "Asia/Singapore": { "GMT+8": "SGT" },
+  "Asia/Tokyo": { "GMT+9": "JST" },
+  "Australia/Sydney": { "GMT+10": "AEST", "GMT+11": "AEDT" },
+  "Pacific/Auckland": { "GMT+12": "NZST", "GMT+13": "NZDT" },
+};
+
+export function timeZoneAbbreviation(date: Date, timeZone: string) {
+  const abbreviation = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short",
+  }).formatToParts(date).find((part) => part.type === "timeZoneName")?.value ?? "UTC";
+  return namedTimeZones[timeZone]?.[abbreviation] ?? abbreviation.replace("GMT", "UTC");
+}
+
 export function hourInZone(date: Date, timeZone: string): number {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone,

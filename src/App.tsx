@@ -162,7 +162,7 @@ function PlannerApp() {
 
   function openPlanner() {
     setPlannerExpanded(true);
-    setMobilePanel(3);
+    setMobilePanel(2);
     window.requestAnimationFrame(() => document.getElementById("planner")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
@@ -231,7 +231,7 @@ function PlannerApp() {
         </a>
         <div className="topbar-actions">
           <PwaInstall />
-          <span className="mvp-badge">v1.13 Google Play internal test</span>
+          <span className="mvp-badge">v1.14 UX harmony</span>
         </div>
       </header>
 
@@ -261,7 +261,7 @@ function PlannerApp() {
 
         <MobileWorkspaceDeck
           activePanel={mobilePanel}
-          labels={["Everyone's time", "Saved group", "People", "Find a good time", "Handoff"]}
+          labels={["At a glance", "Groups & people", "Find a good time", "Handoff"]}
           onActivePanelChange={setMobilePanel}
         >
         <div className="overview-workspace-panel">
@@ -293,6 +293,7 @@ function PlannerApp() {
         </section>
         </div>
 
+        <div className="group-people-workspace-panel">
         <GroupManager
           groups={workspace.groups}
           activeGroupId={workspace.activeGroupId}
@@ -320,6 +321,7 @@ function PlannerApp() {
             {people.length === 0 && <button type="button" onClick={openAddEntry}>+ Add the first entry</button>}
           </div>
         </section>
+        </div>
 
         <div className="planner-workspace-panel">
           <TimeSlider
@@ -392,7 +394,7 @@ function PlannerApp() {
         </aside>
       )}
 
-      <footer><span>Kikroo v1.13</span><span>A friendly time for everyone.</span></footer>
+      <footer><span>Kikroo v1.14</span><span>A friendly time for everyone.</span></footer>
     </div>
   );
 }

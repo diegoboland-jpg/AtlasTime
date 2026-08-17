@@ -54,7 +54,7 @@ export function PeopleManager({
     <section className="people-manager" aria-labelledby="people-manager-heading">
       <div className="people-manager-toolbar">
         <button type="button" className="secondary-button" onClick={onBack}>
-          <ArrowLeft size={17} /> Back to planner
+          <ArrowLeft size={17} /> Back to groups &amp; people
         </button>
         <button
           type="button"

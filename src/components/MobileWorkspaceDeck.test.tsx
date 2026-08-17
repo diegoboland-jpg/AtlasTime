@@ -7,21 +7,20 @@ describe("mobile workspace deck", () => {
     const markup = renderToStaticMarkup(
       <MobileWorkspaceDeck
         activePanel={0}
-        labels={["Everyone's time", "Saved group", "People", "Find a good time", "Handoff"]}
+        labels={["At a glance", "Groups & people", "Find a good time", "Handoff"]}
         onActivePanelChange={vi.fn()}
       >
         <div>Main</div>
-        <div>Groups</div>
-        <div>Contacts</div>
+        <div>Groups and contacts</div>
         <div>Planner</div>
         <div>Calendars</div>
       </MobileWorkspaceDeck>,
     );
 
     expect(markup).toContain('aria-label="Workspace sections"');
-    expect(markup).toContain("Everyone&#x27;s time");
-    expect(markup).toContain('aria-label="1 of 5"');
-    expect(markup.match(/class="mobile-workspace-panel"/g)).toHaveLength(5);
+    expect(markup).toContain("At a glance");
+    expect(markup).toContain('aria-label="1 of 4"');
+    expect(markup.match(/class="mobile-workspace-panel"/g)).toHaveLength(4);
     expect(markup).not.toContain("undefined");
   });
 });

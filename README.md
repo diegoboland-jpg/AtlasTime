@@ -6,7 +6,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ## Current release
 
-**Version:** 1.13.0 mobile fit and Google Play internal-test packaging
+**Version:** 1.14.0 UX harmony and clearer mobile cards
 
 ### Implemented
 
@@ -43,7 +43,7 @@ Kikroo is a local-first Progressive Web App for people coordinating calls across
 
 ### Release progression
 
-AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the Android identity, icons, and Digital Asset Links. v1.13 removes unnecessary phone-page movement, keeps six overview slots visible, and adds reproducible commands for the first signed Google Play internal-test bundle.
+AtlasTime v1.0 completed the local-first cross-time-zone planner. v1.1 added a local contact directory and optional direct Google event creation. v1.2 added organizer busy/free visualization, v1.3 added recipient-controlled availability requests, and v1.4 introduced private, expiring, revocable sharing links. v1.5 uses confirmed shared busy/free blocks in recommendations. v1.6 lets recipients combine Google and Outlook availability without returning event details. v1.7 brings the same combined Google and Outlook view to the organizer's planner. v1.8 prepares the connected server for a public HTTPS deployment with encrypted durable records. v1.9 adds configuration auditing and verified recovery operations. v1.10 adds reproducible Render staging with managed HTTPS and persistent storage. v1.11 adds mobile workspace navigation and visual consistency. v1.12 prepares the Android identity, icons, and Digital Asset Links. v1.13 removes unnecessary phone-page movement, keeps six overview slots visible, and adds reproducible commands for the first signed Google Play internal-test bundle. v1.14 simplifies the mobile information hierarchy, combines group and people management, and extends Kikroo's visual language across the complete product.
 
 ## Important privacy model
 

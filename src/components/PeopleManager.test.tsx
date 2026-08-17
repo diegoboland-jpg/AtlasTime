@@ -21,7 +21,7 @@ describe("focused people management", () => {
       />,
     );
 
-    expect(markup).toContain("Back to planner");
+    expect(markup).toContain("Back to groups &amp; people");
     expect(markup).toContain("Manage Work sites");
     expect(markup).toContain("people-rolodex");
     expect(markup).toContain("Your Kikroo contacts");

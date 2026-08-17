@@ -24,15 +24,18 @@ describe("mobile time overview", () => {
       />,
     );
 
-    expect(markup).toContain("Everyone&#x27;s time");
+    expect(markup).toContain("At a glance");
     expect(markup).toContain("theme-sky");
     expect(markup).toContain("Everyone&#x27;s time color theme");
     expect(markup).toContain('<option value="sky" selected="">Kikroo</option>');
     expect(markup).toContain("Current time");
     expect(markup).toContain("Your device time zone");
     expect(markup).toContain("Madrid team");
-    expect(markup).toContain("compact-place-rotator");
-    expect(markup).toContain('aria-label="Madrid team, Madrid"');
+    expect(markup).toContain("compact-person-name");
+    expect(markup).toContain("compact-location-zone");
+    expect(markup).toContain("Madrid</span><abbr");
+    expect(markup).toContain("CEST");
+    expect(markup).not.toContain("compact-place-rotator");
     expect(markup).toContain("Meeting time");
     expect(markup).toContain("14:17");
     expect(markup).not.toContain("Working now");
