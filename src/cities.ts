@@ -7,7 +7,9 @@ export type CityOption = {
   timeZone: string;
   latitude?: number;
   longitude?: number;
-  source?: "network" | "cache" | "offline";
+  source?: "network" | "cache" | "offline" | "timezone-alias";
+  abbreviation?: string;
+  detail?: string;
 };
 
 const countryCodes: Record<string, string> = {

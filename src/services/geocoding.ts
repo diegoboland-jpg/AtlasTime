@@ -1,5 +1,6 @@
 import type { CityOption } from "../cities";
 import { countryCodeFromName, normalizeCountryCode } from "../countries";
+import { searchTimeZoneAliases } from "../timeZoneAliases";
 
 const DEFAULT_ENDPOINT = "https://geocoding-api.open-meteo.com/v1/search";
 const CACHE_KEY = "atlastime.geocoding-cache.v1";
@@ -80,6 +81,9 @@ function offlineMatches(cache: SearchCache, normalized: string): CityOption[] {
 }
 
 export async function searchGlobalCities(query: string, signal?: AbortSignal): Promise<CityOption[]> {
+  const aliasMatches = searchTimeZoneAliases(query);
+  if (aliasMatches.length) return aliasMatches;
+
   const language = (navigator.language || "en").split("-")[0].toLowerCase();
   const normalized = query.trim().toLocaleLowerCase();
   const queryKey = `${language}:${normalized}`;

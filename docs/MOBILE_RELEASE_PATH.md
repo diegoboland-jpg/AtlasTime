@@ -55,3 +55,5 @@ The existing six-tile overview is an in-app widget-style experience. A real Andr
 5. Open the full app for editing, time exploration, calendar connection, and planning.
 
 The practical order is: **protected beta -> Android internal test -> iOS TestFlight and/or Android widget implementation after the widget architecture decision**.
+
+The architecture decision is complete for v1.16. The first Android home-screen widget is assigned to v1.17 and uses the reviewed [privacy-safe snapshot contract](V1_17_ANDROID_WIDGET_ARCHITECTURE.md).

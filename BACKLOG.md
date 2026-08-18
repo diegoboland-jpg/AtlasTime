@@ -9,9 +9,9 @@
 - [ ] Publish Digital Asset Links with the Play app-signing SHA-256 certificate and validate a browser-bar-free launch.
 - [ ] Validate Google/Outlook OAuth return, disconnect, availability revocation, offline reopen, and back navigation on two Android devices.
 - [ ] Prove one Play update preserves groups, people, working hours, planner state, and preferences on both devices.
-- [ ] Recognize corporate time-zone abbreviations such as `IST`, `EST`, `CST`, and `PT`; whenever an abbreviation can represent more than one region, require a fresh region choice for every new or edited entry and store only its selected IANA time zone.
+- [x] Recognize corporate time-zone abbreviations such as `IST`, `EST`, `CST`, and `PT`; whenever an abbreviation can represent more than one region, require a fresh region choice for every new or edited entry and store only its selected IANA time zone.
 - [x] Present iPhone installation help in a safe-area-aware modal above the app header, with a reachable close control, internal scrolling, and explicit Safari / Add to Home Screen guidance.
-- [ ] Define and security-review the privacy-safe native-widget snapshot contract; do not ship a widget in v1.16.
+- [x] Define and security-review the privacy-safe native-widget snapshot contract; do not ship a widget in v1.16.
 
 ## v1.15: protected beta
 
