@@ -6,6 +6,53 @@ import { describe, expect, it, vi } from "vitest";
 import { AddPersonForm } from "./AddPersonForm";
 
 describe("country correction in the person form", () => {
+  it("shows every meaning of an ambiguous time-zone abbreviation", async () => {
+    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    vi.useFakeTimers();
+    const onAdd = vi.fn();
+    const container = document.createElement("div");
+    document.body.append(container);
+    const root = createRoot(container);
+
+    await act(async () => root.render(<AddPersonForm onAdd={onAdd} onCancel={vi.fn()} />));
+    const search = container.querySelector<HTMLInputElement>(".city-search-field input")!;
+
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, "IST");
+      search.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(400);
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain("India Standard Time");
+    expect(container.textContent).toContain("Irish Standard Time");
+    expect(container.textContent).toContain("Israel Standard Time");
+    expect(container.textContent).toContain("Kikroo asks again for every ambiguous abbreviation");
+
+    const ireland = Array.from(container.querySelectorAll<HTMLButtonElement>(".city-results button"))
+      .find((button) => button.textContent?.includes("Irish Standard Time"))!;
+    const name = container.querySelector<HTMLInputElement>(".add-form > label input")!;
+    await act(async () => ireland.click());
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(name, "Dublin office");
+      name.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await act(async () => container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
+
+    expect(onAdd).toHaveBeenCalledWith(expect.objectContaining({
+      name: "Dublin office",
+      city: "Dublin",
+      countryCode: "IE",
+      timeZone: "Europe/Dublin",
+    }));
+
+    await act(async () => root.unmount());
+    container.remove();
+    vi.useRealTimers();
+  });
+
   it("chooses an entry type before the name and saves editable local working hours", async () => {
     const onAdd = vi.fn();
     const container = document.createElement("div");

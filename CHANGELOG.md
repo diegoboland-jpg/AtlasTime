@@ -1,5 +1,12 @@
 # Kikroo changelog
 
+## 1.16.0 - in progress
+
+- Recognize common corporate time-zone abbreviations locally in the existing city search.
+- Require an explicit region selection for ambiguous abbreviations such as `IST`, `EST`, and `CST`, showing the current UTC offset and representative place before saving the IANA zone.
+- Keep each entry independent so two cards can intentionally use different meanings of the same abbreviation.
+- Present iPhone installation guidance in a safe-area-aware modal above the app header with explicit Safari and Add to Home Screen steps.
+
 ## 1.15.0 - protected beta
 
 - Add an always-reachable About and privacy surface for browser, installed PWA, and mobile workspaces.

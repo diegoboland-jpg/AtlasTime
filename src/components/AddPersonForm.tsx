@@ -235,7 +235,7 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
       )}
 
       <label className="city-search-field" htmlFor={cityId}>
-        Global city search
+        City or time-zone search
         <span className="search-input-wrap">
           <Search size={16} />
           <input
@@ -259,20 +259,23 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
               blurTimer.current = window.setTimeout(() => setFocused(false), 120);
             }}
             onKeyDown={handleKeys}
-            placeholder="Start typing any city or postal code"
+            placeholder="City, postal code, or abbreviation such as IST"
             autoComplete="off"
           />
         </span>
 
         {showMenu && (
-          <div className="city-results" id={resultsId} role="listbox" aria-label="Matching cities">
+          <div className="city-results" id={resultsId} role="listbox" aria-label="Matching cities and time zones">
             {status === "loading" && <p>Searching citiesâ€¦</p>}
             {status === "error" && (
               <p className="search-error">
                 City search is unavailable. <button type="button" onClick={() => setRetryKey((value) => value + 1)}>Try again</button>
               </p>
             )}
-            {status === "success" && results.length === 0 && <p>No matching cities found.</p>}
+            {status === "success" && results.length === 0 && <p>No matching cities or time zones found.</p>}
+            {status === "success" && results.some((city) => city.source === "timezone-alias") && (
+              <p className="timezone-alias-note">Choose the intended region for this entry. Kikroo asks again for every ambiguous abbreviation.</p>
+            )}
             {status === "success" && results.some((city) => city.source === "offline") && (
               <p className="offline-note">Offline: showing recent saved places.</p>
             )}
@@ -289,7 +292,7 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
                 onMouseEnter={() => setActiveIndex(index)}
               >
                 <MapPin size={15} />
-                <span><strong>{city.label}</strong><small>{city.timeZone.replaceAll("_", " ")}</small></span>
+                <span><strong>{city.label}</strong><small>{city.detail ?? city.timeZone.replaceAll("_", " ")}</small></span>
               </button>
             ))}
           </div>
@@ -297,11 +300,11 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
         <p className="sr-only" id={statusId} role="status" aria-live="polite">
           {status === "loading" && "Searching cities."}
           {status === "error" && "City search is unavailable."}
-          {status === "success" && `${results.length} city results available.`}
+          {status === "success" && `${results.length} city or time-zone results available.`}
           {selectedCity && `${selectedCity.label} selected.`}
         </p>
         <small className="provider-note" id={`${timeZoneId}-provider`}>
-          Global place and timezone data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>.
+          Time-zone abbreviations are resolved privately on this device. Global place data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>.
         </small>
       </label>
 

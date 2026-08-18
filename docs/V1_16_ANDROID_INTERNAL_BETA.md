@@ -63,7 +63,7 @@ Acceptance evidence:
 
 ### 5. Corporate time-zone abbreviations
 
-- Accept common corporate shorthand such as `IST`, `EST`, `CST`, `ET`, `PT`, `UTC`, and explicit UTC offsets in the same search used for places and time zones.
+- Accept common corporate shorthand such as `IST`, `EST`, `CST`, `ET`, `PT`, and `UTC` in the same search used for places and time zones. Explicit numeric UTC offsets remain a separate follow-up so Kikroo never stores a seasonally incorrect regional zone for a fixed offset.
 - Treat abbreviations as search aliases only. Persist the selected IANA time-zone identifier on the person, team/group, or place entry.
 - When an abbreviation has multiple regional meanings, show every supported interpretation with country or region, current UTC offset, and representative place.
 - Ask for the regional interpretation every time an ambiguous abbreviation is entered or changed. Do not remember or silently reuse a previous global preference because different entries may intentionally use different meanings.
@@ -74,6 +74,12 @@ Acceptance evidence:
 - Two entries created from the same abbreviation can retain different IANA time zones and calculate their local times independently.
 - Editing an abbreviation-backed entry preserves the saved IANA zone until the abbreviation or region is deliberately changed.
 - Offline alias lookup produces the same choices without transmitting the contact, team, or custom entry name.
+
+Implementation evidence:
+
+- Alias lookup runs locally before the Open-Meteo request and does not send recognized shorthand to the provider.
+- Search results show the abbreviation, regional meaning, current UTC offset, representative place, and saved IANA identifier.
+- The add/edit form persists only the selected IANA identifier and asks again whenever a shorthand value is typed for another entry.
 
 ### 6. Native-widget architecture decision
 
@@ -87,10 +93,13 @@ v1.16 does not ship a home-screen widget. It defines and validates the safe data
 
 Acceptance evidence:
 
+- The versioned snapshot is capped at six entries and excludes emails, phone numbers, contact identifiers, calendar tokens, request status, busy/free intervals, meeting titles, meeting locations, and meeting notes.
 - A reviewed architecture note chooses the Android snapshot storage/bridge, refresh schedule, stale-data treatment, and tap-through behavior.
 - A static small/medium widget prototype is legible at Android font scaling up to 200%.
-- Security review proves the snapshot cannot expose calendar authorization or contact data.
-- The owner decides whether native Android widget implementation is v1.17 or follows iOS TestFlight work.
+- Security tests prove the snapshot cannot expose calendar authorization or contact data, and a times-only mode removes user-defined labels and places.
+- The owner selected native Android widget implementation for v1.17, after the Play internal beta; iOS remains a separate native increment.
+
+Architecture decision: [v1.17 Android widget architecture](V1_17_ANDROID_WIDGET_ARCHITECTURE.md).
 
 ## Release gate
 

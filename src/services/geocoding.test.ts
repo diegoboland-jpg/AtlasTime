@@ -26,6 +26,16 @@ beforeEach(() => {
 });
 
 describe("global city search cache", () => {
+  it("resolves exact corporate abbreviations locally without sending them to the provider", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch");
+
+    const matches = await searchGlobalCities("IST");
+
+    expect(matches).toHaveLength(3);
+    expect(matches.map(({ timeZone }) => timeZone)).toEqual(["Asia/Kolkata", "Europe/Dublin", "Asia/Jerusalem"]);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("reuses a fresh exact-query cache entry", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(response());
 
