@@ -145,12 +145,14 @@ export function AboutPrivacyDialog({ open, onClose, loadCalendarStates = safeCal
               <li>A group-sharing URL contains a readable snapshot for anyone who receives that link.</li>
               <li>Encrypted connection records and short-lived availability-request records on the connected server.</li>
               <li>Only occupied/free time blocks when calendar availability is requested.</li>
+              <li>The Android widget receives only the selected group, time zones, working hours and aggregate recommendation needed to render it. It never receives contact details, calendar tokens, event details or raw busy/free periods.</li>
             </ul>
           </article>
           <article>
             <h3>Your control</h3>
             <ul>
               <li>Calendar connections remain optional and can be disconnected.</li>
+              <li>Opening the Android app refreshes its private widget snapshot; widget time controls change only the widget preview and never edit your planner.</li>
               <li>Kikroo never sends invitations or beta feedback without an explicit action.</li>
               <li>Do not include passwords, private calendar links or confidential screenshots in feedback.</li>
             </ul>
