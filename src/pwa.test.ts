@@ -18,6 +18,7 @@ describe("PWA install guidance", () => {
   });
 
   it("provides platform-appropriate installation instructions", () => {
+    expect(installInstructions(true)).toContain("Open this page in Safari");
     expect(installInstructions(true)).toContain("Add to Home Screen");
     expect(installInstructions(false)).toContain("Install Kikroo");
   });
