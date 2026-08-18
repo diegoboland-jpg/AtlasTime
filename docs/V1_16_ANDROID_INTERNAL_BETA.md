@@ -61,7 +61,21 @@ Acceptance evidence:
 - The app returns to **At a glance** after a fresh launch and has no duplicate persistent time slider.
 - No unexplained blank screen, horizontal overflow, or P0/P1 finding remains.
 
-### 5. Native-widget architecture decision
+### 5. Corporate time-zone abbreviations
+
+- Accept common corporate shorthand such as `IST`, `EST`, `CST`, `ET`, `PT`, `UTC`, and explicit UTC offsets in the same search used for places and time zones.
+- Treat abbreviations as search aliases only. Persist the selected IANA time-zone identifier on the person, team/group, or place entry.
+- When an abbreviation has multiple regional meanings, show every supported interpretation with country or region, current UTC offset, and representative place.
+- Ask for the regional interpretation every time an ambiguous abbreviation is entered or changed. Do not remember or silently reuse a previous global preference because different entries may intentionally use different meanings.
+
+Acceptance evidence:
+
+- `IST`, `EST`, and `CST` each present an explicit disambiguation choice rather than silently selecting a region.
+- Two entries created from the same abbreviation can retain different IANA time zones and calculate their local times independently.
+- Editing an abbreviation-backed entry preserves the saved IANA zone until the abbreviation or region is deliberately changed.
+- Offline alias lookup produces the same choices without transmitting the contact, team, or custom entry name.
+
+### 6. Native-widget architecture decision
 
 v1.16 does not ship a home-screen widget. It defines and validates the safe data contract required for the next native increment:
 

@@ -28,7 +28,7 @@ export function isIosDevice(userAgent?: string) {
 
 export function installInstructions(ios: boolean) {
   return ios
-    ? "In Safari, tap Share, then Add to Home Screen."
+    ? "Open this page in Safari. Tap Share, choose Add to Home Screen, then tap Add. If you opened the link inside WhatsApp, Gmail, or another app, use its menu to open it in Safari first."
     : "Use your browser menu and choose Install Kikroo or Add to Home screen.";
 }
 

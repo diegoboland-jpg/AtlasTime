@@ -29,6 +29,13 @@ describe("responsive accessibility safeguards", () => {
     expect(styles).toContain("background: linear-gradient(135deg, rgba(13,27,42,.82), rgba(0,180,168,.68))");
   });
 
+  it("keeps installation help above phone navigation and inside safe areas", () => {
+    expect(styles).toMatch(/\.install-help-backdrop \{[\s\S]*?z-index: 200/);
+    expect(styles).toMatch(/\.install-help-backdrop \{[\s\S]*?safe-area-inset-top/);
+    expect(styles).toMatch(/\.install-tip \{[\s\S]*?max-height: calc\(100dvh/);
+    expect(styles).toMatch(/\.install-tip \{[\s\S]*?overflow: auto/);
+  });
+
   it("uses the shared animated overview as the desktop PWA experience", () => {
     expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.hero \{ display: none/);
     expect(styles).toMatch(/@media \(min-width: 641px\) \{[\s\S]*?\.mobile-time-strip \{ grid-column: 2; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); min-height: 228px; max-height: none/);
