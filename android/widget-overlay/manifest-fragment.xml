@@ -1,0 +1,14 @@
+<!-- Inserted inside the generated TWA <application>. -->
+<service
+    android:name="androidx.browser.customtabs.PostMessageService"
+    android:exported="true" />
+<receiver
+    android:name="com.badie.kikroo.KikrooWidgetProvider"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    </intent-filter>
+    <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/kikroo_widget_info" />
+</receiver>
