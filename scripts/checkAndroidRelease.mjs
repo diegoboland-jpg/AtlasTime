@@ -7,6 +7,14 @@ const requiredIcons = new Map([
   ["public/icons/kikroo-icon-512.png", 512],
   ["public/icons/kikroo-icon-maskable-512.png", 512],
 ]);
+const requiredWidgetFiles = [
+  "android/widget-overlay/app/src/main/java/com/badie/kikroo/KikrooLauncherActivity.java",
+  "android/widget-overlay/app/src/main/java/com/badie/kikroo/KikrooWidgetProvider.java",
+  "android/widget-overlay/app/src/main/java/com/badie/kikroo/WidgetSnapshotStore.java",
+  "android/widget-overlay/app/src/main/res/layout/kikroo_widget.xml",
+  "android/widget-overlay/app/src/main/res/xml/kikroo_widget_info.xml",
+  "android/widget-overlay/manifest-fragment.xml",
+];
 
 const [appPackage, webManifest, releaseConfig] = await Promise.all([
   readFile(new URL("package.json", root), "utf8").then(JSON.parse),
@@ -23,6 +31,19 @@ if (!releaseConfig.manifestUrl.startsWith("https://")) failures.push("Android ma
 if (webManifest.display !== "standalone") failures.push("web manifest must use standalone display mode");
 if (appPackage.scripts?.["android:init"] !== "node scripts/initAndroidTwa.mjs") failures.push("android:init command is missing");
 if (appPackage.scripts?.["android:build:bundle"] !== "node scripts/buildAndroidBundle.mjs") failures.push("android:build:bundle command is missing");
+if (appPackage.version !== "1.17.0" || releaseConfig.versionCode !== 11700) failures.push("v1.17 Android version metadata is not aligned");
+for (const file of requiredWidgetFiles) {
+  try { await access(new URL(file, root)); }
+  catch { failures.push(`missing ${file}`); }
+}
+const [assetLinksSource, widgetManifestFragment] = await Promise.all([
+  readFile(new URL("server/androidAppLinks.mjs", root), "utf8"),
+  readFile(new URL("android/widget-overlay/manifest-fragment.xml", root), "utf8"),
+]);
+if (!assetLinksSource.includes("delegate_permission/common.use_as_origin")) failures.push("Digital Asset Links does not authorize the widget message origin");
+if (!widgetManifestFragment.includes("androidx.browser.customtabs.PostMessageService")) failures.push("Android PostMessageService is missing");
+const overlaySource = await readFile(new URL("scripts/applyAndroidWidgetOverlay.mjs", root), "utf8");
+if (!overlaySource.includes("android.support.customtabs.action.CustomTabsService")) failures.push("Android Custom Tabs package visibility query is missing");
 for (const [icon, expectedSize] of requiredIcons) {
   try {
     const location = new URL(icon, root);
