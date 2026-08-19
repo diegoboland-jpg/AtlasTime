@@ -1,11 +1,22 @@
 # Kikroo changelog
 
-## 1.16.0 - in progress
+## 1.17.0 - in progress
+
+- Add the first native Android home-screen widget with up to six local times.
+- Add −30 minute, Now, +30 minute, and Open Kikroo widget actions as the safe slider workaround.
+- Sync only the reviewed privacy-safe snapshot through a Digital Asset Links-verified TWA message channel.
+- Keep the native snapshot in app-private storage and reject unknown fields, invalid zones, oversized messages, and expired input.
+- Add fresh, stale, expired, and empty widget states plus a scalable widget-picker preview.
+- Make Android widget injection reproducible after every Bubblewrap project generation.
+- Align web and Android release metadata at 1.17.0 / 11700 for the next internal Play bundle.
+
+## 1.16.0 - completed 2026-08-18
 
 - Recognize common corporate time-zone abbreviations locally in the existing city search.
 - Require an explicit region selection for ambiguous abbreviations such as `IST`, `EST`, and `CST`, showing the current UTC offset and representative place before saving the IANA zone.
 - Keep each entry independent so two cards can intentionally use different meanings of the same abbreviation.
 - Present iPhone installation guidance in a safe-area-aware modal above the app header with explicit Safari and Add to Home Screen steps.
+- Define and test the privacy-safe native widget snapshot contract.
 
 ## 1.15.0 - protected beta
 
