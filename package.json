@@ -1,13 +1,13 @@
 {
   "name": "kikroo",
   "private": true,
-  "version": "1.15.0",
+  "version": "1.17.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:mobile": "vite --host 0.0.0.0",
     "preview:mobile": "vite preview --host 0.0.0.0 --configLoader runner",
-    "check:server": "node --check server/googleCalendarGateway.mjs && node --check server/outlookCalendarGateway.mjs && node --check server/availabilityRequestGateway.mjs && node --check server/androidAppLinks.mjs && node --check server/productionOperations.mjs && node --check server/productionOperationsCli.mjs && node --check scripts/checkAndroidRelease.mjs && node --check scripts/initAndroidTwa.mjs && node --check scripts/buildAndroidBundle.mjs && node --check scripts/createReleaseEvidence.mjs && node --check server/index.mjs",
+    "check:server": "node --check server/googleCalendarGateway.mjs && node --check server/outlookCalendarGateway.mjs && node --check server/availabilityRequestGateway.mjs && node --check server/androidAppLinks.mjs && node --check server/productionOperations.mjs && node --check server/productionOperationsCli.mjs && node --check scripts/checkAndroidRelease.mjs && node --check scripts/applyAndroidWidgetOverlay.mjs && node --check scripts/initAndroidTwa.mjs && node --check scripts/buildAndroidBundle.mjs && node --check scripts/createReleaseEvidence.mjs && node --check server/index.mjs",
     "build": "npm run check:server && npm run android:check && tsc --noEmit -p tsconfig.app.json && vite build --configLoader runner",
     "preview": "vite preview",
     "preview:connected": "npm run build && node server/index.mjs",

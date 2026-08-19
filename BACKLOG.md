@@ -1,5 +1,17 @@
 # Kikroo backlog
 
+## v1.17: Android home-screen widget
+
+- [x] Add a six-entry, resizable Android home-screen widget using the reviewed v1 snapshot.
+- [x] Add −30 minute, Now, +30 minute, and Open Kikroo actions without changing the saved planner.
+- [x] Add fresh, stale, expired, offline-safe, and empty widget states.
+- [x] Accept widget snapshots only through a Digital Asset Links `use_as_origin` relationship and reject unreviewed fields.
+- [x] Store the snapshot in app-private Android preferences and keep it out of logs, analytics, backups, and network calls.
+- [x] Add a reproducible overlay step to every Bubblewrap initialization and fail bundle generation when the overlay is absent.
+- [ ] Build the signed 1.17.0 App Bundle and install it through Google Play Internal Testing.
+- [ ] Verify snapshot sync, widget resizing, 200% font size, reboot, offline reopen, Play update, and all four actions on two physical Android phones.
+- [ ] Record screenshot evidence for zero, one, six, stale, expired, labels, and times-only states.
+
 ## v1.16: Google Play internal beta
 
 - [x] Define the v1.16 product increment, explicit non-goals, evidence requirements, and measurable release gate.

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_open"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/kikroo_widget_background"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <LinearLayout
+        android:id="@+id/widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/widget_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Kikroo"
+            android:textColor="@color/kikroo_ink"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:00 UTC"
+            android:textColor="@color/kikroo_ink"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/widget_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Updated now"
+        android:textColor="@color/kikroo_muted"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView android:id="@+id/widget_entry_1" style="@style/KikrooWidgetEntry" />
+            <TextView android:id="@+id/widget_entry_3" style="@style/KikrooWidgetEntry" />
+            <TextView android:id="@+id/widget_entry_5" style="@style/KikrooWidgetEntry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView android:id="@+id/widget_entry_2" style="@style/KikrooWidgetEntry" />
+            <TextView android:id="@+id/widget_entry_4" style="@style/KikrooWidgetEntry" />
+            <TextView android:id="@+id/widget_entry_6" style="@style/KikrooWidgetEntry" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/widget_previous"
+            style="@style/KikrooWidgetButton"
+            android:text="−30" />
+        <Button
+            android:id="@+id/widget_now"
+            style="@style/KikrooWidgetButton"
+            android:layout_marginStart="6dp"
+            android:text="Now" />
+        <Button
+            android:id="@+id/widget_next"
+            style="@style/KikrooWidgetButton"
+            android:layout_marginStart="6dp"
+            android:text="+30" />
+    </LinearLayout>
+</LinearLayout>

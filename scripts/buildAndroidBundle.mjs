@@ -24,6 +24,12 @@ if (mismatches.length) {
   process.exit(1);
 }
 
+const androidManifest = await readFile(new URL("app/src/main/AndroidManifest.xml", targetUrl), "utf8");
+if (!androidManifest.includes("com.badie.kikroo.KikrooWidgetProvider")) {
+  console.error("Android widget overlay is missing. Run npm run android:init again.");
+  process.exit(1);
+}
+
 const result = spawnSync(
   npx,
   ["-y", `@bubblewrap/cli@${releaseConfig.bubblewrapVersion}`, "build", "--manifest=twa-manifest.json"],

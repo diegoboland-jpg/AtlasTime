@@ -19,6 +19,8 @@ import { loadManagedAvailabilityResults } from "./services/availabilityRequests"
 import { bestHour, dateAtUtcHour, formatInZone, scoreAtUtcHour, scoreHours } from "./time";
 import type { Person, PersonAvailability, SavedGroup } from "./types";
 import { APP_RELEASE_LABEL } from "./version";
+import { installWidgetBridge } from "./widgetBridge";
+import { createWidgetSnapshot } from "./widgetSnapshot";
 
 type PendingPersonRemoval = {
   groupId: string;
@@ -46,6 +48,7 @@ function PlannerApp() {
   const [restoredPersonFocusId, setRestoredPersonFocusId] = useState<string | null>(null);
   const [availabilityByPerson, setAvailabilityByPerson] = useState(loadManagedAvailabilityResults);
   const removalTimer = useRef<number | null>(null);
+  const widgetBridge = useRef<ReturnType<typeof installWidgetBridge> | null>(null);
 
   const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
   const people = activeGroup.people;
@@ -77,6 +80,35 @@ function PlannerApp() {
   const recommendation = useMemo(() => bestHour(people, planner.date, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.durationMinutes, availabilityByPerson]);
   const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
   const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson]);
+  const widgetSnapshot = useMemo(() => createWidgetSnapshot({
+    group: activeGroup,
+    deviceTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    selectedAt: selectedInstant,
+    recommendation: recommendation ? {
+      startAt: dateAtUtcHour(planner.date, recommendation.utcHour),
+      available: recommendation.available,
+      total: recommendation.total,
+    } : undefined,
+    theme: "sky",
+    privacyMode: "labels",
+    now,
+  }), [activeGroup, now, planner.date, recommendation, selectedInstant]);
+
+  const widgetSnapshotRef = useRef(widgetSnapshot);
+  useEffect(() => { widgetSnapshotRef.current = widgetSnapshot; }, [widgetSnapshot]);
+  useEffect(() => {
+    widgetBridge.current = installWidgetBridge({
+      origin: window.location.origin,
+      getSnapshot: () => widgetSnapshotRef.current,
+    });
+    return () => {
+      widgetBridge.current?.dispose();
+      widgetBridge.current = null;
+    };
+  }, []);
+  useEffect(() => {
+    widgetBridge.current?.publish();
+  }, [activeGroup, recommendation]);
 
   function updateAvailability(personId: string, result: PersonAvailability | null) {
     setAvailabilityByPerson((current) => {

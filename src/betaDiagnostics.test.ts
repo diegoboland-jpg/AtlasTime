@@ -22,7 +22,7 @@ describe("protected beta diagnostic", () => {
 
     expect(diagnostic).toMatchObject({
       app: "Kikroo",
-      version: "1.15.0",
+      version: "1.17.0",
       channel: "protected_beta",
       displayMode: "installed",
       platform: "Android",

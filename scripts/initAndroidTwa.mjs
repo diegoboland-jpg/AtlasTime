@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { applyAndroidWidgetOverlay } from "./applyAndroidWidgetOverlay.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const target = fileURLToPath(new URL("../android/twa/", import.meta.url));
@@ -53,6 +54,8 @@ const update = spawnSync(
   { cwd: target, stdio: "inherit" },
 );
 if (update.status !== 0) process.exit(update.status ?? 1);
+
+await applyAndroidWidgetOverlay();
 
 console.log(`Android project ready in ${target}`);
 console.log("Next: npm run android:build:bundle");

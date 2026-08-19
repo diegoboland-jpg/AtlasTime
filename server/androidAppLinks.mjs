@@ -25,7 +25,10 @@ export function createAndroidAssetLinks({ packageId, sha256Fingerprints }) {
     .map(normalizeAndroidFingerprint);
   if (!fingerprints.length) throw new Error("At least one Android signing fingerprint is required.");
   return [{
-    relation: ["delegate_permission/common.handle_all_urls"],
+    relation: [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.use_as_origin",
+    ],
     target: {
       namespace: "android_app",
       package_name: packageId,
