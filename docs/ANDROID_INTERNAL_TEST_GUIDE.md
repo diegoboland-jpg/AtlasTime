@@ -1,6 +1,6 @@
-# Kikroo v1.13 - Google Play internal test
+# Kikroo v1.17 - Android widget internal test
 
-This phase turns the public Kikroo PWA into a signed Android App Bundle (`.aab`) for a private Google Play internal test. It does not publish Kikroo publicly.
+This release adds Kikroo's first native Android home-screen widget to the existing private Google Play test. It does not publish Kikroo publicly.
 
 ## Fixed release identity
 
@@ -8,35 +8,17 @@ This phase turns the public Kikroo PWA into a signed Android App Bundle (`.aab`)
 | --- | --- |
 | Store and launcher name | Kikroo |
 | Android application ID | `com.badie.kikroo` |
-| Version name | `1.13.0` |
-| Version code | `11300` |
+| Version name | `1.17.0` |
+| Version code | `11700` |
 | Hosted application | `https://atlastime-staging.onrender.com` |
 | Web manifest | `https://atlastime-staging.onrender.com/manifest.webmanifest` |
 | Digital Asset Links | `https://atlastime-staging.onrender.com/.well-known/assetlinks.json` |
 
-Do not change `com.badie.kikroo` after creating the Play Console application. A different application ID is treated as a different app.
+Do not change `com.badie.kikroo` after creating the Play Console application. Keep signing passwords, keystores, service-account files, OAuth secrets and private keys outside Git, screenshots and chat.
 
-## Security boundaries
+## 1. Prepare the Android project on Windows
 
-- Do not paste a signing password, keystore, Google service-account file, OAuth secret, or certificate private key into chat, GitHub, screenshots, or documentation.
-- Create the upload keystore outside the Git repository and keep a separate encrypted backup.
-- The generated Android project, `.aab`, `.apk`, and signing material are excluded from Git.
-- The committed scripts use Bubblewrap `1.24.1` so repeated packaging uses the same tool version.
-
-## Stage 1 - accept the v1.13 phone layout
-
-Open the deployed v1.13 URL on an Android phone and confirm:
-
-1. The page does not move slightly up or down when the first workspace is idle.
-2. The Kikroo logo is larger without increasing the top header.
-3. Six overview slots are visible on the first workspace.
-4. A seventh or later person scrolls inside the tile grid; the complete page does not move.
-5. The bottom time slider remains reachable and the **Now** button responds.
-6. Left/right workspace navigation, Google Calendar, and Outlook Calendar still work.
-
-## Stage 2 - initialize the Android project on Windows
-
-Open **Show in Explorer** for the Kikroo repository, click the Explorer address bar, type `cmd`, and press Enter. Then run:
+Open the Kikroo repository in File Explorer. Click the address bar, type `cmd`, and press Enter. Run:
 
 ```cmd
 npm.cmd install
@@ -44,77 +26,88 @@ npm.cmd run android:check
 npm.cmd run android:init
 ```
 
-The last command opens Bubblewrap's guided setup. On its first run, allow it to obtain its Android/JDK prerequisites. Use these answers whenever prompted:
+`android:init` regenerates the Trusted Web Activity and automatically applies the tracked Kikroo widget layer. If Bubblewrap asks for release values, use:
 
 - Application ID: `com.badie.kikroo`
-- App name: `Kikroo`
-- Launcher name: `Kikroo`
-- Version name: `1.13.0`
-- Version code: `11300`
+- App and launcher name: `Kikroo`
+- Version name: `1.17.0`
+- Version code: `11700`
 - Display mode: `standalone`
 - Orientation: `any`
 - Signing alias: `kikroo-upload`
-- Signing-key location: a private folder outside the Git repository, for example `C:\Users\YOUR_NAME\Documents\Kikroo-private\kikroo-upload.jks`
+- Keystore: the existing private `.jks` outside the repository
 
-Choose a new strong password when Bubblewrap requests one. Store the password in a password manager and back up the `.jks` file. Losing this upload key creates a recovery process and can block normal updates.
+The generated project must contain `KikrooWidgetProvider`, `KikrooLauncherActivity` and `PostMessageService`. The release build command checks this before signing.
 
-The command normalizes the generated project back to the fixed values in `android/release-config.json`, preventing an accidental package or version mismatch.
+## 2. Build the signed bundle
 
-## Stage 3 - generate the signed App Bundle
-
-From the same CMD window run:
+In the same CMD window run:
 
 ```cmd
 npm.cmd run android:build:bundle
 ```
 
-Enter the keystore password only in the local prompt. When successful, the final line shows a file similar to:
+Enter the signing password only in the local prompt. The expected output is similar to:
 
 ```text
-android\output\kikroo-1.13.0-11300.aab
+android\output\kikroo-1.17.0-11700.aab
 ```
 
-This `.aab` is the file to upload to Google Play Console. It is intentionally not tracked by Git.
-
-## Stage 4 - create the private Google Play test
+## 3. Upload to the private Play track
 
 1. Open [Google Play Console](https://play.google.com/console/).
-2. Create the app with public name **Kikroo**, default language, and the appropriate app/game and free/paid selections.
-3. Complete every required dashboard declaration. Use the existing privacy and calendar-data model; do not claim that Kikroo reads event titles because it only uses busy/free data.
-4. In the left menu open **Testing > Internal testing**.
-5. Choose **Create new release** and enable Play App Signing when offered.
-6. Upload `kikroo-1.13.0-11300.aab`.
-7. Add release notes such as `First private Kikroo Android internal test.`
-8. Save, review, and start the rollout to internal testing.
-9. Add tester email addresses and open the opt-in link on the Android phone using one of those accounts.
+2. Open Kikroo, then **Testing > Internal testing**.
+3. Choose **Create new release**.
+4. Upload `kikroo-1.17.0-11700.aab`.
+5. Use release notes such as `Kikroo v1.17 Android widget beta.`
+6. Save, review and roll out only to the internal testers.
+7. Install or update Kikroo from the tester opt-in link.
 
-## Stage 5 - remove the browser bar with Play's certificate
+## 4. Add the widget on Android
 
-After the bundle is accepted, open **Setup > App integrity** in Play Console and copy the **SHA-256 certificate fingerprint** under **App signing key certificate**. Do not use the SHA-1 value.
+Exact labels differ slightly by phone manufacturer:
 
-In Render, open `atlastime-staging > Environment` and set:
+1. Open installed Kikroo once and wait until the main time grid appears. This transfers a privacy-limited snapshot to the native app.
+2. Return to the Android home screen.
+3. Touch and hold an empty area of the home screen.
+4. Tap **Widgets**.
+5. Search for **Kikroo** or scroll to Kikroo.
+6. Touch and hold the Kikroo widget preview, then drag it to the home screen.
+7. Resize it horizontally and vertically to check both compact and expanded layouts.
 
-- `ANDROID_APP_PACKAGE_ID` = `com.badie.kikroo`
-- `ANDROID_SHA256_CERT_FINGERPRINTS` = the Play app-signing SHA-256 fingerprint
+If the widget says **Open Kikroo to set up your time widget**, tap it, let Kikroo finish loading, return home and wait a few seconds.
 
-If a locally signed test must also open without a browser bar, place both SHA-256 fingerprints in the second variable separated by a comma. Save and redeploy Render, then verify that the Digital Asset Links URL returns a JSON list.
+## 5. Functional test
 
-## Internal-test acceptance gate
+Confirm each item and capture a screenshot without private contact data:
 
-- Kikroo installs from the private Play tester link.
-- It opens without a browser address bar after Digital Asset Links is active.
-- Google and Microsoft OAuth return to Kikroo.
-- Busy/free planning matches the public PWA.
-- Install, update, back navigation, offline reopen, disconnect, and revoke work.
-- No secret, signing file, calendar token, or private calendar record exists in Git or the bundle.
+- Widget title matches the selected group.
+- Up to six entries show the correct local times.
+- **Previous 30 min** moves all displayed times back together.
+- **Next 30 min** moves all displayed times forward together.
+- **Now** restores the current instant.
+- Tapping the header or **Open Kikroo** opens the full app.
+- Changing group, people, working hours or theme in Kikroo refreshes the widget after reopening the app.
+- With more than six people, the widget remains stable and the full group recommendation is still shown.
 
-```mermaid
-flowchart LR
-  A[Validate v1.13 on phone] --> B[Initialize Bubblewrap]
-  B --> C[Back up upload key]
-  C --> D[Build signed AAB]
-  D --> E[Upload to internal testing]
-  E --> F[Copy Play signing SHA-256]
-  F --> G[Update Render Asset Links]
-  G --> H[Install from private tester link]
-```
+## 6. Privacy and reliability test
+
+- The widget contains no email, phone, contact ID, event title, event notes, invitation link or OAuth information.
+- After 15 minutes it may mark its recommendation as outdated.
+- After 24 hours it hides the recommendation and asks to open Kikroo.
+- It renders a safe state after airplane mode, device restart and normal Play update.
+- Test normal and 200% font size on two physical Android phones before promoting the release.
+
+## 7. Digital Asset Links requirement
+
+The deployed `assetlinks.json` must include both `delegate_permission/common.handle_all_urls` and `delegate_permission/common.use_as_origin` for `com.badie.kikroo`, using the Play app-signing SHA-256 fingerprint. Without the second relation, Kikroo can open as a TWA but cannot securely refresh its widget snapshot.
+
+## Acceptance gate
+
+- Signed `1.17.0 (11700)` installs from the private Play link.
+- TWA opens without a browser address bar.
+- The widget can be added, resized and refreshed.
+- All four widget actions work on two phones.
+- Fresh, stale, expired, offline, restart and update states are evidenced.
+- Google and Outlook connection, planning and disconnect still work.
+- No secret, signing file or private calendar record exists in Git or the bundle.
