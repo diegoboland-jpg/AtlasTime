@@ -2,7 +2,7 @@
 
 Kikroo already works as an installable PWA on Android, iPhone, and Windows. A store listing and a native home-screen widget require additional release layers; they do not replace the planner or its connected server.
 
-## Current position: v1.15 protected beta; v1.16 internal Play distribution next
+## Current position: v1.17 widget implementation; signed internal Play distribution next
 
 - The responsive PWA, offline shell, mobile planner, floating time slider, Google connection, Microsoft connection, private availability sharing, and combined busy/free scoring exist.
 - The connected server has encrypted persistence, production safety checks, verified backup and restore operations, and public Render staging.
@@ -13,6 +13,7 @@ Kikroo already works as an installable PWA on Android, iPhone, and Windows. A st
 - v1.14 harmonizes the mobile information hierarchy and complete product palette.
 - v1.15 adds the protected-beta privacy surface, safe diagnostics, controlled feedback, asset evidence, and structured tester release gate.
 - v1.16 is defined in `V1_16_ANDROID_INTERNAL_BETA.md`: a real private Play installation and update proof, not a public launch.
+- v1.17 adds the native Android widget, its verified local snapshot bridge, and repeatable injection into the generated TWA project.
 
 ## Phase A - public staging deployment (complete)
 
@@ -50,10 +51,10 @@ The existing six-tile overview is an in-app widget-style experience. A real Andr
 
 1. Define the compact widget states: current device time, selected group, up to six locations, and next humane time.
 2. Decide how the native extension reads a privacy-safe local snapshot without exposing calendar tokens.
-3. Add Android Glance/AppWidget and iOS WidgetKit implementations after the native shells are stable.
+3. [x] Add the first Android AppWidget implementation; keep iOS WidgetKit for the later native iOS shell.
 4. Refresh on OS-approved schedules; widgets cannot run the continuous web animation or slider interaction.
 5. Open the full app for editing, time exploration, calendar connection, and planning.
 
 The practical order is: **protected beta -> Android internal test -> iOS TestFlight and/or Android widget implementation after the widget architecture decision**.
 
-The architecture decision is complete for v1.16. The first Android home-screen widget is assigned to v1.17 and uses the reviewed [privacy-safe snapshot contract](V1_17_ANDROID_WIDGET_ARCHITECTURE.md).
+The first Android home-screen widget is implemented in v1.17 using the reviewed [privacy-safe snapshot contract](V1_17_ANDROID_WIDGET_ARCHITECTURE.md). Physical-device and Play-update evidence remain required before the release gate is complete.
