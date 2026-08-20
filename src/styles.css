@@ -318,6 +318,21 @@ input:focus, select:focus { border-color: var(--kikroo-teal); box-shadow: 0 0 0 
 .people-manager-heading h1 { margin: 0; font-size: clamp(34px, 5vw, 54px); letter-spacing: -.05em; }
 .people-manager-heading > p:last-child { color: #6d7890; line-height: 1.55; }
 .people-manager-form { margin-bottom: 28px; }
+.my-availability-settings {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(280px, .7fr); align-items: center; gap: 18px;
+  margin-bottom: 28px; padding: 20px; border: 1px solid #bfe8e2; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(232,255,250,.95), rgba(239,248,255,.95));
+}
+.my-availability-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: white; color: #078c83; box-shadow: 0 6px 18px rgba(0,132,122,.1); }
+.my-availability-copy h2 { margin: 4px 0 5px; font-size: 19px; }
+.my-availability-copy > p:last-child { margin: 0; color: #64758a; font-size: 11px; line-height: 1.5; }
+.profile-display-name { max-width: 320px; display: grid; gap: 5px; margin-top: 13px; color: #526078; font-size: 10px; font-weight: 800; }
+.profile-display-name input { width: 100%; min-height: 42px; }
+.my-availability-hours.work-hours { grid-column: auto; padding-top: 0; border-top: 0; }
+.profile-share-action { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 6px 12px; padding-top: 15px; border-top: 1px solid rgba(72,167,158,.22); }
+.profile-share-action button { grid-row: 1 / 3; }
+.profile-share-action small { color: #64758a; font-size: 10px; line-height: 1.4; }
+.profile-share-action span { color: #087d72; font-size: 10px; font-weight: 800; }
 .contact-directory {
   display: grid; grid-template-columns: minmax(210px, .65fr) minmax(0, 1.35fr); gap: 22px; margin-bottom: 28px; padding: 20px;
   border: 1px solid #dfe7f2; border-radius: 18px; background: linear-gradient(145deg, #f7fbff, #eef6ff);
@@ -470,6 +485,9 @@ input:focus, select:focus { border-color: var(--kikroo-teal); box-shadow: 0 0 0 
 .planner-helper { max-width: 650px; margin: 8px 0 0; color: #718099; font-size: 13px; line-height: 1.5; }
 .planner-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
 .planner-analysis { display: grid; gap: 20px; }
+.planner-primary-toolbar { display: grid; grid-template-columns: repeat(2, minmax(180px, 240px)) minmax(210px, 1fr); align-items: end; gap: 14px; }
+.planner-primary-toolbar .date-field { display: grid; gap: 6px; }
+.planner-primary-toolbar input, .planner-primary-toolbar select { width: 100%; }
 .planner-detail-toolbar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 14px; padding-top: 4px; }
 .planner-detail-toolbar > strong { grid-column: 1 / -1; color: #31558f; font-size: 14px; }
 .planner.collapsed { padding-bottom: 20px; }
@@ -538,6 +556,12 @@ input:focus, select:focus { border-color: var(--kikroo-teal); box-shadow: 0 0 0 
   box-shadow: 0 8px 24px rgba(23,32,51,.1); backdrop-filter: blur(12px);
 }
 .planner-sticky-recommendation .recommendation { grid-template-columns: auto minmax(0, 1fr); margin: 0; }
+.planner-sticky-recommendation .recommendation:has(.use-suggestion) { grid-template-columns: auto minmax(0, 1fr) auto; }
+.use-suggestion { align-self: center; justify-self: end; white-space: nowrap; }
+.planner-advanced-disclosure { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid #dce7ed; border-radius: 15px; background: rgba(247,251,252,.9); }
+.planner-advanced-disclosure button { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px; }
+.planner-advanced-disclosure p { margin: 0; color: #718099; font-size: 11px; line-height: 1.45; }
+.planner-advanced-panel { display: grid; gap: 20px; padding-top: 4px; }
 .my-time-recommendation {
   min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 18px;
   padding: 22px; border: 1px solid #dfe5ef; border-radius: 18px; background: white; color: #172033;
@@ -1131,6 +1155,9 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .handoff-privacy-note { text-align: left; }
   .undo-toast { right: 12px; bottom: 118px; left: 12px; max-width: none; justify-content: space-between; }
   .planner-toggle { width: 100%; }
+  .planner-primary-toolbar { grid-template-columns: 1fr; }
+  .planner-advanced-disclosure { align-items: stretch; flex-direction: column; }
+  .planner-advanced-disclosure button { width: 100%; justify-content: center; }
   .planner-detail-toolbar { grid-template-columns: 1fr; align-items: stretch; }
   .planner-detail-toolbar .date-field { width: 100%; }
   .planner-detail-toolbar .date-field input, .planner-detail-toolbar .date-field select { width: 100%; }
@@ -1138,6 +1165,10 @@ footer { max-width: 1200px; margin: auto; padding: 30px 28px 48px; display: flex
   .people-manager-toolbar { align-items: stretch; flex-direction: column; }
   .people-manager-toolbar button { width: 100%; justify-content: center; }
   .people-manager-heading { margin-top: 36px; }
+  .my-availability-settings { grid-template-columns: auto minmax(0, 1fr); padding: 16px; }
+  .my-availability-hours.work-hours { grid-column: 1 / -1; }
+  .profile-share-action { grid-template-columns: 1fr; }
+  .profile-share-action button { grid-row: auto; width: 100%; justify-content: center; }
   .people-summary-section .section-heading { align-items: stretch; }
   .people-summary-section .secondary-button { width: 100%; justify-content: center; }
   .group-people-workspace-panel { display: block; }

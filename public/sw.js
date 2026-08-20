@@ -1,4 +1,4 @@
-const CACHE_NAME = "kikroo-v1.17.0";
+const CACHE_NAME = "kikroo-v1.18.0";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",

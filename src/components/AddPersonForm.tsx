@@ -7,6 +7,7 @@ import { createId } from "../id";
 import { searchGlobalCities } from "../services/geocoding";
 import type { EntryType, Person } from "../types";
 import type { ContactImportDraft } from "../contactImport";
+import { adjustWorkHours, formatWorkHour, WORK_END_OPTIONS, WORK_START_OPTIONS } from "../workHours";
 
 type AddPersonFormProps = {
   onAdd: (person: Person) => void;
@@ -22,9 +23,6 @@ const entryChoices: Array<{ value: EntryType; label: string; help: string }> = [
   { value: "team", label: "Team or group", help: "A family, office, or team sharing one local schedule." },
   { value: "place", label: "Place", help: "A city or country used mainly as a time reference." },
 ];
-
-const startHours = Array.from({ length: 24 }, (_, hour) => hour);
-const endHours = Array.from({ length: 24 }, (_, index) => index + 1);
 
 export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: AddPersonFormProps) {
   const initialCity = initialPerson ? {
@@ -62,13 +60,9 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
   const entryTypeId = useId();
 
   function changeWorkHours(field: "start" | "end", value: number) {
-    if (field === "start") {
-      setWorkStart(Math.min(value, workEnd - 1));
-      if (value >= workEnd) setWorkEnd(Math.min(24, value + 1));
-      return;
-    }
-    setWorkEnd(Math.max(value, workStart + 1));
-    if (value <= workStart) setWorkStart(Math.max(0, value - 1));
+    const next = adjustWorkHours(workStart, workEnd, field, value);
+    setWorkStart(next.workStart);
+    setWorkEnd(next.workEnd);
   }
 
   useEffect(() => {
@@ -219,14 +213,14 @@ export function AddPersonForm({ onAdd, onCancel, initialPerson, initialDraft }: 
             <label>
               Starts
               <select value={workStart} onChange={(event) => changeWorkHours("start", Number(event.target.value))}>
-                {startHours.map((hour) => <option key={hour} value={hour}>{String(hour).padStart(2, "0")}:00</option>)}
+                {WORK_START_OPTIONS.map((hour) => <option key={hour} value={hour}>{formatWorkHour(hour)}</option>)}
               </select>
             </label>
             <span>to</span>
             <label>
               Ends
               <select value={workEnd} onChange={(event) => changeWorkHours("end", Number(event.target.value))}>
-                {endHours.map((hour) => <option key={hour} value={hour}>{String(hour).padStart(2, "0")}:00</option>)}
+                {WORK_END_OPTIONS.map((hour) => <option key={hour} value={hour}>{formatWorkHour(hour)}</option>)}
               </select>
             </label>
             <small>Saved locally for this contact or group and used by Find a good time.</small>

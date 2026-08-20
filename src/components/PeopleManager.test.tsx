@@ -11,18 +11,23 @@ describe("focused people management", () => {
         contacts={[{ id: "1", name: "Diego", email: "diego@example.com", city: "Curitiba", timeZone: "America/Sao_Paulo", workStart: 9, workEnd: 18, updatedAt: "2026-07-22T12:00:00Z" }]}
         now={new Date("2026-07-22T12:00:00Z")}
         selectedInstant={new Date("2026-07-22T14:37:00Z")}
+        organizer={{ id: "current-device", name: "My time", city: "Sao Paulo", timeZone: "America/Sao_Paulo", workStart: 9, workEnd: 18 }}
         showForm={false}
         onBack={vi.fn()}
         onToggleForm={vi.fn()}
         onAdd={vi.fn()}
         onCancelAdd={vi.fn()}
         onChange={vi.fn()}
+        onOrganizerChange={vi.fn()}
+        onShareProfile={vi.fn(async () => "copied" as const)}
         onRemove={vi.fn()}
       />,
     );
 
     expect(markup).toContain("Back to groups &amp; people");
     expect(markup).toContain("Manage Work sites");
+    expect(markup).toContain("When should Kikroo consider me available?");
+    expect(markup).toContain("Share my Kikroo");
     expect(markup).toContain("people-rolodex");
     expect(markup).toContain("Your Kikroo contacts");
     expect(markup).toContain("diego@example.com");
