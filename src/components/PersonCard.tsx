@@ -2,6 +2,7 @@ import { CalendarPlus2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { formatInZone, hourInZone } from "../time";
 import type { Person, PersonAvailability } from "../types";
+import { adjustWorkHours, formatWorkHour, WORK_END_OPTIONS, WORK_START_OPTIONS } from "../workHours";
 import { AvailabilityRequestDialog } from "./AvailabilityRequestDialog";
 
 type PersonCardProps = {
@@ -14,8 +15,6 @@ type PersonCardProps = {
   onAvailabilityResult?: (personId: string, result: PersonAvailability | null) => void;
 };
 
-const hourOptions = Array.from({ length: 24 }, (_, hour) => hour);
-
 export function PersonCard({ person, now, selectedInstant, onChange, onRemove, onEdit, onAvailabilityResult = () => undefined }: PersonCardProps) {
   const [showAvailabilityRequest, setShowAvailabilityRequest] = useState(false);
   const localHour = hourInZone(now, person.timeZone);
@@ -23,16 +22,7 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
   const requestStatus = person.availabilityRequestStatus ?? "not-requested";
 
   function changeWorkHours(field: "workStart" | "workEnd", value: number) {
-    const next = { ...person, [field]: value };
-    if (field === "workStart" && value >= next.workEnd) {
-      next.workEnd = Math.min(23, value + 1);
-      next.workStart = Math.min(value, next.workEnd - 1);
-    }
-    if (field === "workEnd" && value <= next.workStart) {
-      next.workStart = Math.max(0, value - 1);
-      next.workEnd = Math.max(value, next.workStart + 1);
-    }
-    onChange(next);
+    onChange({ ...person, ...adjustWorkHours(person.workStart, person.workEnd, field === "workStart" ? "start" : "end", value) });
   }
 
   return (
@@ -95,8 +85,8 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
             value={person.workStart}
             onChange={(event) => changeWorkHours("workStart", Number(event.target.value))}
           >
-            {hourOptions.map((hour) => (
-              <option key={hour} value={hour}>{String(hour).padStart(2, "0")}:00</option>
+            {WORK_START_OPTIONS.map((hour) => (
+              <option key={hour} value={hour}>{formatWorkHour(hour)}</option>
             ))}
           </select>
         </label>
@@ -107,8 +97,8 @@ export function PersonCard({ person, now, selectedInstant, onChange, onRemove, o
             value={person.workEnd}
             onChange={(event) => changeWorkHours("workEnd", Number(event.target.value))}
           >
-            {hourOptions.map((hour) => (
-              <option key={hour} value={hour}>{String(hour).padStart(2, "0")}:00</option>
+            {WORK_END_OPTIONS.map((hour) => (
+              <option key={hour} value={hour}>{formatWorkHour(hour)}</option>
             ))}
           </select>
         </label>

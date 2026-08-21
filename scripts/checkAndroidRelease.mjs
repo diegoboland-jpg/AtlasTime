@@ -31,7 +31,7 @@ if (!releaseConfig.manifestUrl.startsWith("https://")) failures.push("Android ma
 if (webManifest.display !== "standalone") failures.push("web manifest must use standalone display mode");
 if (appPackage.scripts?.["android:init"] !== "node scripts/initAndroidTwa.mjs") failures.push("android:init command is missing");
 if (appPackage.scripts?.["android:build:bundle"] !== "node scripts/buildAndroidBundle.mjs") failures.push("android:build:bundle command is missing");
-if (appPackage.version !== "1.17.0" || releaseConfig.versionCode !== 11700) failures.push("v1.17 Android version metadata is not aligned");
+if (appPackage.version !== "1.18.0" || releaseConfig.versionCode !== 11800) failures.push("v1.18 Android version metadata is not aligned");
 for (const file of requiredWidgetFiles) {
   try { await access(new URL(file, root)); }
   catch { failures.push(`missing ${file}`); }

@@ -21,6 +21,7 @@ import type { Person, PersonAvailability, SavedGroup } from "./types";
 import { APP_RELEASE_LABEL } from "./version";
 import { installWidgetBridge } from "./widgetBridge";
 import { createWidgetSnapshot } from "./widgetSnapshot";
+import { loadOrganizer, saveOrganizer } from "./organizerAvailability";
 
 type PendingPersonRemoval = {
   groupId: string;
@@ -47,15 +48,18 @@ function PlannerApp() {
   const [pendingPersonRemoval, setPendingPersonRemoval] = useState<PendingPersonRemoval | null>(null);
   const [restoredPersonFocusId, setRestoredPersonFocusId] = useState<string | null>(null);
   const [availabilityByPerson, setAvailabilityByPerson] = useState(loadManagedAvailabilityResults);
+  const [organizer, setOrganizer] = useState(loadOrganizer);
   const removalTimer = useRef<number | null>(null);
   const widgetBridge = useRef<ReturnType<typeof installWidgetBridge> | null>(null);
 
   const activeGroup = workspace.groups.find((group) => group.id === workspace.activeGroupId) ?? workspace.groups[0];
   const people = activeGroup.people;
+  const scoringPeople = useMemo(() => [organizer, ...people], [organizer, people]);
   const planner = activeGroup.planner;
 
   useEffect(() => saveGroups(workspace.groups, workspace.activeGroupId), [workspace]);
   useEffect(() => saveContacts(contacts), [contacts]);
+  useEffect(() => saveOrganizer(organizer), [organizer]);
   useEffect(() => setPlannerExpanded(false), [workspace.activeGroupId]);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 15_000);
@@ -76,10 +80,10 @@ function PlannerApp() {
     });
   }, [restoredPersonFocusId]);
 
-  const hours = useMemo(() => scoreHours(people, planner.date, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.durationMinutes, availabilityByPerson]);
-  const recommendation = useMemo(() => bestHour(people, planner.date, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.durationMinutes, availabilityByPerson]);
+  const hours = useMemo(() => scoreHours(scoringPeople, planner.date, planner.durationMinutes, availabilityByPerson), [scoringPeople, planner.date, planner.durationMinutes, availabilityByPerson]);
+  const recommendation = useMemo(() => bestHour(scoringPeople, planner.date, planner.durationMinutes, availabilityByPerson), [scoringPeople, planner.date, planner.durationMinutes, availabilityByPerson]);
   const selectedInstant = dateAtUtcHour(planner.date, planner.hour);
-  const selectedScore = useMemo(() => scoreAtUtcHour(people, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson), [people, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson]);
+  const selectedScore = useMemo(() => scoreAtUtcHour(scoringPeople, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson), [scoringPeople, planner.date, planner.hour, planner.durationMinutes, availabilityByPerson]);
   const widgetSnapshot = useMemo(() => createWidgetSnapshot({
     group: activeGroup,
     deviceTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -241,6 +245,43 @@ function PlannerApp() {
     }
   }
 
+  async function shareOrganizerProfile(): Promise<"shared" | "copied" | "cancelled" | "manual"> {
+    const approved = window.confirm("Share your Kikroo profile name, device time zone, and preferred hours? Calendar events, busy-time details, email, and phone are not included.");
+    if (!approved) return "cancelled";
+    const sharedPerson: Person = {
+      id: createId(),
+      entryType: "person",
+      name: organizer.name.trim() || "My time",
+      city: organizer.city,
+      timeZone: organizer.timeZone,
+      workStart: organizer.workStart,
+      workEnd: organizer.workEnd,
+    };
+    const link = createShareLink({
+      id: "shared-kikroo-profile",
+      name: `${sharedPerson.name}'s Kikroo`,
+      people: [sharedPerson],
+      planner: defaultPlanner(),
+      updatedAt: new Date().toISOString(),
+    });
+    const text = `See ${sharedPerson.name}'s time zone and preferred hours on Kikroo.`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `${sharedPerson.name}'s Kikroo`, text, url: link });
+        return "shared";
+      } catch (error) {
+        if ((error as Error).name === "AbortError") return "cancelled";
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(link);
+      return "copied";
+    } catch {
+      window.prompt("Copy this private Kikroo profile link", link);
+      return "manual";
+    }
+  }
+
   function importSharedGroup() {
     if (!sharedPayload) return;
     const group: SavedGroup = {
@@ -285,12 +326,15 @@ function PlannerApp() {
             contacts={contacts}
             now={now}
             selectedInstant={selectedInstant}
+            organizer={organizer}
             showForm={showForm}
             onBack={() => { setManagingPeople(false); setShowForm(false); }}
             onToggleForm={() => setShowForm((current) => !current)}
             onAdd={addPerson}
             onCancelAdd={() => setShowForm(false)}
             onChange={updatePerson}
+            onOrganizerChange={setOrganizer}
+            onShareProfile={shareOrganizerProfile}
             onRemove={removePerson}
             onAvailabilityResult={updateAvailability}
           />
@@ -370,7 +414,7 @@ function PlannerApp() {
             onNow={selectNow}
           />
           <TimePlanner
-          people={people}
+          people={scoringPeople}
           dateValue={planner.date}
           selectedHour={planner.hour}
           durationMinutes={planner.durationMinutes}

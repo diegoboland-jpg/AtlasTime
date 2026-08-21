@@ -12,10 +12,12 @@ const generatedGradle = new URL("../android/twa/app/build.gradle", import.meta.u
 const GENERATED_LAUNCHERS = [
   "com.google.androidbrowserhelper.trusted.LauncherActivity",
   ".LauncherActivity",
+  "LauncherActivity",
 ];
 const KIKROO_LAUNCHER = "com.badie.kikroo.KikrooLauncherActivity";
 const ANDROID_BROWSER_HELPER = "2.7.3";
 const ANDROIDX_BROWSER = "1.10.0";
+const MIN_SDK_VERSION = 23;
 const CUSTOM_TABS_QUERY = `  <queries>
     <intent>
       <action android:name="android.support.customtabs.action.CustomTabsService" />
@@ -39,10 +41,12 @@ export function applyWidgetManifest(manifest, fragment) {
 }
 
 export function applyWidgetGradle(gradle) {
-  let next = gradle.replace(
+  let next = gradle
+    .replace(/minSdkVersion\s+\d+/g, `minSdkVersion ${MIN_SDK_VERSION}`)
+    .replace(
     /com\.google\.androidbrowserhelper:androidbrowserhelper:[^'"\s)]+/g,
     `com.google.androidbrowserhelper:androidbrowserhelper:${ANDROID_BROWSER_HELPER}`,
-  );
+    );
   if (!next.includes(`androidx.browser:browser:${ANDROIDX_BROWSER}`)) {
     const dependencies = /dependencies\s*\{/;
     if (!dependencies.test(next)) throw new Error("Generated Android dependencies block was not found.");

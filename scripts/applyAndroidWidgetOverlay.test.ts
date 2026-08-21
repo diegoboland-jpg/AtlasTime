@@ -12,9 +12,18 @@ describe("Android widget overlay", () => {
     expect(twice.match(/android\.support\.customtabs\.action\.CustomTabsService/g)).toHaveLength(1);
   });
 
-  it("pins the browser libraries needed by the verified message channel", () => {
-    const gradle = `dependencies {\n implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'\n}`;
+  it("supports Bubblewrap's unqualified launcher activity name", () => {
+    const manifest = `<manifest><application><activity android:name="LauncherActivity" /></application></manifest>`;
+    const fragment = `<receiver android:name="com.badie.kikroo.KikrooWidgetProvider" />`;
+    expect(applyWidgetManifest(manifest, fragment)).toContain(
+      `android:name="com.badie.kikroo.KikrooLauncherActivity"`,
+    );
+  });
+
+  it("pins the browser libraries and Android 6 minimum needed by the widget channel", () => {
+    const gradle = `android { defaultConfig { minSdkVersion 21 } }\ndependencies {\n implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'\n}`;
     const result = applyWidgetGradle(gradle);
+    expect(result).toContain("minSdkVersion 23");
     expect(result).toContain("androidbrowserhelper:2.7.3");
     expect(result).toContain("androidx.browser:browser:1.10.0");
   });
